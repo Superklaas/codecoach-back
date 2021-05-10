@@ -20,12 +20,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class ParkSharkAuthenticationProvider implements AuthenticationProvider {
+public class CodeCoachAuthenticationProvider implements AuthenticationProvider {
 
     private final AccountService accountService;
 
     @Autowired
-    public ParkSharkAuthenticationProvider(AccountService accountService) {
+    public CodeCoachAuthenticationProvider(AccountService accountService) {
         this.accountService = accountService;
     }
 

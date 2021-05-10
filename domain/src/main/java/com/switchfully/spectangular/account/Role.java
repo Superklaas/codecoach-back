@@ -1,7 +1,7 @@
 package com.switchfully.spectangular.account;
 
-import org.assertj.core.util.Lists;
 
+import java.util.Arrays;
 import java.util.List;
 
 public enum Role {
@@ -12,7 +12,7 @@ public enum Role {
     private final List<Feature> featureList;
 
     Role(Feature... featureList) {
-        this.featureList = Lists.newArrayList(featureList);
+        this.featureList = Arrays.asList(featureList);
     }
 
     public List<Feature> getFeatureList() {

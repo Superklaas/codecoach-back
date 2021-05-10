@@ -14,21 +14,20 @@
 
     <artifactId>application</artifactId>
 
+    <properties>
+        <maven.compiler.source>15</maven.compiler.source>
+        <maven.compiler.target>15</maven.compiler.target>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>api</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--&lt;!&ndash;            <groupId>io.springfox</groupId>&ndash;&gt;-->
-<!--&lt;!&ndash;            <artifactId>springfox-boot-starter</artifactId>&ndash;&gt;-->
-<!--&lt;!&ndash;            <version>3.0.0</version>&ndash;&gt;-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.5.5</version>
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>

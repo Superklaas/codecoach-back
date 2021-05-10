@@ -15,11 +15,11 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final ParkSharkAuthenticationProvider parkSharkAuthenticationProvider;
+    private final CodeCoachAuthenticationProvider codeCoachAuthenticationProvider;
 
     @Autowired
-    public SecurityConfig(ParkSharkAuthenticationProvider parkSharkAuthenticationProvider) {
-        this.parkSharkAuthenticationProvider = parkSharkAuthenticationProvider;
+    public SecurityConfig(CodeCoachAuthenticationProvider codeCoachAuthenticationProvider) {
+        this.codeCoachAuthenticationProvider = codeCoachAuthenticationProvider;
     }
 
     @Override
@@ -38,6 +38,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(parkSharkAuthenticationProvider);
+        auth.authenticationProvider(codeCoachAuthenticationProvider);
     }
 }
