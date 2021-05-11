@@ -1,6 +1,6 @@
 package com.switchfully.spectangular.services;
 
-import com.switchfully.spectangular.domain.User;
+import com.switchfully.spectangular.exceptions.User;
 import com.switchfully.spectangular.dtos.CreateUserDto;
 import com.switchfully.spectangular.dtos.UserDto;
 import com.switchfully.spectangular.mappers.UserMapper;
@@ -31,4 +31,5 @@ public class UserService {
         User user = userRepository.save(userMapper.toEntity(dto));
         return userMapper.toDto(user);
     }
+
 }

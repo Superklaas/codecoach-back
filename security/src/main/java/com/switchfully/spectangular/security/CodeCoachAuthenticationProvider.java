@@ -1,8 +1,8 @@
 package com.switchfully.spectangular.security;
 
 
-import com.switchfully.spectangular.domain.Feature;
-import com.switchfully.spectangular.domain.User;
+import com.switchfully.spectangular.exceptions.Feature;
+import com.switchfully.spectangular.exceptions.User;
 import com.switchfully.spectangular.services.UserService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;

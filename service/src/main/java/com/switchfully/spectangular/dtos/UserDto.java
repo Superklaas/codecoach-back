@@ -1,9 +1,5 @@
 package com.switchfully.spectangular.dtos;
 
-import com.switchfully.spectangular.domain.Role;
-
-import javax.persistence.*;
-
 public class UserDto {
 
 

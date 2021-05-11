@@ -1,7 +1,8 @@
 package com.switchfully.spectangular.mappers;
 
-import com.switchfully.spectangular.domain.Role;
-import com.switchfully.spectangular.domain.User;
+import com.switchfully.spectangular.exceptions.InvalidEmailException;
+import com.switchfully.spectangular.exceptions.Role;
+import com.switchfully.spectangular.exceptions.User;
 import com.switchfully.spectangular.dtos.CreateUserDto;
 import com.switchfully.spectangular.dtos.UserDto;
 import org.springframework.stereotype.Component;
@@ -10,8 +11,14 @@ import org.springframework.stereotype.Component;
 public class UserMapper {
 
     public User toEntity(CreateUserDto dto){
-        return new User(dto.getFirstName(), dto.getLastName(), dto.getProfileName(), dto.getEmail(),
-                dto.getEncryptedPassword(), Role.valueOf(dto.getRole().toUpperCase()) );
+
+        try {
+            return new User(dto.getFirstName(), dto.getLastName(), dto.getProfileName(), dto.getEmail(),
+                    dto.getEncryptedPassword(), Role.valueOf(dto.getRole().toUpperCase()) );
+        } catch (Exception ex) {
+            throw new InvalidEmailException("A user with this email address already exists.");
+        }
+
     }
 
     public UserDto toDto(User user){

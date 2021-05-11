@@ -1,7 +1,5 @@
 package com.switchfully.spectangular.dtos;
 
-import com.switchfully.spectangular.domain.Role;
-
 public class CreateUserDto {
 
     private String firstName;

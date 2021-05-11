@@ -1,4 +1,6 @@
-package com.switchfully.spectangular.domain;
+package com.switchfully.spectangular.exceptions;
+
+import org.apache.commons.validator.EmailValidator;
 
 import javax.persistence.*;
 
@@ -30,14 +32,36 @@ public class User {
     public User() {
     }
 
-    public User(String firstName, String lastName, String profileName, String email, String encryptedPassword,
-                Role role) {
+    public User(String firstName, String lastName, String profileName, String email, String encryptedPassword, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.profileName = profileName;
-        this.email = email;
-        this.encryptedPassword = encryptedPassword;
+        this.email = validEmail(email);
+        this.encryptedPassword = validPassword(encryptedPassword);
         this.role = role;
+    }
+
+    public String validEmail(String emailAddress){
+        if (email == null || !EmailValidator.getInstance().isValid(emailAddress)) {
+            throw new InvalidEmailException("user has invalid email address");
+        }
+        return emailAddress;
+    }
+
+    public String validPassword(String password){
+       if (password.length() < 8 ){
+           throw new InvalidPasswordException("password is invalid");
+       }
+       if (!password.matches(".*[0-9]+.*")){
+           throw new InvalidPasswordException("password is invalid");
+       }
+        if (!password.matches(".*[A-Z]+.*")){
+            throw new InvalidPasswordException("password is invalid");
+        }
+        if (!password.matches(".*[a-z]+.*")){
+            throw new InvalidPasswordException("password is invalid");
+        }
+        return password;
     }
 
     public Integer getId() {
