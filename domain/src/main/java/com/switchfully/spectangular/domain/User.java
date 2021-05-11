@@ -24,7 +24,7 @@ public class User {
     private String encryptedPassword;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "role") //todo
+    @Column(name = "role")
     private Role role;
 
     public User() {
