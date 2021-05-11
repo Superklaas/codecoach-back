@@ -1,4 +1,4 @@
-package com.switchfully.spectangular.account;
+package com.switchfully.spectangular.domain;
 
 
 import java.util.Arrays;

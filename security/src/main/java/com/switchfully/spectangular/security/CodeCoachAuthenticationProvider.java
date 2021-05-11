@@ -1,10 +1,9 @@
 package com.switchfully.spectangular.security;
 
 
-import com.switchfully.spectangular.account.Account;
-import com.switchfully.spectangular.account.Feature;
-import com.switchfully.spectangular.services.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.switchfully.spectangular.domain.Feature;
+import com.switchfully.spectangular.domain.User;
+import com.switchfully.spectangular.services.UserService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,17 +21,17 @@ import java.util.stream.Collectors;
 @Component
 public class CodeCoachAuthenticationProvider implements AuthenticationProvider {
 
-    private final AccountService accountService;
+    private final UserService userService;
 
-    @Autowired
-    public CodeCoachAuthenticationProvider(AccountService accountService) {
-        this.accountService = accountService;
+    public CodeCoachAuthenticationProvider(UserService userService) {
+        this.userService = userService;
     }
+
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        Account user = accountService.findAccountByEmailAndPassword(authentication.getPrincipal().toString(), authentication.getCredentials().toString());
-        if(user != null){
+        User user = userService.findUserByEmail(authentication.getPrincipal().toString());
+        if(user != null && user.isPasswordCorrect(authentication.getCredentials().toString())){
             return new UsernamePasswordAuthenticationToken(
                     user.getEmail(),
                     user.getEncryptedPassword(),
