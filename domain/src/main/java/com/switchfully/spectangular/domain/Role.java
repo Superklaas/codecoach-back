@@ -6,7 +6,8 @@ import java.util.List;
 
 public enum Role {
 
-    Admin();
+    ADMIN(),
+    COACHEE();
 
 
     private final List<Feature> featureList;

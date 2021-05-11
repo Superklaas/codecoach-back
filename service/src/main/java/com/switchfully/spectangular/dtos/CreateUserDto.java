@@ -9,7 +9,7 @@ public class CreateUserDto {
     private String profileName;
     private String email;
     private String encryptedPassword;
-    private Role role;
+    private String role;
 
     public CreateUserDto() {
     }
@@ -59,11 +59,11 @@ public class CreateUserDto {
         return this;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public CreateUserDto setRole(Role role) {
+    public CreateUserDto setRole(String role) {
         this.role = role;
         return this;
     }

@@ -13,7 +13,7 @@ public class UserDto {
     private String profileName;
     private String email;
     private String encryptedPassword;
-    private Role role;
+    private String role;
 
     public UserDto() {
     }
@@ -72,11 +72,11 @@ public class UserDto {
         return this;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public UserDto setRole(Role role) {
+    public UserDto setRole(String role) {
         this.role = role;
         return this;
     }

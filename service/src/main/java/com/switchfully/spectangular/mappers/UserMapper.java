@@ -1,5 +1,6 @@
 package com.switchfully.spectangular.mappers;
 
+import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.dtos.CreateUserDto;
 import com.switchfully.spectangular.dtos.UserDto;
@@ -10,7 +11,7 @@ public class UserMapper {
 
     public User toEntity(CreateUserDto dto){
         return new User(dto.getFirstName(), dto.getLastName(), dto.getProfileName(), dto.getEmail(),
-                dto.getEncryptedPassword(), dto.getRole());
+                dto.getEncryptedPassword(), Role.valueOf(dto.getRole().toUpperCase()) );
     }
 
     public UserDto toDto(User user){
@@ -21,6 +22,6 @@ public class UserMapper {
                 .setLastName(user.getLastName())
                 .setId(user.getId())
                 .setProfileName(user.getProfileName())
-                .setRole(user.getRole());
+                .setRole(user.getRole().toString());
     }
 }
