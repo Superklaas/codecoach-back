@@ -6,7 +6,7 @@ public class CreateUserDto {
     private String lastName;
     private String profileName;
     private String email;
-    private String encryptedPassword;
+    private String password;
     private String role;
 
     public CreateUserDto() {
@@ -48,12 +48,12 @@ public class CreateUserDto {
         return this;
     }
 
-    public String getEncryptedPassword() {
-        return encryptedPassword;
+    public String getPassword() {
+        return password;
     }
 
-    public CreateUserDto setEncryptedPassword(String encryptedPassword) {
-        this.encryptedPassword = encryptedPassword;
+    public CreateUserDto setPassword(String password) {
+        this.password = password;
         return this;
     }
 
