@@ -1,0 +1,16 @@
+name: Deploy
+
+on: push
+
+jobs:
+  deploy-to-heroku:
+    name: Heroku
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+#      - run: sed -ri 's/gertjan/fred-staging/g' ./src/main/resources/application.properties
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "codecoach-staging"
+          heroku_email: "christophe.bol@minfin.fed.be"
