@@ -14,8 +14,8 @@ import javax.transaction.Transactional;
 @Transactional
 public class UserService {
 
-    private UserRepository userRepository;
-    private UserMapper userMapper;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Autowired
     public UserService(UserRepository userRepository, UserMapper userMapper) {
