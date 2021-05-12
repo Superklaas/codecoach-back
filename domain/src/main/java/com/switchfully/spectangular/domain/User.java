@@ -1,5 +1,7 @@
 package com.switchfully.spectangular.domain;
 
+import com.switchfully.spectangular.exceptions.InvalidEmailException;
+import com.switchfully.spectangular.exceptions.InvalidPasswordException;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import javax.persistence.*;

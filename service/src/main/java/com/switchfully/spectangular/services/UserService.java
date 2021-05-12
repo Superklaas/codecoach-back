@@ -1,10 +1,10 @@
 package com.switchfully.spectangular.services;
 
-import com.switchfully.spectangular.exceptions.DuplicateEmailException;
-import com.switchfully.spectangular.exceptions.User;
+
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.dtos.CreateUserDto;
 import com.switchfully.spectangular.dtos.UserDto;
+import com.switchfully.spectangular.exceptions.DuplicateEmailException;
 import com.switchfully.spectangular.mappers.UserMapper;
 import com.switchfully.spectangular.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

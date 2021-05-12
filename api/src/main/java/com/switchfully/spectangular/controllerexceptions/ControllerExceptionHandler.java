@@ -1,8 +1,7 @@
 package com.switchfully.spectangular.controllerexceptions;
 
-import com.switchfully.spectangular.domain.InvalidEmailException;
-import com.switchfully.spectangular.exceptions.DuplicateEmailException;
 import com.switchfully.spectangular.exceptions.InvalidEmailException;
+import com.switchfully.spectangular.exceptions.DuplicateEmailException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
