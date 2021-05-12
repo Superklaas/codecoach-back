@@ -31,8 +31,6 @@ public class User {
     @Column(name = "role")
     private Role role;
 
-    private static final String EMAILREGEX = "^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
-
     public User() {
     }
 
@@ -46,7 +44,7 @@ public class User {
     }
 
     public String validEmail(String emailAddress){
-        if (/*!emailAddress.matches(EMAILREGEX)*/ !EmailValidator.getInstance().isValid(emailAddress)) {
+        if (!EmailValidator.getInstance().isValid(emailAddress)) {
             throw new InvalidEmailException("user has invalid email address");
         }
         return emailAddress;
