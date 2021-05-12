@@ -1,27 +1,22 @@
 package com.switchfully.spectangular.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.switchfully.spectangular.exceptions.User;
+import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.services.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +26,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
 
-    @Autowired
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
@@ -60,7 +54,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .setAudience(SecurityConstants.TOKEN_AUDIENCE)
                 .setSubject(user.getId().toString())
                 .setExpiration(new Date(new Date().getTime() + 3600000)) // 1 hour
-                .claim("features", List.of(authentication.getAuthorities()))
+                .claim("features",
+                        authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .claim("role", user.getRole().toString())
                 .claim("profileName", user.getProfileName())
                 .claim("email", user.getEmail())

@@ -1,4 +1,4 @@
-package com.switchfully.spectangular.exceptions;
+package com.switchfully.spectangular.domain;
 
 public class InvalidEmailException extends RuntimeException {
 

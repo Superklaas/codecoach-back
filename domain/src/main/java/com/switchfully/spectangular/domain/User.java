@@ -1,4 +1,4 @@
-package com.switchfully.spectangular.exceptions;
+package com.switchfully.spectangular.domain;
 
 import org.apache.commons.validator.routines.EmailValidator;
 

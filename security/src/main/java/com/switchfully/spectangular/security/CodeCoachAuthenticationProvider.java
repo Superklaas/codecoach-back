@@ -1,8 +1,8 @@
 package com.switchfully.spectangular.security;
 
 
-import com.switchfully.spectangular.exceptions.Feature;
-import com.switchfully.spectangular.exceptions.User;
+import com.switchfully.spectangular.domain.Feature;
+import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.services.UserService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -35,7 +35,7 @@ public class CodeCoachAuthenticationProvider implements AuthenticationProvider {
             return new UsernamePasswordAuthenticationToken(
                     user.getEmail(),
                     user.getEncryptedPassword(),
-                    rolesToGrantedAuthorities(new ArrayList<>(user.getRole().getFeatureList())));
+                    rolesToGrantedAuthorities(user.getRole().getFeatureList()));
         }
         throw new BadCredentialsException("The provided credentials were invalid.");
     }

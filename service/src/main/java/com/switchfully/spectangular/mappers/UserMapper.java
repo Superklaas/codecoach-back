@@ -1,7 +1,7 @@
 package com.switchfully.spectangular.mappers;
 
-import com.switchfully.spectangular.exceptions.Role;
-import com.switchfully.spectangular.exceptions.User;
+import com.switchfully.spectangular.domain.Role;
+import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.dtos.CreateUserDto;
 import com.switchfully.spectangular.dtos.UserDto;
 import org.springframework.stereotype.Component;

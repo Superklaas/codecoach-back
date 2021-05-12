@@ -60,11 +60,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                         .getBody()
                         .getSubject();
 
-                ArrayList<LinkedHashMap<String, String>> authoritiesInToken
+                ArrayList<String> authoritiesInToken
                         = parsedToken.getBody().get("features", ArrayList.class);
 
                 var authorities = authoritiesInToken.stream()
-                        .map(linkedMap -> linkedMap.get("authority"))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
