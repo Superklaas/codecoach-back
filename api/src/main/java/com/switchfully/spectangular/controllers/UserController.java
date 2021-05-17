@@ -4,6 +4,7 @@ import com.switchfully.spectangular.dtos.CreateUserDto;
 import com.switchfully.spectangular.dtos.UserDto;
 import com.switchfully.spectangular.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +20,14 @@ public class UserController {
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@RequestBody CreateUserDto createUserDto) {
         return userService.createUser(createUserDto);
     }
 
     @PreAuthorize(value = "hasAuthority('GET_USER_INFORMATION')")
     @GetMapping(path = "/{id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public UserDto getUserById(@PathVariable int id) {
         return userService.findUserById(id);
     }
