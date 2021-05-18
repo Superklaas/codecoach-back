@@ -58,7 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     CorsFilter corsFilter() {
-        System.out.println("Found the corsfilter");
         CorsConfiguration corsConfig = new CorsConfiguration();
         corsConfig.setMaxAge(8000L);
         corsConfig.setAllowCredentials(true);
