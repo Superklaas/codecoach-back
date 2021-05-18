@@ -1,5 +1,6 @@
 package com.switchfully.spectangular;
 
+import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.dtos.UserDto;
 import com.switchfully.spectangular.repository.UserRepository;
 import io.restassured.http.ContentType;
@@ -85,7 +86,6 @@ public class UserControllerEndToEndTest {
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    /* TODO fix request to "/authenticate" is 403: Forbidden
     @Test
     @Sql("/sql/insertUser.sql")
     void getUserById_whenCalled_thenOneUserIsFound() {
@@ -96,8 +96,7 @@ public class UserControllerEndToEndTest {
                 .baseUri("http://localhost")
                 .port(port)
                 .basePath("/authenticate")
-                .param("username", "test@spectangular.com")
-                .param("password", "P@ssw0rd")
+                .body("{\"username\":\"test@spectangular.com\",\"password\":\"P@ssw0rd\"}")
                 .post();
 
         String bearerToken = postResponse
@@ -109,12 +108,12 @@ public class UserControllerEndToEndTest {
                 .baseUri("http://localhost")
                 .port(port)
                 .when()
-                .get("/users/{id}", "1")
+                .get("/users/{id}", "10")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(UserDto.class);
     }
-    */
+
 }

@@ -38,8 +38,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         var login = getLogin(request);
         var email = login.getUsername();
         var password = login.getPassword();
-        System.out.println("email: " + email);
-        System.out.println("wachtwoord: " + password);
         return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
     }
 
