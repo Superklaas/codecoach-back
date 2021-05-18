@@ -1,5 +1,7 @@
 package com.switchfully.spectangular.dtos;
 
+import java.util.Objects;
+
 public class UserDto {
 
 
@@ -8,7 +10,6 @@ public class UserDto {
     private String lastName;
     private String profileName;
     private String email;
-    private String encryptedPassword;
     private String role;
 
     public UserDto() {
@@ -59,15 +60,6 @@ public class UserDto {
         return this;
     }
 
-    public String getEncryptedPassword() {
-        return encryptedPassword;
-    }
-
-    public UserDto setEncryptedPassword(String encryptedPassword) {
-        this.encryptedPassword = encryptedPassword;
-        return this;
-    }
-
     public String getRole() {
         return role;
     }
@@ -75,5 +67,18 @@ public class UserDto {
     public UserDto setRole(String role) {
         this.role = role;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDto userDto = (UserDto) o;
+        return Objects.equals(id, userDto.id) && Objects.equals(firstName, userDto.firstName) && Objects.equals(lastName, userDto.lastName) && Objects.equals(profileName, userDto.profileName) && Objects.equals(email, userDto.email) && Objects.equals(role, userDto.role);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, profileName, email, role);
     }
 }

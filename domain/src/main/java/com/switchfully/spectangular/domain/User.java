@@ -5,6 +5,7 @@ import com.switchfully.spectangular.exceptions.InvalidPasswordException;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "app_user")
@@ -43,24 +44,24 @@ public class User {
         this.role = role;
     }
 
-    public String validEmail(String emailAddress){
+    public String validEmail(String emailAddress) {
         if (!EmailValidator.getInstance().isValid(emailAddress)) {
             throw new InvalidEmailException("user has invalid email address");
         }
         return emailAddress;
     }
 
-    public String validPassword(String password){
-       if (password.length() < 8 ){
-           throw new InvalidPasswordException("password is invalid");
-       }
-       if (!password.matches(".*[0-9]+.*")){
-           throw new InvalidPasswordException("password is invalid");
-       }
-        if (!password.matches(".*[A-Z]+.*")){
+    public String validPassword(String password) {
+        if (password.length() < 8) {
             throw new InvalidPasswordException("password is invalid");
         }
-        if (!password.matches(".*[a-z]+.*")){
+        if (!password.matches(".*[0-9]+.*")) {
+            throw new InvalidPasswordException("password is invalid");
+        }
+        if (!password.matches(".*[A-Z]+.*")) {
+            throw new InvalidPasswordException("password is invalid");
+        }
+        if (!password.matches(".*[a-z]+.*")) {
             throw new InvalidPasswordException("password is invalid");
         }
         return password;
@@ -94,7 +95,20 @@ public class User {
         return role;
     }
 
-    public boolean isPasswordCorrect(String password){
+    public boolean isPasswordCorrect(String password) {
         return encryptedPassword.equals(password);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return email.equals(user.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email);
     }
 }
