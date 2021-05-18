@@ -94,6 +94,7 @@ public class User {
     public Role getRole() {
         return role;
     }
+
     public void becomeCoach() {
         this.role = Role.COACH;
     }
