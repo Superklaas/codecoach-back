@@ -42,6 +42,6 @@ Initially we deployed every commit on the main branch to the staging environment
 similar to the backend, but netlify enforces a time-limit on their build server
 that we would exceed within days if we kept deploying on every push.
 
-In order to deploy, simply do a merge from the main branch onto the staging branch,
-and a merge from the main branch (or even better, the staging branch) onto
-the production branch.
+In order to deploy, use a pull request do merge from the main branch onto the
+staging branch, and a merge from the main branch (or even better, the staging
+branch) onto the production branch.
