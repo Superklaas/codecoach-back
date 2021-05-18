@@ -4,6 +4,7 @@ package com.switchfully.spectangular.security;
 import com.switchfully.spectangular.domain.Feature;
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -22,20 +24,26 @@ import java.util.stream.Collectors;
 public class CodeCoachAuthenticationProvider implements AuthenticationProvider {
 
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    public CodeCoachAuthenticationProvider(UserService userService) {
+    @Autowired
+    public CodeCoachAuthenticationProvider(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         User user = userService.findUserByEmail(authentication.getPrincipal().toString());
-        if(user != null && user.isPasswordCorrect(authentication.getCredentials().toString())){
-            return new UsernamePasswordAuthenticationToken(
-                    user.getEmail(),
-                    user.getEncryptedPassword(),
-                    rolesToGrantedAuthorities(user.getRole().getFeatureList()));
+        if(user != null) {
+            String password = authentication.getCredentials().toString();
+            if (passwordEncoder.matches(password, user.getEncryptedPassword())) {
+                return new UsernamePasswordAuthenticationToken(
+                        user.getEmail(),
+                        user.getEncryptedPassword(),
+                        rolesToGrantedAuthorities(user.getRole().getFeatureList()));
+            }
         }
         throw new BadCredentialsException("The provided credentials were invalid.");
     }
