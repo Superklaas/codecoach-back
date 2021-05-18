@@ -27,7 +27,7 @@ public class UserController {
     @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@RequestBody CreateUserDto createUserDto) {
-        logger.info("Received request to create a new User.");
+        logger.info("Received POST request to create a new User.");
         return userService.createUser(createUserDto);
     }
 
@@ -35,7 +35,7 @@ public class UserController {
     @GetMapping(path = "/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public UserDto getUserById(@PathVariable int id) {
-        logger.info("Received request to find a User by ")
+        logger.info("Received GET request to find a User by it's id.");
         return userService.findUserById(id);
     }
 
