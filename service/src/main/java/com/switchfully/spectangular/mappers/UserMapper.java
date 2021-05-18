@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Component
 public class UserMapper {
@@ -33,4 +36,9 @@ public class UserMapper {
                 .setProfileName(user.getProfileName())
                 .setRole(user.getRole().toString());
     }
+
+    public List<UserDto> toListOfDtos(List<User> users) {
+        return users.stream().map(this::toDto).collect(Collectors.toList());
+    }
+
 }
