@@ -51,7 +51,6 @@ class UserServiceTest {
                 .setLastName(user.getLastName())
                 .setProfileName(user.getProfileName())
                 .setEmail(user.getEmail())
-                .setEncryptedPassword(user.getEncryptedPassword())
                 .setRole(user.getRole().toString());
 
         createUserDto = new CreateUserDto()

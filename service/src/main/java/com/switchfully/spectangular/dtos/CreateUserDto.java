@@ -1,5 +1,7 @@
 package com.switchfully.spectangular.dtos;
 
+import java.util.Objects;
+
 public class CreateUserDto {
 
     private String firstName;
@@ -64,5 +66,18 @@ public class CreateUserDto {
     public CreateUserDto setRole(String role) {
         this.role = role;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CreateUserDto that = (CreateUserDto) o;
+        return Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(profileName, that.profileName) && Objects.equals(email, that.email) && Objects.equals(password, that.password) && Objects.equals(role, that.role);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, profileName, email, password, role);
     }
 }
