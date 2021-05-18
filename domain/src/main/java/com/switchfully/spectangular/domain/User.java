@@ -94,7 +94,4 @@ public class User {
         return role;
     }
 
-    public boolean isPasswordCorrect(String password){
-        return encryptedPassword.equals(password);
-    }
 }

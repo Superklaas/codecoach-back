@@ -96,7 +96,7 @@ public class UserControllerEndToEndTest {
                 .baseUri("http://localhost")
                 .port(port)
                 .basePath("/authenticate")
-                .body("{\"username\":\"test@spectangular.com\",\"password\":\"P@ssw0rd\"}")
+                .body("{\"username\":\"test@spectangular.com\",\"password\":\"YouC0ach\"}")
                 .post();
 
         String bearerToken = postResponse
