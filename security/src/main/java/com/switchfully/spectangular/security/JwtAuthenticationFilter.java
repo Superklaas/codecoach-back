@@ -79,10 +79,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        System.out.println("MESSAGE UNAUTHORIZED : " + failed.getMessage());
-
-
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
         Map<String, Object> data = new HashMap<>();
         data.put("timestamp", Calendar.getInstance().getTime());
         data.put("status", HttpStatus.BAD_REQUEST.value());
