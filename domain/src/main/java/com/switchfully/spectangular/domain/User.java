@@ -99,6 +99,10 @@ public class User {
         return encryptedPassword.equals(password);
     }
 
+    public void becomeCoach() {
+        this.role = Role.COACH;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

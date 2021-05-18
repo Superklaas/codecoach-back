@@ -1,6 +1,5 @@
 package com.switchfully.spectangular;
 
-import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.dtos.UserDto;
 import com.switchfully.spectangular.repository.UserRepository;
 import io.restassured.http.ContentType;
@@ -14,6 +13,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -90,8 +90,6 @@ public class UserControllerEndToEndTest {
     @Sql("/sql/insertUser.sql")
     void getUserById_whenCalled_thenOneUserIsFound() {
         //GIVEN
-        User user = userRepository.findByEmail("test@spectangular.com").get();
-
         Response postResponse = given()
                 .baseUri("http://localhost")
                 .port(port)
@@ -114,5 +112,35 @@ public class UserControllerEndToEndTest {
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(UserDto.class);
+    }
+
+    @Test
+    @Sql("/sql/insertUser.sql")
+    void updateToCoach_whenCalled_thenUserIsUpdated() {
+        //GIVEN
+        Response postResponse = given()
+                .baseUri("http://localhost")
+                .port(port)
+                .basePath("/authenticate")
+                .body("{\"username\":\"test@spectangular.com\",\"password\":\"P@ssw0rd\"}")
+                .post();
+
+        String bearerToken = postResponse
+                .header("Authorization");
+        //WHEN
+        //THEN
+        UserDto userDto = given()
+                .header("Authorization", (bearerToken == null) ? "" : bearerToken)
+                .baseUri("http://localhost")
+                .port(port)
+                .when()
+                .put("/users/{id}", "1000")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(UserDto.class);
+
+        assertThat(userDto.getRole()).isEqualTo("COACH");
     }
 }

@@ -39,5 +39,13 @@ public class UserController {
         return userService.findUserById(id);
     }
 
+    @PreAuthorize(value = "hasAuthority('BECOME_COACH')")
+    @PutMapping(path = "/{id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto updateToCoach(@PathVariable int id) {
+        logger.info("Received PUT request to update a User to having a Coach role.");
+        return userService.updateToCoach(id);
+    }
+
 }
 

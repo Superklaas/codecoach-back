@@ -51,4 +51,11 @@ public class UserService {
         return userMapper.toDto(userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("user not " +
                 "found")));
     }
+
+    public UserDto updateToCoach(int id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) throw new IllegalArgumentException("User not found.");
+        user.get().becomeCoach();
+        return userMapper.toDto(user.get());
+    }
 }
