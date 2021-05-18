@@ -17,6 +17,7 @@ import static io.restassured.RestAssured.given;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@Sql("/sql/insertUser.sql")
 public class UserControllerEndToEndTest {
 
     @Autowired
@@ -57,7 +58,6 @@ public class UserControllerEndToEndTest {
     }
 
     @Test
-    @Sql("/sql/insertUser.sql")
     void createUser_whenCalledWithExistingEmail_thenStatusCodeIsBadRequest() {
         //GIVEN
         String requestBody = """
@@ -87,7 +87,6 @@ public class UserControllerEndToEndTest {
     }
 
     @Test
-    @Sql("/sql/insertUser.sql")
     void getUserById_whenCalled_thenOneUserIsFound() {
         //GIVEN
         User user = userRepository.findByEmail("test@spectangular.com").get();
@@ -108,7 +107,7 @@ public class UserControllerEndToEndTest {
                 .baseUri("http://localhost")
                 .port(port)
                 .when()
-                .get("/users/{id}", "10")
+                .get("/users/{id}", "1000")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK.value())
