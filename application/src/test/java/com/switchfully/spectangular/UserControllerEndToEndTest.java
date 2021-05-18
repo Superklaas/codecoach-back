@@ -16,7 +16,7 @@ import org.springframework.test.context.jdbc.Sql;
 import static io.restassured.RestAssured.given;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class UserControllerEndToEndTest {
 
     @Autowired
@@ -58,7 +58,6 @@ public class UserControllerEndToEndTest {
 
     @Test
     @Sql("/sql/insertUser.sql")
-    @Sql(value = "/sql/deleteUser.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void createUser_whenCalledWithExistingEmail_thenStatusCodeIsBadRequest() {
         //GIVEN
         String requestBody = """
@@ -89,7 +88,6 @@ public class UserControllerEndToEndTest {
 
     @Test
     @Sql("/sql/insertUser.sql")
-    @Sql(value = "/sql/deleteUser.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void getUserById_whenCalled_thenOneUserIsFound() {
         //GIVEN
         User user = userRepository.findByEmail("test@spectangular.com").get();
