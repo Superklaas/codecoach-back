@@ -10,12 +10,8 @@ import org.springframework.stereotype.Component;
 public class UserMapper {
 
     public User toEntity(CreateUserDto dto){
-
-
             return new User(dto.getFirstName(), dto.getLastName(), dto.getProfileName(), dto.getEmail(),
-                    dto.getPassword(), Role.valueOf(dto.getRole().toUpperCase()) );
-
-
+                    dto.getPassword(), Role.COACHEE );
     }
 
     public UserDto toDto(User user){
