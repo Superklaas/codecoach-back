@@ -5,11 +5,23 @@ import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.dtos.CreateUserDto;
 import com.switchfully.spectangular.dtos.UserDto;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UserMapperTest {
-    private final UserMapper userMapper = new UserMapper();
+    private final UserMapper userMapper = new UserMapper(new PasswordEncoder() {
+        @Override
+        public String encode(CharSequence charSequence) {
+            return charSequence.toString();
+        }
+
+        @Override
+        public boolean matches(CharSequence charSequence, String s) {
+            return charSequence.equals(s);
+        }
+    });
+
     private final User expectedUser = new User(
             "Test",
             "McTestFace",
