@@ -8,7 +8,8 @@ import static com.switchfully.spectangular.domain.Feature.GET_USER_INFORMATION;
 
 public enum Role {
 
-    ADMIN(),
+    ADMIN(GET_USER_INFORMATION),
+    COACH(GET_USER_INFORMATION),
     COACHEE(GET_USER_INFORMATION);
 
 
