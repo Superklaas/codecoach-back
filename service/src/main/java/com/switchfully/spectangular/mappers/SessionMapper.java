@@ -24,18 +24,14 @@ public class SessionMapper {
     }
 
     public SessionDto toDto(Session session) {
-        SessionDto sessionDto = new SessionDto();
-
-        sessionDto.setId(session.getId());
-        sessionDto.setSubject(session.getSubject());
-        sessionDto.setDate(session.getDate().toString());
-        sessionDto.setStartTime(session.getStartTime().toString());
-        sessionDto.setLocation(session.getLocation());
-        sessionDto.setRemarks(session.getRemarks());
-        sessionDto.setCoach_id(session.getCoach().getId());
-        sessionDto.setCoachee_id(session.getCoachee().getId());
-
-
-        return sessionDto;
+        return new SessionDto()
+                .setId(session.getId())
+                .setSubject(session.getSubject())
+                .setDate(session.getDate().toString())
+                .setStartTime(session.getStartTime().toString())
+                .setLocation(session.getLocation())
+                .setRemarks(session.getRemarks())
+                .setCoachId(session.getCoach().getId())
+                .setCoacheeId(session.getCoachee().getId());
     }
 }

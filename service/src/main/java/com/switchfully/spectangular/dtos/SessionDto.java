@@ -10,71 +10,79 @@ public class SessionDto {
     private String startTime;
     private String location;
     private String remarks;
-    private int coach_id;
-    private int coachee_id;
+    private int coachId;
+    private int coacheeId;
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getSubject() {
         return subject;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
     public String getDate() {
         return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
     }
 
     public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
-    }
-
     public String getLocation() {
         return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public String getRemarks() {
         return remarks;
     }
 
-    public void setRemarks(String remarks) {
+    public int getCoachId() {
+        return coachId;
+    }
+
+    public int getCoacheeId() {
+        return coacheeId;
+    }
+
+    public SessionDto setId(int id) {
+        this.id = id;
+        return this;
+    }
+
+    public SessionDto setSubject(String subject) {
+        this.subject = subject;
+        return this;
+    }
+
+    public SessionDto setDate(String date) {
+        this.date = date;
+        return this;
+    }
+
+    public SessionDto setStartTime(String startTime) {
+        this.startTime = startTime;
+        return this;
+    }
+
+    public SessionDto setLocation(String location) {
+        this.location = location;
+        return this;
+    }
+
+    public SessionDto setRemarks(String remarks) {
         this.remarks = remarks;
+        return this;
     }
 
-    public int getCoach_id() {
-        return coach_id;
+    public SessionDto setCoachId(int coachId) {
+        this.coachId = coachId;
+        return this;
     }
 
-    public void setCoach_id(int coach_id) {
-        this.coach_id = coach_id;
-    }
-
-    public int getCoachee_id() {
-        return coachee_id;
-    }
-
-    public void setCoachee_id(int coachee_id) {
-        this.coachee_id = coachee_id;
+    public SessionDto setCoacheeId(int coacheeId) {
+        this.coacheeId = coacheeId;
+        return this;
     }
 
     @Override
@@ -82,11 +90,11 @@ public class SessionDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SessionDto that = (SessionDto) o;
-        return coach_id == that.coach_id && coachee_id == that.coachee_id && Objects.equals(subject, that.subject) && Objects.equals(date, that.date) && Objects.equals(startTime, that.startTime) && Objects.equals(location, that.location) && Objects.equals(remarks, that.remarks);
+        return coachId == that.coachId && coacheeId == that.coacheeId && Objects.equals(subject, that.subject) && Objects.equals(date, that.date) && Objects.equals(startTime, that.startTime) && Objects.equals(location, that.location) && Objects.equals(remarks, that.remarks);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(subject, date, startTime, location, remarks, coach_id, coachee_id);
+        return Objects.hash(subject, date, startTime, location, remarks, coachId, coacheeId);
     }
 }

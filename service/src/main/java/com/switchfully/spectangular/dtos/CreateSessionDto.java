@@ -14,55 +14,62 @@ public class CreateSessionDto {
         return subject;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
     public String getDate() {
         return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
     }
 
     public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
-    }
-
     public String getLocation() {
         return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public int getCoachId() {
         return coachId;
     }
 
-    public void setCoachId(int coachId) {
-        this.coachId = coachId;
-    }
-
     public int getCoacheeId() {
         return coacheeId;
-    }
-
-    public void setCoacheeId(int coacheeId) {
-        this.coacheeId = coacheeId;
     }
 
     public String getRemarks() {
         return remarks;
     }
 
-    public void setRemarks(String remarks) {
+    public CreateSessionDto setSubject(String subject) {
+        this.subject = subject;
+        return this;
+    }
+
+    public CreateSessionDto setDate(String date) {
+        this.date = date;
+        return this;
+    }
+
+    public CreateSessionDto setStartTime(String startTime) {
+        this.startTime = startTime;
+        return this;
+    }
+
+    public CreateSessionDto setLocation(String location) {
+        this.location = location;
+        return this;
+    }
+
+    public CreateSessionDto setCoachId(int coachId) {
+        this.coachId = coachId;
+        return this;
+    }
+
+    public CreateSessionDto setCoacheeId(int coacheeId) {
+        this.coacheeId = coacheeId;
+        return this;
+    }
+
+    public CreateSessionDto setRemarks(String remarks) {
         this.remarks = remarks;
+        return this;
     }
 }

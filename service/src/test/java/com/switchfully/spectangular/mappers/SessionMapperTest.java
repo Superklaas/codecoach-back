@@ -50,26 +50,25 @@ class SessionMapperTest {
                 coach,
                 coachee);
 
-        createSessionDto = new CreateSessionDto();
-        createSessionDto.setSubject(session.getSubject());
-        createSessionDto.setDate(session.getDate().toString());
-        createSessionDto.setStartTime(session.getStartTime().toString());
-        createSessionDto.setLocation(session.getLocation());
-        createSessionDto.setRemarks(session.getRemarks());
-        createSessionDto.setCoacheeId(2);
-        createSessionDto.setCoachId(1);
+        createSessionDto = new CreateSessionDto()
+                .setSubject(session.getSubject())
+                .setDate(session.getDate().toString())
+                .setStartTime(session.getStartTime().toString())
+                .setLocation(session.getLocation())
+                .setRemarks(session.getRemarks())
+                .setCoacheeId(2)
+                .setCoachId(1);
 
-        sessionDto = new SessionDto();
-        sessionDto.setId(1);
-        sessionDto.setSubject(session.getSubject());
-        sessionDto.setDate(session.getDate().toString());
-        sessionDto.setStartTime(session.getStartTime().toString());
-        sessionDto.setLocation(session.getLocation());
-        sessionDto.setRemarks(session.getRemarks());
-        sessionDto.setCoachee_id(2);
-        sessionDto.setCoach_id(1);
+        sessionDto = new SessionDto()
+                .setId(1)
+                .setSubject(session.getSubject())
+                .setDate(session.getDate().toString())
+                .setLocation(session.getLocation())
+                .setRemarks(session.getRemarks())
+                .setCoacheeId(2)
+                .setCoachId(1);
     }
 
-    //TODO: figure out how to map id's
+    //TODO: figure out how to map id's -> NullPointer thrown in toDto
 
 }

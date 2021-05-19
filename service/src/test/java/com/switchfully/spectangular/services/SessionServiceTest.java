@@ -4,23 +4,17 @@ import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.domain.session.Session;
 import com.switchfully.spectangular.dtos.CreateSessionDto;
-import com.switchfully.spectangular.dtos.CreateUserDto;
 import com.switchfully.spectangular.dtos.SessionDto;
-import com.switchfully.spectangular.dtos.UserDto;
 import com.switchfully.spectangular.mappers.SessionMapper;
 import com.switchfully.spectangular.repository.SessionRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-
-import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 class SessionServiceTest {
@@ -67,24 +61,24 @@ class SessionServiceTest {
                 coach,
                 coachee);
 
-        createSessionDto = new CreateSessionDto();
-        createSessionDto.setSubject(session.getSubject());
-        createSessionDto.setDate(session.getDate().toString());
-        createSessionDto.setStartTime(session.getStartTime().toString());
-        createSessionDto.setLocation(session.getLocation());
-        createSessionDto.setRemarks(session.getRemarks());
-        createSessionDto.setCoacheeId(session.getCoachee().getId());
-        createSessionDto.setCoachId(session.getCoach().getId());
+        createSessionDto = new CreateSessionDto()
+                .setSubject(session.getSubject())
+                .setDate(session.getDate().toString())
+                .setStartTime(session.getStartTime().toString())
+                .setLocation(session.getLocation())
+                .setRemarks(session.getRemarks())
+                .setCoacheeId(session.getCoachee().getId())
+                .setCoachId(session.getCoach().getId());
 
-        sessionDto = new SessionDto();
-        sessionDto.setId(session.getId());
-        sessionDto.setSubject(session.getSubject());
-        sessionDto.setDate(session.getDate().toString());
-        sessionDto.setStartTime(session.getStartTime().toString());
-        sessionDto.setLocation(session.getLocation());
-        sessionDto.setRemarks(session.getRemarks());
-        sessionDto.setCoachee_id(session.getCoachee().getId());
-        sessionDto.setCoach_id(session.getCoach().getId());
+        sessionDto = new SessionDto()
+                .setId(session.getId())
+                .setSubject(session.getSubject())
+                .setDate(session.getDate().toString())
+                .setStartTime(session.getStartTime().toString())
+                .setLocation(session.getLocation())
+                .setRemarks(session.getRemarks())
+                .setCoacheeId(session.getCoachee().getId())
+                .setCoachId(session.getCoach().getId());
     }
 
     //TODO: how to pass on an encoded test token
