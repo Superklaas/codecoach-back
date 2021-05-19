@@ -1,6 +1,7 @@
 package com.switchfully.spectangular.services;
 
 
+import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.dtos.CreateUserDto;
 import com.switchfully.spectangular.dtos.UserDto;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -58,5 +60,9 @@ public class UserService {
         if (user.isEmpty()) throw new IllegalArgumentException("User not found.");
         user.get().becomeCoach();
         return userMapper.toDto(user.get());
+    }
+
+    public List<UserDto> getAllCoaches() {
+        return userMapper.toListOfDtos(userRepository.findUsersByRole(Role.COACH));
     }
 }
