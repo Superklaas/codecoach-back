@@ -87,6 +87,7 @@ class SessionServiceTest {
         sessionDto.setCoach_id(session.getCoach().getId());
     }
 
+    //TODO: how to pass on an encoded test token
     @Test
     void createSession_givenCreateSessionDtoAndToken_thenReturnSessionDto() {
         //GIVEN
