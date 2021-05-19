@@ -37,7 +37,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public UserDto getUserById(@PathVariable int id) {
         logger.info("Received GET request to find a User by it's id.");
-        return userService.findUserById(id);
+        return userService.getUserById(id);
     }
 
     @PreAuthorize(value = "hasAuthority('BECOME_COACH')")

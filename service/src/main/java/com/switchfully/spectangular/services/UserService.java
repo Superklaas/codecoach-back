@@ -30,11 +30,7 @@ public class UserService {
     }
 
     public User findUserByEmail(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isPresent()) {
-            return user.get();
-        }
-        throw new EmailNotFoundException("Email not found in system: " + email);
+        return userRepository.findByEmail(email).orElseThrow(() -> new EmailNotFoundException("Email not found in system: " + email));
     }
 
     public UserDto createUser(CreateUserDto dto) {
@@ -50,9 +46,12 @@ public class UserService {
         }
     }
 
-    public UserDto findUserById(int id) {
-        return userMapper.toDto(userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("user not " +
-                "found")));
+    public UserDto getUserById(int id) {
+        return userMapper.toDto(findUserById(id));
+    }
+
+    public User findUserById(int id) {
+        return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("user not found"));
     }
 
     public UserDto updateToCoach(int id) {

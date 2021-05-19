@@ -4,6 +4,7 @@ import com.switchfully.spectangular.domain.User;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -19,7 +20,7 @@ public class Session {
     private String subject;
 
     @Column(name = "date")
-    private LocalDate Date;
+    private LocalDate date;
 
     @Column(name = "start_time")
     private LocalTime startTime;
@@ -42,14 +43,21 @@ public class Session {
     @JoinColumn(name = "coachee_id")
     private User coachee;
 
-    public Session(String subject, LocalDate date, LocalTime startTime, String location, User coach, User coachee) {
+    public Session(String subject, LocalDate date, LocalTime startTime, String remarks, String location, User coach, User coachee) {
         this.subject = subject;
-        Date = date;
+        this.date = date;
         this.startTime = startTime;
         this.location = location;
+        this.remarks = remarks;
         this.coach = coach;
         this.coachee = coachee;
         this.status = SessionStatus.REQUESTED;
+    }
+
+    private void validateDate(LocalDate date, LocalTime time){
+        if (LocalDateTime.of(date,time).isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Session can't be in the past");
+        }
     }
 
     public Session() {}
@@ -63,7 +71,7 @@ public class Session {
     }
 
     public LocalDate getDate() {
-        return Date;
+        return date;
     }
 
     public LocalTime getStartTime() {
@@ -95,7 +103,7 @@ public class Session {
     }
 
     public void setDate(LocalDate date) {
-        Date = date;
+        this.date = date;
     }
 
     public void setStartTime(LocalTime startTime) {
