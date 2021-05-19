@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 
 @RestController
@@ -40,12 +41,22 @@ public class UserController {
     }
 
     @PreAuthorize(value = "hasAuthority('BECOME_COACH')")
-    @PutMapping(path = "/{id}", produces = "application/json")
+    @PostMapping(path = "/{id}/coachify", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public UserDto updateToCoach(@PathVariable int id) {
-        logger.info("Received PUT request to update a User to having a Coach role.");
+        logger.info("Received POST request to update a User to having a Coach role.");
         return userService.updateToCoach(id);
     }
+
+    @PreAuthorize("hasAuthority('GET_ALL_COACHES')")
+    @GetMapping(path = "/coaches", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDto> getAllCoaches() {
+        logger.info("Received GET request to get an overview of all the coaches.");
+        return userService.getAllCoaches();
+    }
+
+
 
 }
 

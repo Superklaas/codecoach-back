@@ -131,7 +131,7 @@ public class UserControllerEndToEndTest {
                 .baseUri("http://localhost")
                 .port(port)
                 .when()
-                .put("/users/{id}", "1000")
+                .post("/users/{id}/coachify", "1000")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK.value())

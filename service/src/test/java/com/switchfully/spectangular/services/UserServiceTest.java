@@ -5,6 +5,7 @@ import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.dtos.CreateUserDto;
 import com.switchfully.spectangular.dtos.UserDto;
 import com.switchfully.spectangular.exceptions.DuplicateEmailException;
+import com.switchfully.spectangular.exceptions.EmailNotFoundException;
 import com.switchfully.spectangular.mappers.UserMapper;
 import com.switchfully.spectangular.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,7 +80,7 @@ class UserServiceTest {
         //GIVEN
         String email = "blabla@email.com";
         //WHEN & THEN
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(EmailNotFoundException.class)
                 .isThrownBy(() -> userService.findUserByEmail(email));
     }
 

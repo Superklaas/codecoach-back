@@ -1,16 +1,19 @@
 package com.switchfully.spectangular.services;
 
 
+import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.dtos.CreateUserDto;
 import com.switchfully.spectangular.dtos.UserDto;
 import com.switchfully.spectangular.exceptions.DuplicateEmailException;
+import com.switchfully.spectangular.exceptions.EmailNotFoundException;
 import com.switchfully.spectangular.mappers.UserMapper;
 import com.switchfully.spectangular.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,7 +34,7 @@ public class UserService {
         if (user.isPresent()) {
             return user.get();
         }
-        throw new IllegalArgumentException("user with email doesn't exist: " + email);
+        throw new EmailNotFoundException("Email not found in system: " + email);
     }
 
     public UserDto createUser(CreateUserDto dto) {
@@ -57,5 +60,9 @@ public class UserService {
         if (user.isEmpty()) throw new IllegalArgumentException("User not found.");
         user.get().becomeCoach();
         return userMapper.toDto(user.get());
+    }
+
+    public List<UserDto> getAllCoaches() {
+        return userMapper.toListOfDtos(userRepository.findUsersByRole(Role.COACH));
     }
 }

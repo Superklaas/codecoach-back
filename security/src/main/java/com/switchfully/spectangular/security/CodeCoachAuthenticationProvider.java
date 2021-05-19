@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +36,15 @@ public class CodeCoachAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        User user = userService.findUserByEmail(authentication.getPrincipal().toString());
+
+        User user;
+
+        try {
+            user = userService.findUserByEmail(authentication.getPrincipal().toString());
+        } catch (Exception e) {
+            throw new UsernameNotFoundException("Email not found in system");
+        }
+
         if(user != null) {
             String password = authentication.getCredentials().toString();
             if (passwordEncoder.matches(password, user.getEncryptedPassword())) {
