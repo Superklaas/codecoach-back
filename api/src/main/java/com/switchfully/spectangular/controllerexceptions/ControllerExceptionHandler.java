@@ -3,6 +3,7 @@ package com.switchfully.spectangular.controllerexceptions;
 import com.switchfully.spectangular.exceptions.EmailNotFoundException;
 import com.switchfully.spectangular.exceptions.InvalidEmailException;
 import com.switchfully.spectangular.exceptions.DuplicateEmailException;
+import com.switchfully.spectangular.exceptions.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -35,4 +36,17 @@ public class ControllerExceptionHandler {
         logger.error(ex.getMessage());
         response.sendError(HttpStatus.BAD_REQUEST.value(),ex.getMessage());
     }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    protected void unauthorizedUser(UnauthorizedException ex, HttpServletResponse response) throws IOException {
+        logger.error(ex.getMessage());
+        response.sendError(HttpStatus.BAD_REQUEST.value(),ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected void illegalArgument(IllegalArgumentException ex, HttpServletResponse response) throws IOException {
+        logger.error(ex.getMessage());
+        response.sendError(HttpStatus.BAD_REQUEST.value(),ex.getMessage());
+    }
+
 }

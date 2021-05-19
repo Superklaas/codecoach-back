@@ -23,7 +23,7 @@ public class SessionControllerEndToEndTest {
     private int port;
 
     @Test
-    @Sql("/sql/insertUser.sql")
+    @Sql("/sql/insertUsers.sql")
     void createSession_whenCalled_thenOneMoreSessionIsPresent(){
         //GIVEN
         LocalDate testDate = LocalDate.now().plusDays(1);
@@ -32,25 +32,9 @@ public class SessionControllerEndToEndTest {
                 "\"date\":\"" + testDate + "\"," +
                 "\"startTime\":\"12:12:12\", " +
                 "\"location\":\"Microsoft Teams\", " +
-                "\"coachId\": 2," +
-                "\"coacheeId\": 1," +
+                "\"coachId\": 1001," +
+                "\"coacheeId\": 1000," +
                 "\"remarks\":\"These are remarks.\"}";
-
-
-        /*String requestBody = """
-                {
-                    "subject" : "spring",
-                    "date" : " """
-                + testDate +
-                """
-                    " ,
-                    "startTime": "12:12:12",
-                    "location": "Microsoft Teams",
-                    "coachId" : 2,
-                    "coacheeId": 1,
-                    "remarks": ""           
-                }
-                """;*/
 
         System.out.println(requestBody);
 
