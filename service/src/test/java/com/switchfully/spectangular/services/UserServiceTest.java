@@ -113,7 +113,7 @@ class UserServiceTest {
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
         when(userMapper.toDto(any())).thenReturn(userDto);
         //WHEN
-        UserDto actualUserDto = userService.findUserById(userDto.getId());
+        UserDto actualUserDto = userService.getUserById(userDto.getId());
         //THEN
         verify(userRepository).findById(any());
         verify(userMapper).toDto(any());
@@ -126,7 +126,7 @@ class UserServiceTest {
         int id = 12;
         //WHEN & THEN
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> userService.findUserById(id));
+                .isThrownBy(() -> userService.getUserById(id));
     }
 
     @Test
