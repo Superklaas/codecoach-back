@@ -70,5 +70,25 @@ class SessionMapperTest {
     }
 
     //TODO: figure out how to map id's -> NullPointer thrown in toDto
+/*
+
+    @Test
+    void toDto_givenSession_thenReturnSessionDto() {
+        //GIVEN
+        //WHEN
+        SessionDto actualSessionDto = sessionMapper.toDto(session);
+        //THEN
+        assertThat(actualSessionDto).isEqualTo(sessionDto);
+    }
+*/
+
+    @Test
+    void toEntity_givenCreateSessionDto_thenReturnSession() {
+        //GIVEN
+        //WHEN
+        Session actualSession = sessionMapper.toEntity(createSessionDto, coach, coachee);
+        //THEN
+        assertThat(actualSession).isEqualTo(session);
+    }
 
 }
