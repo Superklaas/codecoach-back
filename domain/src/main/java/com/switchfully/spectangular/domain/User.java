@@ -5,6 +5,7 @@ import com.switchfully.spectangular.exceptions.InvalidPasswordException;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -32,10 +33,26 @@ public class User {
     @Column(name = "role")
     private Role role;
 
+    @Column(name = "availability")
+    private String availability;
+
+    @Column(name = "introduction")
+    private String introduction;
+
+    @Column(name="img_url")
+    private String imageUrl;
+
+    @ManyToMany
+    @JoinTable(name = "user_topics", joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "topic_id"))
+    private List<Topic> topicList;
+
+
     public User() {
     }
 
-    public User(String firstName, String lastName, String profileName, String email, String encryptedPassword, Role role) {
+    public User(String firstName, String lastName, String profileName, String email, String encryptedPassword,
+                Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.profileName = profileName;
@@ -93,6 +110,42 @@ public class User {
 
     public Role getRole() {
         return role;
+    }
+
+    public String getAvailability() {
+        return availability;
+    }
+
+    public User setAvailability(String availability) {
+        this.availability = availability;
+        return this;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public User setIntroduction(String introduction) {
+        this.introduction = introduction;
+        return this;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public User setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+        return this;
+    }
+
+    public List<Topic> getTopicList() {
+        return topicList;
+    }
+
+    public User setTopicList(List<Topic> topicList) {
+        this.topicList = topicList;
+        return this;
     }
 
     public void becomeCoach() {
