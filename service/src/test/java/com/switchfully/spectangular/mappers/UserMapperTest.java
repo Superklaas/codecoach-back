@@ -7,6 +7,8 @@ import com.switchfully.spectangular.dtos.UserDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UserMapperTest {
@@ -59,6 +61,16 @@ class UserMapperTest {
         UserDto actualUserDto = userMapper.toDto(expectedUser);
         //THEN
         assertThat(actualUserDto).isEqualTo(expectedUserDto);
+    }
+
+    @Test
+    void toListOfDtos_givenListOfUsers_thenReturnListOfUserDtos() {
+        //GIVEN
+        List<User> expectedUsers = List.of(expectedUser);
+        //WHEN
+        List<UserDto> actualUserDtos = userMapper.toListOfDtos(expectedUsers);
+        //THEN
+        assertThat(actualUserDtos).isEqualTo(List.of(expectedUserDto));
     }
 
 }
