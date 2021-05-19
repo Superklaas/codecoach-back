@@ -6,6 +6,7 @@ import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.dtos.CreateUserDto;
 import com.switchfully.spectangular.dtos.UserDto;
 import com.switchfully.spectangular.exceptions.DuplicateEmailException;
+import com.switchfully.spectangular.exceptions.EmailNotFoundException;
 import com.switchfully.spectangular.mappers.UserMapper;
 import com.switchfully.spectangular.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class UserService {
         if (user.isPresent()) {
             return user.get();
         }
-        throw new IllegalArgumentException("user with email doesn't exist: " + email);
+        throw new EmailNotFoundException("Email not found in system: " + email);
     }
 
     public UserDto createUser(CreateUserDto dto) {

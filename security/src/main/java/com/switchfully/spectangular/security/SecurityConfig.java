@@ -24,10 +24,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CodeCoachAuthenticationProvider codeCoachAuthenticationProvider;
     private final UserService userService;
 
+
     @Autowired
     public SecurityConfig(CodeCoachAuthenticationProvider codeCoachAuthenticationProvider, UserService userService) {
         this.codeCoachAuthenticationProvider = codeCoachAuthenticationProvider;
         this.userService = userService;
+
     }
 
     @Override
