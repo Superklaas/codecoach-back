@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -149,5 +150,20 @@ class UserServiceTest {
         //WHEN & THEN
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> userService.updateToCoach(id));
+    }
+
+    @Test
+    void getAllCoaches_givenCoachesInDb_thenReturnListOfCoaches() {
+        //GIVEN
+        user.becomeCoach();
+        userDto.setRole(Role.COACH.name());
+        when(userRepository.findUsersByRole(any())).thenReturn(List.of(user));
+        when(userMapper.toListOfDtos(any())).thenReturn(List.of(userDto));
+        //WHEN
+        List<UserDto> actualUserDtos = userService.getAllCoaches();
+        //THEN
+        verify(userRepository).findUsersByRole(any());
+        verify(userMapper).toListOfDtos(any());
+        assertThat(actualUserDtos).isEqualTo(List.of(userDto));
     }
 }
