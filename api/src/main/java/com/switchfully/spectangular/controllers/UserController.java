@@ -44,7 +44,7 @@ public class UserController {
     @PostMapping(path = "/{id}/coachify", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public UserDto updateToCoach(@PathVariable int id) {
-        logger.info("Received PUT request to update a User to having a Coach role.");
+        logger.info("Received POST request to update a User to having a Coach role.");
         return userService.updateToCoach(id);
     }
 
