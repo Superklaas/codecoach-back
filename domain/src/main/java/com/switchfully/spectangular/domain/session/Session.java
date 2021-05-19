@@ -44,6 +44,7 @@ public class Session {
     private User coachee;
 
     public Session(String subject, LocalDate date, LocalTime startTime, String remarks, String location, User coach, User coachee) {
+        validateDate(date, startTime);
         this.subject = subject;
         this.date = date;
         this.startTime = startTime;
