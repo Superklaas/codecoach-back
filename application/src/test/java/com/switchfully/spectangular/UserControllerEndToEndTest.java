@@ -1,16 +1,16 @@
 package com.switchfully.spectangular;
 
 import com.switchfully.spectangular.dtos.UserDto;
-import com.switchfully.spectangular.repository.UserRepository;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
+
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,7 +54,7 @@ public class UserControllerEndToEndTest {
     }
 
     @Test
-    @Sql("/sql/insertUser.sql")
+    @Sql("/sql/insertUsers.sql")
     void createUser_whenCalledWithExistingEmail_thenStatusCodeIsBadRequest() {
         //GIVEN
         String requestBody = """
@@ -84,7 +84,7 @@ public class UserControllerEndToEndTest {
     }
 
     @Test
-    @Sql("/sql/insertUser.sql")
+    @Sql("/sql/insertUsers.sql")
     void getUserById_whenCalled_thenOneUserIsFound() {
         //GIVEN
         Response postResponse = given()
@@ -112,7 +112,7 @@ public class UserControllerEndToEndTest {
     }
 
     @Test
-    @Sql("/sql/insertUser.sql")
+    @Sql("/sql/insertUsers.sql")
     void updateToCoach_whenCalled_thenUserIsUpdated() {
         //GIVEN
         Response postResponse = given()
@@ -140,4 +140,37 @@ public class UserControllerEndToEndTest {
 
         assertThat(userDto.getRole()).isEqualTo("COACH");
     }
+
+/* //TODO: revisit when frontend is implemented -> httpStatus = 404 instead of 200
+    @Test
+    @Sql("/sql/insertUsers.sql")
+    void getAllCoaches_whenCalled_thenAllCoachesAreFound() {
+        //GIVEN
+        Response postResponse = given()
+                .baseUri("http://localhost")
+                .port(port)
+                .basePath("/authenticate")
+                .body("{\"username\":\"test@spectangular.com\",\"password\":\"YouC0ach\"}")
+                .post();
+
+        String bearerToken = postResponse
+                .header("Authorization");
+        //WHEN
+        //THEN
+        UserDto[] userDtos = given()
+                .header("Authorization", (bearerToken == null) ? "" : bearerToken)
+                .baseUri("http://localhost")
+                .port(port)
+                .when()
+                .get("/coaches")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(UserDto[].class);
+
+        assertThat(userDtos).hasSize(1);
+        assertThat(userDtos).allSatisfy(userDto -> userDto.getRole().equals("COACH"));
+    }
+    */
 }

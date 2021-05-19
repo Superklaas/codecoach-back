@@ -1,5 +1,12 @@
 package com.switchfully.spectangular.dtos;
 
+import com.switchfully.spectangular.domain.Topic;
+
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import java.util.List;
 import java.util.Objects;
 
 public class UserDto {
@@ -11,6 +18,10 @@ public class UserDto {
     private String profileName;
     private String email;
     private String role;
+    private String availability;
+    private String introduction;
+    private String imageUrl;
+    private List<TopicDto> topicList;
 
     public UserDto() {
     }
@@ -66,6 +77,42 @@ public class UserDto {
 
     public UserDto setRole(String role) {
         this.role = role;
+        return this;
+    }
+
+    public String getAvailability() {
+        return availability;
+    }
+
+    public UserDto setAvailability(String availability) {
+        this.availability = availability;
+        return this;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public UserDto setIntroduction(String introduction) {
+        this.introduction = introduction;
+        return this;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public UserDto setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+        return this;
+    }
+
+    public List<TopicDto> getTopicList() {
+        return topicList;
+    }
+
+    public UserDto setTopicList(List<TopicDto> topicList) {
+        this.topicList = topicList;
         return this;
     }
 
