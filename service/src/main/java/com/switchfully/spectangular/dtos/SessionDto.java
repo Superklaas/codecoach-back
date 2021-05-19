@@ -1,5 +1,7 @@
 package com.switchfully.spectangular.dtos;
 
+import java.util.Objects;
+
 public class SessionDto {
 
     private int id;
@@ -73,5 +75,18 @@ public class SessionDto {
 
     public void setCoachee_id(int coachee_id) {
         this.coachee_id = coachee_id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SessionDto that = (SessionDto) o;
+        return coach_id == that.coach_id && coachee_id == that.coachee_id && Objects.equals(subject, that.subject) && Objects.equals(date, that.date) && Objects.equals(startTime, that.startTime) && Objects.equals(location, that.location) && Objects.equals(remarks, that.remarks);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(subject, date, startTime, location, remarks, coach_id, coachee_id);
     }
 }

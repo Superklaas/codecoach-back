@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "sessions")
@@ -129,5 +130,18 @@ public class Session {
 
     public void setCoachee(User coachee) {
         this.coachee = coachee;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Session session = (Session) o;
+        return Objects.equals(subject, session.subject) && Objects.equals(date, session.date) && Objects.equals(startTime, session.startTime) && Objects.equals(location, session.location) && Objects.equals(remarks, session.remarks) && Objects.equals(coach, session.coach) && Objects.equals(coachee, session.coachee);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(subject, date, startTime, location, remarks, coach, coachee);
     }
 }
