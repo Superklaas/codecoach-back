@@ -22,7 +22,7 @@ class UserMapperTest {
         public boolean matches(CharSequence charSequence, String s) {
             return charSequence.equals(s);
         }
-    });
+    }, new TopicMapper());
 
     private final User expectedUser = new User(
             "Test",

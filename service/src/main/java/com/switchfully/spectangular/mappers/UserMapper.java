@@ -16,10 +16,12 @@ import java.util.stream.Collectors;
 public class UserMapper {
 
     private final PasswordEncoder passwordEncoder;
+    private final TopicMapper topicMapper;
 
     @Autowired
-    public UserMapper(PasswordEncoder passwordEncoder) {
+    public UserMapper(PasswordEncoder passwordEncoder, TopicMapper topicMapper) {
         this.passwordEncoder = passwordEncoder;
+        this.topicMapper = topicMapper;
     }
 
     public User toEntity(CreateUserDto dto) {
@@ -34,7 +36,11 @@ public class UserMapper {
                 .setLastName(user.getLastName())
                 .setId(user.getId())
                 .setProfileName(user.getProfileName())
-                .setRole(user.getRole().toString());
+                .setRole(user.getRole().toString())
+                .setAvailability(user.getAvailability())
+                .setIntroduction(user.getIntroduction())
+                .setImageUrl(user.getImageUrl())
+                .setTopicList(topicMapper.toDto(user.getTopicList()));
     }
 
     public List<UserDto> toListOfDtos(List<User> users) {

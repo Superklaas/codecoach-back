@@ -13,4 +13,19 @@ public class Topic {
 
     @Column(name = "name")
     private String name;
+
+    public Topic(String name) {
+        this.name = name;
+    }
+
+    public Topic() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

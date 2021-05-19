@@ -39,10 +39,10 @@ public class User {
     @Column(name = "introduction")
     private String introduction;
 
-    @Column(name="img_url")
+    @Column(name = "img_url")
     private String imageUrl;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "user_topics", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "topic_id"))
     private List<Topic> topicList;
