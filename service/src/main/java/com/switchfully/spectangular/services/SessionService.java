@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 
 @Service
 @Transactional
@@ -37,6 +38,22 @@ public class SessionService {
         Session session = sessionMapper.toEntity(createSessionDto, coach, coachee);
 
         return sessionMapper.toDto(sessionRepository.save(session));
+    }
+
+    public List<SessionDto> getAllSessionByCoach(String token){
+        int id = getIdFromJwtToken(token);
+
+       return sessionMapper.toListOfDtos(sessionRepository.findAllByCoach(userService.findUserById(id)));
+    }
+
+    public List<SessionDto> getAllSessionByCoachee(String token){
+        int id = getIdFromJwtToken(token);
+        return sessionMapper.toListOfDtos(sessionRepository.findAllByCoachee(userService.findUserById(id)));
+    }
+
+    private int getIdFromJwtToken(String token){
+        JSONObject tokenObject = JSONObjectParser.JwtTokenToJSONObject(token);
+        return Integer.parseInt(tokenObject.get("sub").toString());
     }
 
     private void validateCreateSession(CreateSessionDto createSessionDto, String token){
