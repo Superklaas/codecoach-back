@@ -108,7 +108,27 @@ class UserServiceTest {
     }
 
     @Test
-    void findUserById_givenId_thenReturnUserDto() {
+    void findUserById_givenId_thenReturnUser() {
+        //GIVEN
+        when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        //WHEN
+        User actualUser = userService.findUserById(userDto.getId());
+        //THEN
+        verify(userRepository).findById(any());
+        assertThat(actualUser).isEqualTo(user);
+    }
+
+    @Test
+    void findUserById_givenNonExistentId_thenThrowIllegalArgumentException() {
+        //GIVEN
+        int id = 12;
+        //WHEN & THEN
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> userService.findUserById(id));
+    }
+
+    @Test
+    void getUserById_givenId_thenReturnUserDto() {
         //GIVEN
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
         when(userMapper.toDto(any())).thenReturn(userDto);
@@ -118,15 +138,6 @@ class UserServiceTest {
         verify(userRepository).findById(any());
         verify(userMapper).toDto(any());
         assertThat(actualUserDto).isEqualTo(userDto);
-    }
-
-    @Test
-    void findUserById_givenNonExistentId_thenThrowIllegalArgumentException() {
-        //GIVEN
-        int id = 12;
-        //WHEN & THEN
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> userService.getUserById(id));
     }
 
     @Test

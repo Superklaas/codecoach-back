@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class SessionMapper {
@@ -33,5 +35,9 @@ public class SessionMapper {
                 .setRemarks(session.getRemarks())
                 .setCoachId(session.getCoach().getId())
                 .setCoacheeId(session.getCoachee().getId());
+    }
+
+    public List<SessionDto> toListOfDtos(List<Session> sessions){
+        return sessions.stream().map(session -> this.toDto(session)).collect(Collectors.toList());
     }
 }
