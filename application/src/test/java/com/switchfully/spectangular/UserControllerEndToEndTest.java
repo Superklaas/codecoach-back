@@ -141,7 +141,6 @@ public class UserControllerEndToEndTest {
         assertThat(userDto.getRole()).isEqualTo("COACH");
     }
 
-/* //TODO: revisit when frontend is implemented -> httpStatus = 404 instead of 200
     @Test
     @Sql("/sql/insertUsers.sql")
     void getAllCoaches_whenCalled_thenAllCoachesAreFound() {
@@ -162,7 +161,7 @@ public class UserControllerEndToEndTest {
                 .baseUri("http://localhost")
                 .port(port)
                 .when()
-                .get("/coaches")
+                .get("/users/coaches")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK.value())
@@ -172,5 +171,4 @@ public class UserControllerEndToEndTest {
         assertThat(userDtos).hasSize(1);
         assertThat(userDtos).allSatisfy(userDto -> userDto.getRole().equals("COACH"));
     }
-    */
 }
