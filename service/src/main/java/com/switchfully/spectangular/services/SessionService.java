@@ -42,8 +42,8 @@ public class SessionService {
 
     public List<SessionDto> getAllSessionByCoach(String token){
         int id = getIdFromJwtToken(token);
-
-       return sessionMapper.toListOfDtos(sessionRepository.findAllByCoach(userService.findUserById(id)));
+        User user = userService.findUserById(id);
+       return sessionMapper.toListOfDtos(sessionRepository.findAllByCoach(user));
     }
 
     public List<SessionDto> getAllSessionByCoachee(String token){

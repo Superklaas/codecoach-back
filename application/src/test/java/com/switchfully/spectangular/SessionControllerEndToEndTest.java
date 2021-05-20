@@ -68,4 +68,122 @@ public class SessionControllerEndToEndTest {
                 .as(SessionDto.class);
     }
 
+    @Test
+    @Sql("/sql/insertUsers.sql")
+    void getAllCoacheeSessions_givenRequestMadeByCoachee_thenAllCoacheeSessionsAreFound(){
+        //GIVEN
+       Response AuthorizepostResponse = given()
+                .baseUri("http://localhost")
+                .port(port)
+                .basePath("/authenticate")
+                .body("{\"username\":\"test@spectangular.com\",\"password\":\"YouC0ach\"}")
+                .post();
+
+        String bearerToken = AuthorizepostResponse.header("Authorization");
+
+        //WHEN
+        Response postResponse = given()
+                .header("Authorization", (bearerToken == null) ? "" : bearerToken)
+                .baseUri("http://localhost")
+                .port(port)
+                .when()
+                .get("/sessions/coachee");
+
+        //THEN
+        postResponse
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.ACCEPTED.value())
+                .extract()
+                .as(SessionDto[].class);
+    }
+
+    @Test
+    @Sql("/sql/insertUsers.sql")
+    void getAllCoachSessions_givenRequestMadeByCoach_thenAllCoachSessionsAreFound(){
+        //GIVEN
+        Response AuthorizepostResponse = given()
+                .baseUri("http://localhost")
+                .port(port)
+                .basePath("/authenticate")
+                .body("{\"username\":\"coach@spectangular.com\",\"password\":\"YouC0ach\"}")
+                .post();
+
+        String bearerToken = AuthorizepostResponse.header("Authorization");
+
+        //WHEN
+        Response postResponse = given()
+                .header("Authorization", (bearerToken == null) ? "" : bearerToken)
+                .baseUri("http://localhost")
+                .port(port)
+                .when()
+                .get("/sessions/coach");
+
+        //THEN
+        postResponse
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.ACCEPTED.value())
+                .extract()
+                .as(SessionDto[].class);
+    }
+
+    @Test
+    @Sql("/sql/insertUsers.sql")
+    void getAllCoacheeSessions_givenRequestMadeByCoach_thenAllCoacheeSessionsAreFound(){
+        //GIVEN
+        Response AuthorizepostResponse = given()
+                .baseUri("http://localhost")
+                .port(port)
+                .basePath("/authenticate")
+                .body("{\"username\":\"coach@spectangular.com\",\"password\":\"YouC0ach\"}")
+                .post();
+
+        String bearerToken = AuthorizepostResponse.header("Authorization");
+
+        //WHEN
+        Response postResponse = given()
+                .header("Authorization", (bearerToken == null) ? "" : bearerToken)
+                .baseUri("http://localhost")
+                .port(port)
+                .when()
+                .get("/sessions/coachee");
+
+        //THEN
+        postResponse
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.ACCEPTED.value())
+                .extract()
+                .as(SessionDto[].class);
+    }
+
+    @Test
+    @Sql("/sql/insertUsers.sql")
+    void getAllCoachSessions_givenRequestMadeByCoachee_thenStatusCodeIsBadRequest(){
+        //GIVEN
+        Response AuthorizepostResponse = given()
+                .baseUri("http://localhost")
+                .port(port)
+                .basePath("/authenticate")
+                .body("{\"username\":\"test@spectangular.com\",\"password\":\"YouC0ach\"}")
+                .post();
+
+        String bearerToken = AuthorizepostResponse.header("Authorization");
+
+        //WHEN
+        Response postResponse = given()
+                .header("Authorization", (bearerToken == null) ? "" : bearerToken)
+                .baseUri("http://localhost")
+                .port(port)
+                .when()
+                .get("/sessions/coach");
+
+        //THEN
+        postResponse
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
 }
