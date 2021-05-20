@@ -18,15 +18,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SessionServiceTest {
+
     @Mock
     private SessionRepository sessionRepository;
     @Mock
@@ -43,6 +44,7 @@ class SessionServiceTest {
     private SessionDto sessionDto;
     //token with id/sub = 1234567980
     private static final String TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+    private static final String INVALID_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.falseWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
     private static final int COACH_ID = 2;
     private static final int COACHEE_ID = 1234567890;
 
@@ -151,5 +153,49 @@ class SessionServiceTest {
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> sessionService.createSession(invalidDto, TOKEN));
     }
+
+    @Test
+    void getAllSessionByCoachee_givenValidTokenCoachee_thenReturnListSessionDtos() {
+        //GIVEN
+        when(userService.findUserById(anyInt())).thenReturn(coachee);
+        when(sessionRepository.findAllByCoachee(coachee)).thenReturn(List.of(session));
+        when(sessionMapper.toListOfDtos(List.of(session))).thenReturn(List.of(sessionDto));
+        //WHEN
+        List<SessionDto> actualSessionDtos = sessionService.getAllSessionByCoachee(TOKEN);
+        //THEN
+        assertThat(actualSessionDtos).containsExactly(sessionDto);
+    }
+
+    @Test
+    void getAllSessionByCoach_givenValidTokenCoach_thenReturnListSessionDtos() {
+        //GIVEN
+        when(userService.findUserById(anyInt())).thenReturn(coach);
+        when(sessionRepository.findAllByCoach(coach)).thenReturn(List.of(session));
+        when(sessionMapper.toListOfDtos(List.of(session))).thenReturn(List.of(sessionDto));
+        //WHEN
+        List<SessionDto> actualSessionDtos = sessionService.getAllSessionByCoach(TOKEN);
+        //THEN
+        assertThat(actualSessionDtos).containsExactly(sessionDto);
+    }
+
+    @Test
+    void getAllSessionByCoach_givenUserWhoIsNotCoach_thenThrowIllegalArgumentException() {
+        //GIVEN
+        User notCoach = new User(
+                "NotACoach",
+                "McNotCoachFace",
+                "DefinitelyNotACoach",
+                "nocoacheshere@email.com",
+                "Passw0rd",
+                Role.COACHEE
+        );
+        when(userService.findUserById(anyInt())).thenReturn(notCoach);
+        //WHEN
+        //THEN
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> sessionService.getAllSessionByCoach(TOKEN));
+
+    }
+
 
 }
