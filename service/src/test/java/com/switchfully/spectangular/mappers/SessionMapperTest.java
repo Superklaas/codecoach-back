@@ -16,7 +16,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SessionMapperTest {
     private final SessionMapper sessionMapper = new SessionMapper();
 
-
     private User coachee;
     private User coach;
     private Session session;
@@ -60,7 +59,6 @@ class SessionMapperTest {
                 .setCoachId(1);
 
         sessionDto = new SessionDto()
-                .setId(1)
                 .setSubject(session.getSubject())
                 .setDate(session.getDate().toString())
                 .setLocation(session.getLocation())
@@ -69,8 +67,8 @@ class SessionMapperTest {
                 .setCoachId(1);
     }
 
-    //TODO: figure out how to map id's -> NullPointer thrown in toDto
-/*
+
+/* //cannot test entities because they aren't assigned with an id yet -> NullPointer
 
     @Test
     void toDto_givenSession_thenReturnSessionDto() {
