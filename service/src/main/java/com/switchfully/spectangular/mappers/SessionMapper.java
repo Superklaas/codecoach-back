@@ -34,7 +34,10 @@ public class SessionMapper {
                 .setLocation(session.getLocation())
                 .setRemarks(session.getRemarks())
                 .setCoachId(session.getCoach().getId())
-                .setCoacheeId(session.getCoachee().getId());
+                .setCoacheeId(session.getCoachee().getId())
+                .setCoachProfileName(session.getCoach().getProfileName())
+                .setCoacheeProfileName(session.getCoachee().getProfileName())
+                .setStatus(session.getStatus().name());
     }
 
     public List<SessionDto> toListOfDtos(List<Session> sessions){

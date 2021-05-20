@@ -1,5 +1,7 @@
 package com.switchfully.spectangular.dtos;
 
+import org.hibernate.Session;
+
 import java.util.Objects;
 
 public class SessionDto {
@@ -12,6 +14,9 @@ public class SessionDto {
     private String remarks;
     private int coachId;
     private int coacheeId;
+    private String coachProfileName;
+    private String coacheeProfileName;
+    private String status;
 
     public int getId() {
         return id;
@@ -82,6 +87,33 @@ public class SessionDto {
 
     public SessionDto setCoacheeId(int coacheeId) {
         this.coacheeId = coacheeId;
+        return this;
+    }
+
+    public String getCoachProfileName() {
+        return coachProfileName;
+    }
+
+    public SessionDto setCoachProfileName(String coachProfileName) {
+        this.coachProfileName = coachProfileName;
+        return this;
+    }
+
+    public String getCoacheeProfileName() {
+        return coacheeProfileName;
+    }
+
+    public SessionDto setCoacheeProfileName(String coacheeProfileName) {
+        this.coacheeProfileName = coacheeProfileName;
+        return this;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public SessionDto setStatus(String status) {
+        this.status = status;
         return this;
     }
 
