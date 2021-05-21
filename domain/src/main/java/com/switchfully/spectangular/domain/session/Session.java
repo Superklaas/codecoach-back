@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -143,5 +144,9 @@ public class Session {
     @Override
     public int hashCode() {
         return Objects.hash(subject, date, startTime, location, remarks, coach, coachee);
+    }
+
+    public LocalDateTime getDateTime() {
+        return LocalDateTime.of(this.getDate(),this.getStartTime());
     }
 }

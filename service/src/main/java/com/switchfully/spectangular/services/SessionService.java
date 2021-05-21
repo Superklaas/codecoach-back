@@ -4,6 +4,7 @@ import com.switchfully.spectangular.JSONObjectParser;
 import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.domain.session.Session;
+import com.switchfully.spectangular.domain.session.SessionStatus;
 import com.switchfully.spectangular.dtos.CreateSessionDto;
 import com.switchfully.spectangular.dtos.SessionDto;
 import com.switchfully.spectangular.exceptions.UnauthorizedException;
@@ -12,6 +13,7 @@ import com.switchfully.spectangular.repository.SessionRepository;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -46,12 +48,27 @@ public class SessionService {
         if(user.getRole() != Role.COACH) {
             throw new IllegalArgumentException("user is not a coach");
         }
-       return sessionMapper.toListOfDtos(sessionRepository.findAllByCoach(user));
+
+        List<Session> coachSessions = sessionRepository.findAllByCoach(user);
+        updateStatusSessionList(coachSessions);
+        return sessionMapper.toListOfDtos(coachSessions);
     }
 
     public List<SessionDto> getAllSessionByCoachee(String token){
         int id = getIdFromJwtToken(token);
-        return sessionMapper.toListOfDtos(sessionRepository.findAllByCoachee(userService.findUserById(id)));
+        List<Session> coacheeSessions = sessionRepository.findAllByCoachee(userService.findUserById(id));
+        updateStatusSessionList(coacheeSessions);
+        return sessionMapper.toListOfDtos(coacheeSessions);
+    }
+
+    private void updateStatusSessionList(List<Session> sessionList){
+        sessionList.stream().forEach(session -> updateStatusSession(session));
+    }
+
+    private void updateStatusSession(Session session){
+        if (LocalDateTime.now().isAfter(session.getDateTime())){
+            session.setStatus(SessionStatus.FINISHED);
+        }
     }
 
     private int getIdFromJwtToken(String token){
@@ -70,6 +87,5 @@ public class SessionService {
             throw new IllegalArgumentException("Coach must have role coach");
         }
     }
-
 
 }
