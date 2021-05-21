@@ -108,10 +108,10 @@ public class SessionService {
     public boolean userhasAuthorityToChangeState(String token, int sessionId, SessionStatus status) {
         User user = userService.findUserById(this.getIdFromJwtToken(token));
         Session session = this.findSessionById(sessionId);
-        if (user==session.getCoach()){
+        if (user.equals(session.getCoach())){
             return hacCoachAuthorityToChange(status);
         }
-        if (user==session.getCoachee()){
+        if (user.equals(session.getCoachee())){
             return hacCoacheeAuthorityToChange(status);
         }
         return false;
@@ -122,8 +122,8 @@ public class SessionService {
     }
 
     private boolean hacCoachAuthorityToChange(SessionStatus status) {
+        System.out.println(status.getAuthorizedRoles().contains(Role.COACH));
         return status.getAuthorizedRoles().contains(Role.COACH);
     }
-
 
 }
