@@ -29,7 +29,7 @@ public class SessionController {
     @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public SessionDto createSession(@RequestBody CreateSessionDto createSessionDto, @RequestHeader (name="Authorization") String token){
-        logger.info("Received POST request to create a new session");
+        logger.info("Received POST request to create a new session: " + createSessionDto.toString() + "by user: " + token);
         return sessionService.createSession(createSessionDto, token);
     }
     @PreAuthorize(value = "hasAuthority('GET_ALL_COACHING_SESSION')")
@@ -50,10 +50,11 @@ public class SessionController {
     @PostMapping(path = "/{id}/status", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public SessionDto updateStatus(@RequestHeader (name="Authorization") String token, @PathVariable int id, @RequestBody SessionStatusDto status){
-        if (sessionService.userhasAuthorityToChangeState(token, id, status.getStatus())){
-            throw new UnauthorizedException("");
-        }
+        logger.info("Received POST request to update status of session: " + id + "by user: " + token + "to status: " + status.toString());
 
+        if (sessionService.userhasAuthorityToChangeState(token, id, status.getStatus())){
+            throw new UnauthorizedException("Users");
+        }
         return sessionService.updateSessionStatus(id, status.getStatus());
     }
 }
