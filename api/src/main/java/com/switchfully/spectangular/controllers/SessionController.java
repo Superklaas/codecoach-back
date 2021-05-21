@@ -45,7 +45,7 @@ public class SessionController {
     }
 
     @PreAuthorize(value = "hasAuthority('GET_ALL_COACHEE_SESSIONS')")
-    @GetMapping(path = "/{id}/status", produces = "application/json")
+    @PostMapping(path = "/{id}/status", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public SessionDto updateStatus(@RequestHeader (name="Authorization") String token, @PathVariable int id, @RequestBody SessionStatus status){
 
