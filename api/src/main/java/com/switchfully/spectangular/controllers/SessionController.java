@@ -3,6 +3,7 @@ package com.switchfully.spectangular.controllers;
 import com.switchfully.spectangular.domain.session.SessionStatus;
 import com.switchfully.spectangular.dtos.CreateSessionDto;
 import com.switchfully.spectangular.dtos.SessionDto;
+import com.switchfully.spectangular.exceptions.UnauthorizedException;
 import com.switchfully.spectangular.services.SessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,10 +45,13 @@ public class SessionController {
         return sessionService.getAllSessionByCoachee(token);
     }
 
-    @PreAuthorize(value = "hasAuthority('GET_ALL_COACHEE_SESSIONS')")
+    @PreAuthorize(value = "hasAuthority('UPDATE_SESSION_STATUS')")
     @GetMapping(path = "/{id}/status", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public SessionDto updateStatus(@RequestHeader (name="Authorization") String token, @PathVariable int id, @RequestBody SessionStatus status){
+        if (sessionService.userhasAuthorityToChangeState(token, id, status)){
+            throw new UnauthorizedException("");
+        }
 
         return sessionService.updateSessionStatus(id, status);
     }

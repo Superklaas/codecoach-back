@@ -12,6 +12,7 @@ import com.switchfully.spectangular.mappers.SessionMapper;
 import com.switchfully.spectangular.repository.SessionRepository;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,10 +42,10 @@ public class SessionService {
         return sessionMapper.toDto(sessionRepository.save(session));
     }
 
-    public List<SessionDto> getAllSessionByCoach(String token){
+    public List<SessionDto> getAllSessionByCoach(String token) {
         int id = getIdFromJwtToken(token);
         User user = userService.findUserById(id);
-        if(user.getRole() != Role.COACH) {
+        if (user.getRole() != Role.COACH) {
             throw new IllegalArgumentException("user is not a coach");
         }
 
@@ -53,7 +54,7 @@ public class SessionService {
         return sessionMapper.toListOfDtos(coachSessions);
     }
 
-    public List<SessionDto> getAllSessionByCoachee(String token){
+    public List<SessionDto> getAllSessionByCoachee(String token) {
         int id = getIdFromJwtToken(token);
         List<Session> coacheeSessions = sessionRepository.findAllByCoachee(userService.findUserById(id));
         updateStatusSessionList(coacheeSessions);
@@ -61,10 +62,10 @@ public class SessionService {
     }
 
     //TODO refactor
-    public SessionDto updateSessionStatus(int id, SessionStatus status){
+    public SessionDto updateSessionStatus(int id, SessionStatus status) {
         Optional<Session> optionalSession = sessionRepository.findById(id);
 
-        if (optionalSession.isEmpty()){
+        if (optionalSession.isEmpty()) {
             throw new IllegalArgumentException("session not found with id: " + id);
         }
 
@@ -75,25 +76,54 @@ public class SessionService {
         return sessionMapper.toDto(session);
     }
 
-    private void updateStatusSessionList(List<Session> sessionList){
-        sessionList.stream().forEach(Session::autoUpdateSession);
+    private void updateStatusSessionList(List<Session> sessionList) {
+        sessionList.forEach(Session::autoUpdateSession);
     }
 
-    private int getIdFromJwtToken(String token){
+    private int getIdFromJwtToken(String token) {
         JSONObject tokenObject = JSONObjectParser.JwtTokenToJSONObject(token);
         return Integer.parseInt(tokenObject.get("sub").toString());
     }
 
-    private void validateCreateSession(CreateSessionDto createSessionDto, String token){
+    private void validateCreateSession(CreateSessionDto createSessionDto, String token) {
         JSONObject tokenObject = JSONObjectParser.JwtTokenToJSONObject(token);
 
-        if (!tokenObject.get("sub").equals(""+createSessionDto.getCoacheeId())){
+        if (!tokenObject.get("sub").equals("" + createSessionDto.getCoacheeId())) {
             throw new UnauthorizedException("User can't make session for other users");
         }
 
-        if (!userService.findUserById(createSessionDto.getCoachId()).getRole().equals(Role.COACH)){
+        if (!userService.findUserById(createSessionDto.getCoachId()).getRole().equals(Role.COACH)) {
             throw new IllegalArgumentException("Coach must have role coach");
         }
     }
+
+    private Session findSessionById(int id) {
+        Optional<Session> session = sessionRepository.findById(id);
+        if (session.isEmpty()) {
+            throw new IllegalArgumentException("session not found with id: " + id);
+        }
+        return session.get();
+    }
+
+    public boolean userhasAuthorityToChangeState(String token, int sessionId, SessionStatus status) {
+        User user = userService.findUserById(this.getIdFromJwtToken(token));
+        Session session = this.findSessionById(sessionId);
+        if (user==session.getCoach()){
+            return hacCoachAuthorityToChange(status);
+        }
+        if (user==session.getCoachee()){
+            return hacCoacheeAuthorityToChange(status);
+        }
+        return false;
+    }
+
+    private boolean hacCoacheeAuthorityToChange(SessionStatus status) {
+        return status.getAuthorizedRoles().contains(Role.COACHEE);
+    }
+
+    private boolean hacCoachAuthorityToChange(SessionStatus status) {
+        return status.getAuthorizedRoles().contains(Role.COACH);
+    }
+
 
 }
