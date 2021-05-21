@@ -6,7 +6,6 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.chrono.ChronoLocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -122,6 +121,7 @@ public class Session {
     }
 
     public void setStatus(SessionStatus status) {
+       this.getStatus().assertStateChange(status);
         this.status = status;
     }
 
@@ -148,5 +148,17 @@ public class Session {
 
     public LocalDateTime getDateTime() {
         return LocalDateTime.of(this.getDate(),this.getStartTime());
+    }
+
+    public void autoUpdateSession(){
+        if (this.getDateTime().isAfter(LocalDateTime.now())){
+            return;
+        }
+        if (this.status == SessionStatus.REQUESTED){
+           setStatus(SessionStatus.DECLINED_AUTOMATICALLY);
+        }
+        if (this.status == SessionStatus.ACCEPTED){
+            setStatus(SessionStatus.WAITING_FEEDBACK);
+        }
     }
 }

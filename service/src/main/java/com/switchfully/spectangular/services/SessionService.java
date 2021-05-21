@@ -14,9 +14,8 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -61,14 +60,23 @@ public class SessionService {
         return sessionMapper.toListOfDtos(coacheeSessions);
     }
 
-    private void updateStatusSessionList(List<Session> sessionList){
-        sessionList.stream().forEach(session -> updateStatusSession(session));
+    //TODO refactor
+    public SessionDto updateSessionStatus(int id, SessionStatus status){
+        Optional<Session> optionalSession = sessionRepository.findById(id);
+
+        if (optionalSession.isEmpty()){
+            throw new IllegalArgumentException("session not found with id: " + id);
+        }
+
+        Session session = optionalSession.get();
+
+        session.setStatus(status);
+
+        return sessionMapper.toDto(session);
     }
 
-    private void updateStatusSession(Session session){
-        if (LocalDateTime.now().isAfter(session.getDateTime())){
-            session.setStatus(SessionStatus.FINISHED);
-        }
+    private void updateStatusSessionList(List<Session> sessionList){
+        sessionList.stream().forEach(Session::autoUpdateSession);
     }
 
     private int getIdFromJwtToken(String token){
