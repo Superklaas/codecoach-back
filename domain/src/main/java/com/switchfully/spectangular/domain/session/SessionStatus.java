@@ -1,16 +1,14 @@
 package com.switchfully.spectangular.domain.session;
 
-import org.hibernate.Session;
-
 public enum SessionStatus {
 
     REQUESTED(false),
     ACCEPTED(false),
     WAITING_FEEDBACK(false),
-    DECLINED_BY_COACHEE(true),
-    CANCELLED_BY_COACHEE(true),
-    DECLINED_BY_COACH(true),
-    CANCELLED_BY_COACH(true),
+    REQUEST_CANCELLED_BY_COACHEE(true),
+    SESSION_CANCELLED_BY_COACHEE(true),
+    REQUEST_DECLINED(true),
+    SESSION_CANCELLED_BY_COACH(true),
     DECLINED_AUTOMATICALLY(true),
     FEEDBACK_RECEIVED(true);
 
@@ -27,13 +25,13 @@ public enum SessionStatus {
     public boolean isValidStateChange(SessionStatus status){
         switch (status){
             case DECLINED_AUTOMATICALLY:
-            case DECLINED_BY_COACHEE:
-            case DECLINED_BY_COACH:
+            case REQUEST_CANCELLED_BY_COACHEE:
+            case REQUEST_DECLINED:
             case ACCEPTED:
                 return this == SessionStatus.REQUESTED;
             case WAITING_FEEDBACK:
-            case CANCELLED_BY_COACH:
-            case CANCELLED_BY_COACHEE:
+            case SESSION_CANCELLED_BY_COACH:
+            case SESSION_CANCELLED_BY_COACHEE:
                return this == SessionStatus.ACCEPTED;
             case FEEDBACK_RECEIVED:
                 return this == SessionStatus.WAITING_FEEDBACK;
