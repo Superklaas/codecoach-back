@@ -3,6 +3,7 @@ package com.switchfully.spectangular.controllers;
 import com.switchfully.spectangular.domain.session.SessionStatus;
 import com.switchfully.spectangular.dtos.CreateSessionDto;
 import com.switchfully.spectangular.dtos.SessionDto;
+import com.switchfully.spectangular.dtos.SessionStatusDto;
 import com.switchfully.spectangular.services.SessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +48,8 @@ public class SessionController {
     @PreAuthorize(value = "hasAuthority('GET_ALL_COACHEE_SESSIONS')")
     @PostMapping(path = "/{id}/status", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public SessionDto updateStatus(@RequestHeader (name="Authorization") String token, @PathVariable int id, @RequestBody SessionStatus status){
+    public SessionDto updateStatus(@RequestHeader (name="Authorization") String token, @PathVariable int id, @RequestBody SessionStatusDto status){
 
-        return sessionService.updateSessionStatus(id, status);
+        return sessionService.updateSessionStatus(id, status.getStatus());
     }
 }
