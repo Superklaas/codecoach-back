@@ -4,6 +4,7 @@ import com.switchfully.spectangular.domain.session.SessionStatus;
 import com.switchfully.spectangular.dtos.CreateSessionDto;
 import com.switchfully.spectangular.dtos.SessionDto;
 import com.switchfully.spectangular.exceptions.UnauthorizedException;
+import com.switchfully.spectangular.dtos.SessionStatusDto;
 import com.switchfully.spectangular.services.SessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,13 +47,13 @@ public class SessionController {
     }
 
     @PreAuthorize(value = "hasAuthority('UPDATE_SESSION_STATUS')")
-    @GetMapping(path = "/{id}/status", produces = "application/json")
+    @PostMapping(path = "/{id}/status", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public SessionDto updateStatus(@RequestHeader (name="Authorization") String token, @PathVariable int id, @RequestBody SessionStatus status){
-        if (sessionService.userhasAuthorityToChangeState(token, id, status)){
+    public SessionDto updateStatus(@RequestHeader (name="Authorization") String token, @PathVariable int id, @RequestBody SessionStatusDto status){
+        if (sessionService.userhasAuthorityToChangeState(token, id, status.getStatus())){
             throw new UnauthorizedException("");
         }
 
-        return sessionService.updateSessionStatus(id, status);
+        return sessionService.updateSessionStatus(id, status.getStatus());
     }
 }
