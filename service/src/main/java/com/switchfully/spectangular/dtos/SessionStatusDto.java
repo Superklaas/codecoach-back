@@ -13,4 +13,9 @@ public class SessionStatusDto {
         this.status = status;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "{" + "status=" + status + '}';
+    }
 }
