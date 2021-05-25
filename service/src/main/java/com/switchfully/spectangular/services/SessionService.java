@@ -76,6 +76,8 @@ public class SessionService {
         return sessionMapper.toDto(session);
     }
 
+
+
     private void updateStatusSessionList(List<Session> sessionList) {
         sessionList.forEach(Session::autoUpdateSession);
     }

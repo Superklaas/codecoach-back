@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -251,6 +252,30 @@ class SessionServiceTest {
         sessionService.getAllSessionByCoachee(TOKEN);
 
         assertThat(session.getStatus()).isEqualTo(SessionStatus.DECLINED_AUTOMATICALLY);
+    }
+
+    @Test
+    void updateSessionStatus_withInvalidId_throwsIllegalArgumentException(){
+        //WHEN
+        when(sessionRepository.findById(5)).thenReturn(Optional.empty());
+
+        //GIVEN
+
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> sessionService.updateSessionStatus(5, SessionStatus.ACCEPTED));
+
+    }
+
+    @Test
+    void updateSessionStatus_validIdAndValidStatus_callsSetStatusForSession(){
+        //WHEN
+        Session mockSession = mock(Session.class);
+        when(sessionRepository.findById(5)).thenReturn(Optional.of(mockSession));
+        doNothing().when(mockSession).setStatus(SessionStatus.ACCEPTED);
+        //GIVEN
+        sessionService.updateSessionStatus(5, SessionStatus.ACCEPTED);
+
+        verify(mockSession, times(1)).setStatus(SessionStatus.ACCEPTED);
     }
 
 
