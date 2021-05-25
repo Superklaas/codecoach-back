@@ -95,7 +95,7 @@ public class SessionService {
                 .orElseThrow(() -> new IllegalArgumentException("session not found with id: " + id));
     }
 
-    public boolean userhasAuthorityToChangeState(String token, int sessionId, SessionStatus status) {
+    public boolean userHasAuthorityToChangeState(String token, int sessionId, SessionStatus status) {
         User user = userService.findUserById(this.getIdFromJwtToken(token));
         Session session = this.findSessionById(sessionId);
         if (user.equals(session.getCoach())){
@@ -112,7 +112,6 @@ public class SessionService {
     }
 
     private boolean hacCoachAuthorityToChange(SessionStatus status) {
-        System.out.println(status.getAuthorizedRoles().contains(Role.COACH));
         return status.getAuthorizedRoles().contains(Role.COACH);
     }
 
