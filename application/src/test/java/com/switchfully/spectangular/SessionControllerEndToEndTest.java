@@ -186,4 +186,43 @@ public class SessionControllerEndToEndTest {
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
+    @Test
+    @Sql("/sql/insertUsers.sql")
+    void updateStatus_updatesWithValidStatusChange_ReturnsSessionWithUpdatedStatus(){
+        //GIVEN
+        Response AuthorizepostResponse = given()
+                .baseUri("http://localhost")
+                .port(port)
+                .basePath("/authenticate")
+                .body("{\"username\":\"coach@spectangular.com\",\"password\":\"YouC0ach\"}")
+                .post();
+
+        String bearerToken = AuthorizepostResponse.header("Authorization");
+
+        String requestBody = "{\"status\": \"ACCEPTED\"}";
+
+        //WHEN
+
+        Response postResponse = given()
+                .header("Authorization", (bearerToken == null) ? "" : bearerToken)
+                .baseUri("http://localhost")
+                .port(port)
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .and()
+                .body(requestBody)
+                .when()
+                .post("/sessions/1000000/status");
+
+        var testvar = postResponse.then().toString();
+
+        //THEN
+        postResponse
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.ACCEPTED.value());
+
+
+    }
+
 }

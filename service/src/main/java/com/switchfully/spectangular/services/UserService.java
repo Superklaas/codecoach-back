@@ -7,6 +7,7 @@ import com.switchfully.spectangular.dtos.CreateUserDto;
 import com.switchfully.spectangular.dtos.UserDto;
 import com.switchfully.spectangular.exceptions.DuplicateEmailException;
 import com.switchfully.spectangular.exceptions.EmailNotFoundException;
+import com.switchfully.spectangular.exceptions.InvalidPasswordException;
 import com.switchfully.spectangular.mappers.UserMapper;
 import com.switchfully.spectangular.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,13 @@ public class UserService {
     }
 
     public UserDto createUser(CreateUserDto dto) {
+        System.out.println(dto.getPassword());
+
+        assertValidPassword(dto.getPassword());
         throwsExceptionWhenEmailNotUnique(dto.getEmail());
+
+
+
 
         User user = userRepository.save(userMapper.toEntity(dto));
         return userMapper.toDto(user);
@@ -99,5 +106,21 @@ public class UserService {
         message.setText("To reset your password, click the link below:\n" + url
         + "/reset-password\n and enter the following code: " + user.getResetToken());
         emailService.sendEmail(message);
+    }
+
+    private void assertValidPassword(String unencryptedPassword) {
+        if (unencryptedPassword.length() < 8) {
+            throw new InvalidPasswordException("password is invalid");
+        }
+        if (!unencryptedPassword.matches(".*[0-9]+.*")) {
+            throw new InvalidPasswordException("password is invalid");
+        }
+        if (!unencryptedPassword.matches(".*[A-Z]+.*")) {
+            throw new InvalidPasswordException("password is invalid");
+        }
+        if (!unencryptedPassword.matches(".*[a-z]+.*")) {
+            throw new InvalidPasswordException("password is invalid");
+        }
+
     }
 }
