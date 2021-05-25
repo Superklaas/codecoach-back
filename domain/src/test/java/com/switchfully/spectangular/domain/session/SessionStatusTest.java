@@ -1,9 +1,9 @@
 package com.switchfully.spectangular.domain.session;
 
-import net.jqwik.api.Property;
 import org.junit.jupiter.api.Test;
 import java.util.Random;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SessionStatusTest {
 
@@ -47,6 +47,51 @@ class SessionStatusTest {
         assertThat(SessionStatus.REQUESTED.isValidStateChange(SessionStatus.FEEDBACK_RECEIVED)).isFalse();
     }
 
+    @Test
+    void given_ACCEPTED_State_WhenChecking_WAITING_FEEDBACK_IsValidStateChange_thenReturnTrue(){
+        assertThat(SessionStatus.ACCEPTED.isValidStateChange(SessionStatus.WAITING_FEEDBACK)).isTrue();
+    }
+
+    @Test
+    void given_ACCEPTED_State_WhenChecking_SESSION_CANCELLED_BY_COACHEE_IsValidStateChange_thenReturnTrue(){
+        assertThat(SessionStatus.ACCEPTED.isValidStateChange(SessionStatus.SESSION_CANCELLED_BY_COACHEE)).isTrue();
+    }
+
+    @Test
+    void given_ACCEPTED_State_WhenChecking_SESSION_CANCELLED_BY_COACH_IsValidStateChange_thenReturnTrue(){
+        assertThat(SessionStatus.ACCEPTED.isValidStateChange(SessionStatus.SESSION_CANCELLED_BY_COACH)).isTrue();
+    }
+
+    @Test
+    void given_ACCEPTED_State_WhenChecking_FEEDBACK_RECEIVED_IsValidStateChange_thenReturnFalse(){
+        assertThat(SessionStatus.ACCEPTED.isValidStateChange(SessionStatus.FEEDBACK_RECEIVED)).isFalse();
+    }
+
+    @Test
+    void given_ACCEPTED_State_WhenChecking_REQUEST_CANCELLED_BY_COACHEE_IsValidStateChange_thenReturnFalse(){
+        assertThat(SessionStatus.ACCEPTED.isValidStateChange(SessionStatus.REQUEST_CANCELLED_BY_COACHEE)).isFalse();
+    }
+
+    @Test
+    void given_ACCEPTED_State_WhenChecking_REQUEST_DECLINED_IsValidStateChange_thenReturnFalse(){
+        assertThat(SessionStatus.ACCEPTED.isValidStateChange(SessionStatus.REQUEST_DECLINED)).isFalse();
+    }
+
+    @Test
+    void given_WAITING_FEEDBACK_State_WhenChecking_FEEDBACK_RECEIVED_IsValidStateChange_thenReturnTrue(){
+        assertThat(SessionStatus.WAITING_FEEDBACK.isValidStateChange(SessionStatus.FEEDBACK_RECEIVED)).isTrue();
+    }
+
+    @Test
+    void given_WAITING_FEEDBACK_State_WhenChecking_SESSION_CANCELLED_BY_COACH_IsValidStateChange_thenReturnFalse(){
+        assertThat(SessionStatus.WAITING_FEEDBACK.isValidStateChange(SessionStatus.SESSION_CANCELLED_BY_COACH)).isFalse();
+    }
+
+    @Test
+    void given_WAITING_FEEDBACK_State_WhenChecking_SESSION_CANCELLED_BY_COACHEE_IsValidStateChange_thenReturnFalse(){
+        assertThat(SessionStatus.WAITING_FEEDBACK.isValidStateChange(SessionStatus.SESSION_CANCELLED_BY_COACHEE)).isFalse();
+    }
+
     private SessionStatus getRandomSessionStatus(){
         SessionStatus[] statuses = SessionStatus.values();
         int length = statuses.length;
@@ -69,5 +114,10 @@ class SessionStatusTest {
         }
     }
 
+    void GivenInvalidStateChange_WhenAssertStateChange_ThenThrowIllegalStateException(){
+        assertThrows(IllegalStateException.class,
+                () -> getRandomFinishedSessionStatus().assertStateChange(getRandomSessionStatus()));
+
+    }
 
 }
