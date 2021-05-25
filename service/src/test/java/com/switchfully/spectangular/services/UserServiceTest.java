@@ -6,6 +6,7 @@ import com.switchfully.spectangular.dtos.CreateUserDto;
 import com.switchfully.spectangular.dtos.UserDto;
 import com.switchfully.spectangular.exceptions.DuplicateEmailException;
 import com.switchfully.spectangular.exceptions.EmailNotFoundException;
+import com.switchfully.spectangular.exceptions.InvalidPasswordException;
 import com.switchfully.spectangular.mappers.UserMapper;
 import com.switchfully.spectangular.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -106,6 +107,33 @@ class UserServiceTest {
 
     @Test
     void createUser_givenDuplicateEmailAddress_thenThrowDuplicateEmailException() {
+        //GIVEN
+        createUserDto.setPassword("123456");
+        //WHEN & THEN
+        assertThatExceptionOfType(InvalidPasswordException.class)
+                .isThrownBy(() -> userService.createUser(createUserDto));
+    }
+
+    @Test
+    void createUser_givenDuplicateEmailAddress_thenThrowDuplicateEmailException2() {
+        //GIVEN
+        createUserDto.setPassword("wwww123456");
+        //WHEN & THEN
+        assertThatExceptionOfType(InvalidPasswordException.class)
+                .isThrownBy(() -> userService.createUser(createUserDto));
+    }
+
+    @Test
+    void createUser_givenDuplicateEmailAddress_thenThrowDuplicateEmailException3() {
+        //GIVEN
+        createUserDto.setPassword("WWWW123456");
+        //WHEN & THEN
+        assertThatExceptionOfType(InvalidPasswordException.class)
+                .isThrownBy(() -> userService.createUser(createUserDto));
+    }
+
+    @Test
+    void createUser_givenInvalidPassword_thenThrowInvalidPasswordException() {
         //GIVEN
         when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
         //WHEN & THEN

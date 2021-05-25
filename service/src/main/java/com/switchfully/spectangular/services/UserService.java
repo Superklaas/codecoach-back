@@ -43,13 +43,9 @@ public class UserService {
     }
 
     public UserDto createUser(CreateUserDto dto) {
-        System.out.println(dto.getPassword());
 
         assertValidPassword(dto.getPassword());
         throwsExceptionWhenEmailNotUnique(dto.getEmail());
-
-
-
 
         User user = userRepository.save(userMapper.toEntity(dto));
         return userMapper.toDto(user);

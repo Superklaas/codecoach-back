@@ -53,45 +53,6 @@ class UserTest {
                 .isThrownBy(() -> new User("testFirstName","testLastName","TestProfileName",invalidEmail,"testWachtw00rd", Role.COACHEE) );
     }
 
-    @Test
-    public void WhenUserCreatedWithValidPasswordThenAssignPasswordToUser(){
-        String validPassword = "Wachtwoord123";
-        User user = new User("testFirstName","testLastName","TestProfileName","testemail@Spectangular.com",validPassword, Role.COACHEE);
-        assertThat(user.getEncryptedPassword()).isEqualTo(validPassword);
-    }
-
-    @Test
-    public void WhenUserCreatedWithInvalidPasswordThenThrowsInvalidPasswordException(){
-        String invalidPassword = "Wachtwoord";
-
-        assertThatExceptionOfType(InvalidPasswordException.class)
-                .isThrownBy(() -> new User("testFirstName","testLastName","TestProfileName","testemail@Spectangular.com",invalidPassword, Role.COACHEE));
-    }
-
-    @Test
-    public void WhenUserCreatedWithInvalidPasswordThenThrowsInvalidPasswordException2(){
-        String invalidPassword = "wachtwoord";
-
-        assertThatExceptionOfType(InvalidPasswordException.class)
-                .isThrownBy(() -> new User("testFirstName","testLastName","TestProfileName","testemail@Spectangular.com",invalidPassword, Role.COACHEE));
-    }
-
-    @Test
-    public void WhenUserCreatedWithInvalidPasswordThenThrowsInvalidPasswordException3(){
-        String invalidPassword = "WACHTWOORD123";
-
-        assertThatExceptionOfType(InvalidPasswordException.class)
-                .isThrownBy(() -> new User("testFirstName","testLastName","TestProfileName","testemail@Spectangular.com",invalidPassword, Role.COACHEE));
-    }
-
-    @Test
-    public void WhenUserCreatedWithInvalidPasswordThenThrowsInvalidPasswordException4(){
-        String invalidPassword = "";
-
-        assertThatExceptionOfType(InvalidPasswordException.class)
-                .isThrownBy(() -> new User("testFirstName","testLastName","TestProfileName","testemail@Spectangular.com",invalidPassword, Role.COACHEE));
-    }
-
 
 
 

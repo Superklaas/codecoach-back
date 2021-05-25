@@ -20,7 +20,7 @@ public enum SessionStatus {
 
     WAITING_FEEDBACK(false, List.of()),
 
-    FEEDBACK_RECEIVED(true, List.of(Role.COACH));
+    FEEDBACK_RECEIVED(true, List.of());
 
     private final boolean isFinished;
     private final List<Role> authorizedRoles;
