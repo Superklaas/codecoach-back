@@ -13,6 +13,12 @@ import java.util.stream.Collectors;
 @Component
 public class SessionMapper {
 
+    private final FeedbackMapper feedbackMapper;
+
+    public SessionMapper(FeedbackMapper feedbackMapper) {
+        this.feedbackMapper = feedbackMapper;
+    }
+
     public Session toEntity(CreateSessionDto dto, User coach, User coachee){
         return new Session(
                 dto.getSubject(),
@@ -37,7 +43,9 @@ public class SessionMapper {
                 .setCoacheeId(session.getCoachee().getId())
                 .setCoachProfileName(session.getCoach().getProfileName())
                 .setCoacheeProfileName(session.getCoachee().getProfileName())
-                .setStatus(session.getStatus().name());
+                .setStatus(session.getStatus().name())
+                .setFeedbackForCoach(feedbackMapper.toDto(session.getFeedbackForCoach()))
+                .setFeedbackForCoachee(feedbackMapper.toDto(session.getFeedbackForCoachee()));
     }
 
     public List<SessionDto> toListOfDtos(List<Session> sessions){

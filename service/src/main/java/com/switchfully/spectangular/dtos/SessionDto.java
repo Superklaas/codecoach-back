@@ -17,6 +17,9 @@ public class SessionDto {
     private String coachProfileName;
     private String coacheeProfileName;
     private String status;
+    private FeedbackForCoachDto feedbackForCoach;
+    private FeedbackForCoacheeDto feedbackForCoachee;
+
 
     public int getId() {
         return id;
@@ -114,6 +117,24 @@ public class SessionDto {
 
     public SessionDto setStatus(String status) {
         this.status = status;
+        return this;
+    }
+
+    public FeedbackForCoachDto getFeedbackForCoach() {
+        return feedbackForCoach;
+    }
+
+    public SessionDto setFeedbackForCoach(FeedbackForCoachDto feedbackForCoach) {
+        this.feedbackForCoach = feedbackForCoach;
+        return this;
+    }
+
+    public FeedbackForCoacheeDto getFeedbackForCoachee() {
+        return feedbackForCoachee;
+    }
+
+    public SessionDto setFeedbackForCoachee(FeedbackForCoacheeDto feedbackForCoachee) {
+        this.feedbackForCoachee = feedbackForCoachee;
         return this;
     }
 

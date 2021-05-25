@@ -14,7 +14,7 @@ import java.time.LocalTime;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SessionMapperTest {
-    private final SessionMapper sessionMapper = new SessionMapper();
+    private final SessionMapper sessionMapper = new SessionMapper(new FeedbackMapper());
 
     private User coachee;
     private User coach;
