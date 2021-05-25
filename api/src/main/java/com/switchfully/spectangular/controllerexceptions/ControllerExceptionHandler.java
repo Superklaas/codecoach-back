@@ -52,4 +52,10 @@ public class ControllerExceptionHandler {
         response.sendError(HttpStatus.BAD_REQUEST.value(),ex.getMessage());
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    protected void illegalState(IllegalStateException ex, HttpServletResponse response) throws IOException {
+        logger.error(ex.getMessage());
+        response.sendError(HttpStatus.BAD_REQUEST.value(),ex.getMessage());
+    }
+
 }
