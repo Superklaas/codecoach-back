@@ -50,12 +50,6 @@ public class SessionController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public SessionDto updateStatus(@RequestHeader (name="Authorization") String token, @PathVariable int id, @RequestBody SessionStatusDto status){
         logger.info("Received POST request to update status of session: " + id + "by user: " + token + "to status: " + status.toString());
-
-        if (!sessionService.userHasAuthorityToChangeState(token, id, status.getStatus())){
-            logger.info("unauthorized state change has happened" + id + "by user: " + token + "to status: " + status.toString());
-            throw new UnauthorizedException("unauthorized state change has happened");
-        }
-
         return sessionService.updateSessionStatus(id, status.getStatus());
     }
 }
