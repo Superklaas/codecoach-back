@@ -3,6 +3,7 @@ package com.switchfully.spectangular.services;
 import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.domain.session.Session;
+import com.switchfully.spectangular.domain.session.SessionStatus;
 import com.switchfully.spectangular.dtos.CreateSessionDto;
 import com.switchfully.spectangular.dtos.SessionDto;
 import com.switchfully.spectangular.exceptions.UnauthorizedException;
@@ -195,6 +196,61 @@ class SessionServiceTest {
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> sessionService.getAllSessionByCoach(TOKEN));
 
+    }
+
+    @Test
+    void getAllSessionByCoach_givenSessionWithDateInThePastAndStatusRequested_updatesStatusSessionToDeclined(){
+        session.setDate(LocalDate.now().minusDays(5));
+
+        when(userService.findUserById(anyInt())).thenReturn(coach);
+        when(sessionRepository.findAllByCoach(coach)).thenReturn(List.of(session));
+        when(sessionMapper.toListOfDtos(List.of(session))).thenReturn(List.of(sessionDto));
+
+        sessionService.getAllSessionByCoach(TOKEN);
+
+        assertThat(session.getStatus()).isEqualTo(SessionStatus.DECLINED_AUTOMATICALLY);
+    }
+
+    @Test
+    void getAllSessionByCoach_givenSessionWithDateInThePastAndStatusAccepted_updatesStatusSessionTo_WAITIN_FEEDBACK(){
+        //WHEN
+        session.setDate(LocalDate.now().minusDays(5));
+        session.setStatus(SessionStatus.ACCEPTED);
+        when(userService.findUserById(anyInt())).thenReturn(coach);
+        when(sessionRepository.findAllByCoach(coach)).thenReturn(List.of(session));
+        when(sessionMapper.toListOfDtos(List.of(session))).thenReturn(List.of(sessionDto));
+        //GIVEN
+        sessionService.getAllSessionByCoach(TOKEN);
+        //THEN
+        assertThat(session.getStatus()).isEqualTo(SessionStatus.WAITING_FEEDBACK);
+    }
+
+    @Test
+    void getAllSessionByCoach_givenSessionWithDateInTheFutureAndStatusRequested_doesNotUpdateSession(){
+        session.setDate(LocalDate.now().plusDays(5));
+
+        when(userService.findUserById(anyInt())).thenReturn(coach);
+        when(sessionRepository.findAllByCoach(coach)).thenReturn(List.of(session));
+        when(sessionMapper.toListOfDtos(List.of(session))).thenReturn(List.of(sessionDto));
+
+        sessionService.getAllSessionByCoach(TOKEN);
+
+        assertThat(session.getStatus()).isEqualTo(SessionStatus.REQUESTED);
+    }
+
+    @Test
+    void getAllSessionByCoachee_givenSessionWithDateInThePastAndStatusRequested_updatesStatusSessionToDeclined(){
+
+        //GIVEN
+        session.setDate(LocalDate.now().minusDays(5));
+        when(userService.findUserById(anyInt())).thenReturn(coachee);
+        when(sessionRepository.findAllByCoachee(coachee)).thenReturn(List.of(session));
+        when(sessionMapper.toListOfDtos(List.of(session))).thenReturn(List.of(sessionDto));
+
+        //WHEN
+        sessionService.getAllSessionByCoachee(TOKEN);
+
+        assertThat(session.getStatus()).isEqualTo(SessionStatus.DECLINED_AUTOMATICALLY);
     }
 
 
