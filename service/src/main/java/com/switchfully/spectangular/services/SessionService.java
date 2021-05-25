@@ -61,22 +61,13 @@ public class SessionService {
         return sessionMapper.toListOfDtos(coacheeSessions);
     }
 
-    //TODO refactor
     public SessionDto updateSessionStatus(int id, SessionStatus status) {
-        Optional<Session> optionalSession = sessionRepository.findById(id);
-
-        if (optionalSession.isEmpty()) {
-            throw new IllegalArgumentException("session not found with id: " + id);
-        }
-
-        Session session = optionalSession.get();
+        Session session = findSessionById(id);
 
         session.setStatus(status);
 
         return sessionMapper.toDto(session);
     }
-
-
 
     private void updateStatusSessionList(List<Session> sessionList) {
         sessionList.forEach(Session::autoUpdateSession);
@@ -100,11 +91,8 @@ public class SessionService {
     }
 
     private Session findSessionById(int id) {
-        Optional<Session> session = sessionRepository.findById(id);
-        if (session.isEmpty()) {
-            throw new IllegalArgumentException("session not found with id: " + id);
-        }
-        return session.get();
+        return sessionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("session not found with id: " + id));
     }
 
     public boolean userhasAuthorityToChangeState(String token, int sessionId, SessionStatus status) {

@@ -263,7 +263,6 @@ class SessionServiceTest {
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> sessionService.updateSessionStatus(5, SessionStatus.ACCEPTED));
-
     }
 
     @Test
@@ -277,6 +276,8 @@ class SessionServiceTest {
 
         verify(mockSession, times(1)).setStatus(SessionStatus.ACCEPTED);
     }
+
+
 
 
 }
