@@ -8,7 +8,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import java.util.Properties;
 
 @Configuration
-class MailConfiguration {
+public class MailConfiguration {
 
     @Bean
     public JavaMailSender getJavaMailSender() {
@@ -21,7 +21,7 @@ class MailConfiguration {
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.auth", "false");
+        props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
 
         return mailSender;

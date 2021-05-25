@@ -60,9 +60,8 @@ public class UserController {
 
     @PostMapping(path = "/forgot-password", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public void sendResetToken(@RequestBody String email, HttpServletRequest request) {
+    public void sendResetToken(@RequestHeader String email, @RequestBody String url) {
         logger.info("Received POST request to set and retrieve a reset token.");
-        String url = request.getScheme() + "://" + request.getServerName();
         userService.sendResetToken(email, url);
     }
 
