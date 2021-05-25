@@ -42,31 +42,43 @@ class SessionMapperTest {
         );
         session = new Session(
                 "Spring",
-                LocalDate.now().plusDays(1),
-                LocalTime.now(),
-                "Zoom",
+                LocalDate.of(2021,7,14),
+                LocalTime.of(15,45),
                 "These are remarks.",
+                "Zoom",
                 coach,
                 coachee);
 
         createSessionDto = new CreateSessionDto()
-                .setSubject(session.getSubject())
-                .setDate(session.getDate().toString())
-                .setStartTime(session.getStartTime().toString())
-                .setLocation(session.getLocation())
-                .setRemarks(session.getRemarks())
+                .setSubject("Spring")
+                .setDate(LocalDate.of(2021,7,14).toString())
+                .setStartTime(LocalTime.of(15,45).toString())
+                .setLocation("Zoom")
+                .setRemarks("These are remarks.")
                 .setCoacheeId(2)
                 .setCoachId(1);
 
         sessionDto = new SessionDto()
-                .setSubject(session.getSubject())
-                .setDate(session.getDate().toString())
-                .setLocation(session.getLocation())
-                .setRemarks(session.getRemarks())
+                .setSubject("Spring")
+                .setDate(LocalDate.of(2021,7,14).toString())
+                .setStartTime(LocalTime.of(15,45).toString())
+                .setLocation("Zoom")
+                .setRemarks("These are remarks.")
                 .setCoacheeId(2)
-                .setCoachId(1);
+                .setCoachId(1)
+                .setCoachProfileName("CoachFace")
+                .setCoacheeProfileName("TestFace")
+                .setStatus("REQUESTED");
     }
 
+    @Test
+    void toEntity_givenCreateSessionDto_thenReturnSession() {
+        //GIVEN
+        //WHEN
+        Session actualSession = sessionMapper.toEntity(createSessionDto, coach, coachee);
+        //THEN
+        assertThat(actualSession).isEqualTo(session);
+    }
 
 /* //cannot test entities because they aren't assigned with an id yet -> NullPointer
 
@@ -79,14 +91,5 @@ class SessionMapperTest {
         assertThat(actualSessionDto).isEqualTo(sessionDto);
     }
 */
-
-    @Test
-    void toEntity_givenCreateSessionDto_thenReturnSession() {
-        //GIVEN
-        //WHEN
-        Session actualSession = sessionMapper.toEntity(createSessionDto, coach, coachee);
-        //THEN
-        assertThat(actualSession).isEqualTo(session);
-    }
 
 }

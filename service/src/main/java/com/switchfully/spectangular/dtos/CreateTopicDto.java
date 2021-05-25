@@ -7,4 +7,9 @@ public class CreateTopicDto {
     public String getName() {
         return name;
     }
+
+    public CreateTopicDto setName(String name) {
+        this.name = name;
+        return this;
+    }
 }
