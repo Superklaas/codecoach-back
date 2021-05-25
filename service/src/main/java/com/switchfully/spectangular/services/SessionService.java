@@ -61,15 +61,8 @@ public class SessionService {
         return sessionMapper.toListOfDtos(coacheeSessions);
     }
 
-    //TODO refactor
     public SessionDto updateSessionStatus(int id, SessionStatus status) {
-        Optional<Session> optionalSession = sessionRepository.findById(id);
-
-        if (optionalSession.isEmpty()) {
-            throw new IllegalArgumentException("session not found with id: " + id);
-        }
-
-        Session session = optionalSession.get();
+        Session session = findSessionById(id);
 
         session.setStatus(status);
 
@@ -98,14 +91,11 @@ public class SessionService {
     }
 
     private Session findSessionById(int id) {
-        Optional<Session> session = sessionRepository.findById(id);
-        if (session.isEmpty()) {
-            throw new IllegalArgumentException("session not found with id: " + id);
-        }
-        return session.get();
+        return sessionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("session not found with id: " + id));
     }
 
-    public boolean userhasAuthorityToChangeState(String token, int sessionId, SessionStatus status) {
+    public boolean userHasAuthorityToChangeState(String token, int sessionId, SessionStatus status) {
         User user = userService.findUserById(this.getIdFromJwtToken(token));
         Session session = this.findSessionById(sessionId);
         if (user.equals(session.getCoach())){
@@ -122,7 +112,6 @@ public class SessionService {
     }
 
     private boolean hacCoachAuthorityToChange(SessionStatus status) {
-        System.out.println(status.getAuthorizedRoles().contains(Role.COACH));
         return status.getAuthorizedRoles().contains(Role.COACH);
     }
 
