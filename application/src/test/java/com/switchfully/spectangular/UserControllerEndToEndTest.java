@@ -217,7 +217,6 @@ public class UserControllerEndToEndTest {
         String validToken = "cba90cb7-4ef5-4fcb-a4a1-6d7177ce75e8";
         //WHEN
         Response response = given()
-                .header("Email", "test@spectangular.com")
                 .body("Y0uCoach")
                 .baseUri("http://localhost")
                 .port(port)
@@ -237,7 +236,6 @@ public class UserControllerEndToEndTest {
         String invalidToken = "cba90cb7-4ef5-4fcb-a4a1-6d7177ce75e9";
         //WHEN
         Response response = given()
-                .header("Email", "test@spectangular.com")
                 .body("Y0uCoach")
                 .baseUri("http://localhost")
                 .port(port)
