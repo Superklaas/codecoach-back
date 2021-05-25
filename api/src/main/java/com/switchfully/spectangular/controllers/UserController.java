@@ -6,10 +6,12 @@ import com.switchfully.spectangular.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -56,7 +58,20 @@ public class UserController {
         return userService.getAllCoaches();
     }
 
+    @PostMapping(path = "/forgot-password", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void sendResetToken(@RequestBody String email, HttpServletRequest request) {
+        logger.info("Received POST request to set and retrieve a reset token.");
+        String url = request.getScheme() + "://" + request.getServerName();
+        userService.sendResetToken(email, url);
+    }
 
+    @PostMapping(path = "/reset-password", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void resetPassword(@RequestParam String token, @RequestBody String newPassword) {
+        logger.info("Received POST request to reset the User's password.");
+        userService.resetPassword(token, newPassword);
+    }
 
 }
 

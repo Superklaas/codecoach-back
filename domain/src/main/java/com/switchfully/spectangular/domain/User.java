@@ -7,6 +7,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "app_user")
@@ -46,6 +47,9 @@ public class User {
     @JoinTable(name = "user_topics", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "topic_id"))
     private List<Topic> topicList;
+
+    @Column(name = "reset_token")
+    private String resetToken;
 
 
     public User() {
@@ -116,6 +120,14 @@ public class User {
         return availability;
     }
 
+    public void setEncryptedPassword(String encryptedPassword) {
+        this.encryptedPassword = encryptedPassword;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
     public User setAvailability(String availability) {
         this.availability = availability;
         return this;
@@ -146,6 +158,10 @@ public class User {
     public User setTopicList(List<Topic> topicList) {
         this.topicList = topicList;
         return this;
+    }
+
+    public String getResetToken() {
+        return resetToken;
     }
 
     public void becomeCoach() {
