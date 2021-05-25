@@ -69,6 +69,18 @@ public class SessionService {
         return sessionMapper.toDto(session);
     }
 
+    public boolean userHasAuthorityToChangeState(String token, int sessionId, SessionStatus status) {
+        User user = userService.findUserById(this.getIdFromJwtToken(token));
+        Session session = this.findSessionById(sessionId);
+        if (user.equals(session.getCoach())){
+            return hacCoachAuthorityToChange(status);
+        }
+        if (user.equals(session.getCoachee())){
+            return hacCoacheeAuthorityToChange(status);
+        }
+        return false;
+    }
+
     private void updateStatusSessionList(List<Session> sessionList) {
         sessionList.forEach(Session::autoUpdateSession);
     }
@@ -93,18 +105,6 @@ public class SessionService {
     private Session findSessionById(int id) {
         return sessionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("session not found with id: " + id));
-    }
-
-    public boolean userHasAuthorityToChangeState(String token, int sessionId, SessionStatus status) {
-        User user = userService.findUserById(this.getIdFromJwtToken(token));
-        Session session = this.findSessionById(sessionId);
-        if (user.equals(session.getCoach())){
-            return hacCoachAuthorityToChange(status);
-        }
-        if (user.equals(session.getCoachee())){
-            return hacCoacheeAuthorityToChange(status);
-        }
-        return false;
     }
 
     private boolean hacCoacheeAuthorityToChange(SessionStatus status) {
