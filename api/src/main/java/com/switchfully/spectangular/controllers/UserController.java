@@ -56,7 +56,13 @@ public class UserController {
         return userService.getAllCoaches();
     }
 
-
+    @PreAuthorize("hasAuthority('UPDATE_PROFILE')")
+    @PutMapping(path = "/{id}" , produces = "application/json", consumes = "application/json" )
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto updateProfile(@PathVariable int id, @RequestBody UserDto userDto ){
+        logger.info("Received PUT request to update a user");
+        return userService.updateUser(userDto,id);
+    }
 
 }
 

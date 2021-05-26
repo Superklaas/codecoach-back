@@ -47,4 +47,15 @@ public class UserMapper {
         return users.stream().map(this::toDto).collect(Collectors.toList());
     }
 
+    public User updateUserFromDto(UserDto dto, User user) {
+        return new User(
+                dto.getFirstName() == null ? user.getFirstName() : dto.getFirstName(),
+                dto.getLastName() == null ? user.getLastName() : dto.getLastName(),
+                dto.getProfileName() == null ? user.getProfileName() : dto.getProfileName(),
+                dto.getEmail() == null ? user.getEmail() : dto.getEmail(),
+                user.getEncryptedPassword(),
+                user.getRole()
+                );
+    }
+
 }

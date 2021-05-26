@@ -64,4 +64,14 @@ public class UserService {
     public List<UserDto> getAllCoaches() {
         return userMapper.toListOfDtos(userRepository.findUsersByRole(Role.COACH));
     }
+
+    public UserDto updateUser(UserDto dto,int id){
+        if (dto.getId()!=id){
+            throw new IllegalArgumentException("Ids do not match");
+        }
+        Optional<User> user = userRepository.findById(id);
+        User result = userRepository.save(userMapper.updateUserFromDto(dto,
+                user.orElseThrow(()->new IllegalArgumentException("The user you are trying to update does not exist"))));
+        return userMapper.toDto(result);
+    }
 }
