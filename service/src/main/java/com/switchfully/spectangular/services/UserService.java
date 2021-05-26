@@ -16,9 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 @Transactional
@@ -66,10 +66,12 @@ public class UserService {
     }
 
     public UserDto updateToCoach(int id) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isEmpty()) throw new IllegalArgumentException("User not found.");
-        user.get().becomeCoach();
-        return userMapper.toDto(user.get());
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) throw new IllegalArgumentException("User not found.");
+        User user = optionalUser.get();
+        user.becomeCoach();
+        userRepository.save(user);
+        return userMapper.toDto(user);
     }
 
     public List<UserDto> getAllCoaches() {
@@ -94,6 +96,7 @@ public class UserService {
         user.setResetToken(UUID.randomUUID().toString());
         userRepository.save(user);
         sendEmailToResetPassword(user, requestUrl);
+        expireResetToken(user);
     }
 
     public void resetPassword(String token, String newPassword) {
@@ -113,6 +116,18 @@ public class UserService {
         message.setText("To reset your password, click the link below:\n" + url
         + "/reset-password?token=" + user.getResetToken());
         emailService.sendEmail(message);
+    }
+
+    private void expireResetToken(User user) {
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                user.setResetToken(null);
+                userRepository.save(user);
+            }
+        };
+        timer.schedule(timerTask, 60000); //30 minutes in milliseconds
     }
 
     private void assertValidPassword(String unencryptedPassword) {
