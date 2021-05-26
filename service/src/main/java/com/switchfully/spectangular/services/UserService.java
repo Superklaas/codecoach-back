@@ -10,6 +10,7 @@ import com.switchfully.spectangular.exceptions.EmailNotFoundException;
 import com.switchfully.spectangular.exceptions.InvalidPasswordException;
 import com.switchfully.spectangular.mappers.UserMapper;
 import com.switchfully.spectangular.repository.UserRepository;
+import com.switchfully.spectangular.services.timertasks.RemoveResetTokenTimerTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -101,7 +102,7 @@ public class UserService {
 
     public void resetPassword(String token, String newPassword) {
         Optional<User> optionalUser = userRepository.findByResetToken(token);
-        if (optionalUser.isEmpty()) throw new IllegalArgumentException("Invalid reset code." + token);
+        if (optionalUser.isEmpty()) throw new IllegalArgumentException("Invalid reset code.");
         User user = optionalUser.get();
         user.setEncryptedPassword(passwordEncoder.encode(newPassword));
         user.setResetToken(null);
@@ -120,14 +121,8 @@ public class UserService {
 
     private void expireResetToken(User user) {
         Timer timer = new Timer();
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                user.setResetToken(null);
-                userRepository.save(user);
-            }
-        };
-        timer.schedule(timerTask, 60000); //30 minutes in milliseconds
+        TimerTask timerTask = new RemoveResetTokenTimerTask(user, userRepository);
+        timer.schedule(timerTask, 1800000); //1800000 = 30 minutes in milliseconds
     }
 
     private void assertValidPassword(String unencryptedPassword) {
