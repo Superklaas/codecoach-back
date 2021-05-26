@@ -66,8 +66,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .setAudience(SecurityConstants.TOKEN_AUDIENCE)
                 .setSubject(user.getId().toString())
                 .setExpiration(new Date(new Date().getTime() + 3600000*12)) // 1 hour
-                .claim("features",
-                        authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .claim("role", user.getRole().toString())
                 .claim("profileName", user.getProfileName())
                 .claim("email", user.getEmail())

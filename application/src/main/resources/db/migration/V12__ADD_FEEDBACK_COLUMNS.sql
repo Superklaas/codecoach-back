@@ -1,0 +1,9 @@
+alter table codecoach.sessions
+    add fb_coachee2coach_explanation smallint,
+    add fb_coachee2coach_usefulness smallint,
+    add fb_coachee2coach_positive varchar(2000),
+    add fb_coachee2coach_negative varchar(2000),
+    add fb_coach2coachee_preparedness smallint,
+    add fb_coach2coachee_willingness smallint,
+    add fb_coach2coachee_positive varchar(2000),
+    add fb_coach2coachee_negative varchar(2000);

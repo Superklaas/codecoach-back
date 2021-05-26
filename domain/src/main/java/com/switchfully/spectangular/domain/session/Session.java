@@ -44,6 +44,24 @@ public class Session {
     @JoinColumn(name = "coachee_id")
     private User coachee;
 
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride( name = "explanation", column = @Column(name = "fb_coachee2coach_explanation")),
+            @AttributeOverride( name = "usefulness", column = @Column(name = "fb_coachee2coach_usefulness")),
+            @AttributeOverride( name = "positive", column = @Column(name = "fb_coachee2coach_positive")),
+            @AttributeOverride( name = "negative", column = @Column(name = "fb_coachee2coach_negative"))
+    })
+    private FeedbackForCoach feedbackForCoach;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride( name = "preparedness", column = @Column(name = "fb_coach2coachee_preparedness")),
+            @AttributeOverride( name = "willingness", column = @Column(name = "fb_coach2coachee_willingness")),
+            @AttributeOverride( name = "positive", column = @Column(name = "fb_coach2coachee_positive")),
+            @AttributeOverride( name = "negative", column = @Column(name = "fb_coach2coachee_negative"))
+    })
+    private FeedbackForCoachee feedbackForCoachee;
+
     public Session(String subject, LocalDate date, LocalTime startTime, String remarks, String location, User coach, User coachee) {
         validateDate(date, startTime);
         this.subject = subject;
@@ -54,6 +72,34 @@ public class Session {
         this.coach = coach;
         this.coachee = coachee;
         this.status = SessionStatus.REQUESTED;
+    }
+
+    public FeedbackForCoach getFeedbackForCoach() {
+        return feedbackForCoach;
+    }
+
+    public Session setFeedbackForCoach(FeedbackForCoach feedbackForCoach) {
+        assertOpenToFeedback();
+        this.feedbackForCoach = feedbackForCoach;
+        checkIfAllFeedbackReceived();
+        return this;
+    }
+
+    public FeedbackForCoachee getFeedbackForCoachee() {
+        return feedbackForCoachee;
+    }
+
+    public Session setFeedbackForCoachee(FeedbackForCoachee feedbackForCoachee) {
+        assertOpenToFeedback();
+        this.feedbackForCoachee = feedbackForCoachee;
+        checkIfAllFeedbackReceived();
+        return this;
+    }
+
+    private void checkIfAllFeedbackReceived() {
+        if (feedbackForCoach != null && feedbackForCoach.getUsefulness() != null && feedbackForCoachee != null && feedbackForCoachee.getPreparedness() != null) {
+            status = SessionStatus.FEEDBACK_RECEIVED;
+        }
     }
 
     private void validateDate(LocalDate date, LocalTime time){
@@ -161,4 +207,11 @@ public class Session {
             setStatus(SessionStatus.WAITING_FEEDBACK);
         }
     }
+
+    private void assertOpenToFeedback() {
+        if (!getStatus().equals(SessionStatus.WAITING_FEEDBACK)) {
+            throw new IllegalStateException("Cannot give feedback when the session is not waiting for feedback");
+        }
+    }
+
 }

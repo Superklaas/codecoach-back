@@ -72,4 +72,9 @@ public class CreateSessionDto {
         this.remarks = remarks;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "CreateSessionDto{" + "subject='" + subject + '\'' + ", date='" + date + '\'' + ", startTime='" + startTime + '\'' + ", location='" + location + '\'' + ", coachId=" + coachId + ", coacheeId=" + coacheeId + ", remarks='" + remarks + '\'' + '}';
+    }
 }

@@ -51,7 +51,7 @@ public class CodeCoachAuthenticationProvider implements AuthenticationProvider {
                 return new UsernamePasswordAuthenticationToken(
                         user.getEmail(),
                         user.getEncryptedPassword(),
-                        rolesToGrantedAuthorities(user.getRole().getFeatureList()));
+                        rolesToGrantedAuthorities(Feature.getForRole(user.getRole())));
             }
         }
         throw new BadCredentialsException("The provided credentials were invalid.");

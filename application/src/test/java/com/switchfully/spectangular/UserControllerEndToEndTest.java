@@ -171,4 +171,80 @@ public class UserControllerEndToEndTest {
         assertThat(userDtos).hasSize(1);
         assertThat(userDtos).allSatisfy(userDto -> userDto.getRole().equals("COACH"));
     }
+
+    @Test
+    @Sql("/sql/insertUsers.sql")
+    void sendResetToken_whenCalled_thenAnEmailIsSent() {
+        //GIVEN
+        //WHEN
+        Response response = given()
+                .header("Email", "test@spectangular.com")
+                .body("http://localhost:8080")
+                .baseUri("http://localhost")
+                .port(port)
+                .when()
+                .post("/users/forgot-password");
+        //THEN
+        response
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    @Sql("/sql/insertUsers.sql")
+    void sendResetToken_givenNonExistentEmail_thenStatusCodeIsBadRequest() {
+        //GIVEN
+        //WHEN
+        Response response = given()
+                .header("Email", "fake@fake.com")
+                .body("http://localhost:8080")
+                .baseUri("http://localhost")
+                .port(port)
+                .when()
+                .post("/users/forgot-password");
+        //THEN
+        response
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @Sql("/sql/insertUsers.sql")
+    void resetPassword_givenNonExistentEmail_thenStatusCodeIsBadRequest() {
+        //GIVEN
+        String validToken = "cba90cb7-4ef5-4fcb-a4a1-6d7177ce75e8";
+        //WHEN
+        Response response = given()
+                .body("Y0uCoach")
+                .baseUri("http://localhost")
+                .port(port)
+                .when()
+                .post("/users/reset-password?token={token}", validToken);
+        //THEN
+        response
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    @Sql("/sql/insertUsers.sql")
+    void resetPassword_givenNonExistentResetToken_thenStatusCodeIsBadRequest() {
+        //GIVEN
+        String invalidToken = "cba90cb7-4ef5-4fcb-a4a1-6d7177ce75e9";
+        //WHEN
+        Response response = given()
+                .body("Y0uCoach")
+                .baseUri("http://localhost")
+                .port(port)
+                .when()
+                .post("/users/reset-password?token={token}", invalidToken);
+        //THEN
+        response
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
 }

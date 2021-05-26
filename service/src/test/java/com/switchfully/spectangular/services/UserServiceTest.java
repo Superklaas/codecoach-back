@@ -6,6 +6,7 @@ import com.switchfully.spectangular.dtos.CreateUserDto;
 import com.switchfully.spectangular.dtos.UserDto;
 import com.switchfully.spectangular.exceptions.DuplicateEmailException;
 import com.switchfully.spectangular.exceptions.EmailNotFoundException;
+import com.switchfully.spectangular.exceptions.InvalidPasswordException;
 import com.switchfully.spectangular.mappers.UserMapper;
 import com.switchfully.spectangular.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,9 +15,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -30,6 +33,10 @@ class UserServiceTest {
     private UserRepository userRepository;
     @Mock
     private UserMapper userMapper;
+    @Mock
+    private EmailService emailService;
+    @Mock
+    private PasswordEncoder passwordEncoder;
     @InjectMocks
     private UserService userService;
 
@@ -100,6 +107,33 @@ class UserServiceTest {
 
     @Test
     void createUser_givenDuplicateEmailAddress_thenThrowDuplicateEmailException() {
+        //GIVEN
+        createUserDto.setPassword("123456");
+        //WHEN & THEN
+        assertThatExceptionOfType(InvalidPasswordException.class)
+                .isThrownBy(() -> userService.createUser(createUserDto));
+    }
+
+    @Test
+    void createUser_givenDuplicateEmailAddress_thenThrowDuplicateEmailException2() {
+        //GIVEN
+        createUserDto.setPassword("wwww123456");
+        //WHEN & THEN
+        assertThatExceptionOfType(InvalidPasswordException.class)
+                .isThrownBy(() -> userService.createUser(createUserDto));
+    }
+
+    @Test
+    void createUser_givenDuplicateEmailAddress_thenThrowDuplicateEmailException3() {
+        //GIVEN
+        createUserDto.setPassword("WWWW123456");
+        //WHEN & THEN
+        assertThatExceptionOfType(InvalidPasswordException.class)
+                .isThrownBy(() -> userService.createUser(createUserDto));
+    }
+
+    @Test
+    void createUser_givenInvalidPassword_thenThrowInvalidPasswordException() {
         //GIVEN
         when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
         //WHEN & THEN
@@ -176,5 +210,47 @@ class UserServiceTest {
         verify(userRepository).findUsersByRole(any());
         verify(userMapper).toListOfDtos(any());
         assertThat(actualUserDtos).isEqualTo(List.of(userDto));
+    }
+
+    @Test
+    void sendResetToken_givenEmailAndUrl_thenEmailGetsSend() {
+        //GIVEN
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
+        //WHEN
+        userService.sendResetToken(user.getEmail(), "https://www.non-existent-website.org");
+        //THEN
+        verify(userRepository).findByEmail(any());
+        verify(userRepository).save(any());
+    }
+
+    @Test
+    void sendResetToken_givenNonExistentEmail_thenThrowIllegalArgumentException() {
+        //GIVEN
+        //WHEN
+        //THEN
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> userService.sendResetToken("email@email.com", "https://www.non-existent-website.org"));
+    }
+
+    @Test
+    void resetPassword_givenResetTokenAndNewPassword_thenPasswordIsChanged() {
+        //GIVEN
+        String token = UUID.randomUUID().toString();
+        user.setResetToken(token);
+        when(userRepository.findByResetToken(any())).thenReturn(Optional.of(user));
+        //WHEN
+        userService.resetPassword(token, "newYouC0ach");
+        //THEN
+        verify(userRepository).findByResetToken(any());
+        verify(userRepository).save(any());
+    }
+
+    @Test
+    void resetPassword_givenNonExistentEmail_thenThrowIllegalArgumentException() {
+        //GIVEN
+        //WHEN
+        //THEN
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> userService.resetPassword(UUID.randomUUID().toString(), "newYouC0ach"));
     }
 }

@@ -1,5 +1,7 @@
 package com.switchfully.spectangular.security;
 
+import com.switchfully.spectangular.domain.Feature;
+import com.switchfully.spectangular.domain.Role;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -56,19 +58,28 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                         .setSigningKey(signingKey)
                         .parseClaimsJws(token.replace("Bearer ",""));
 
-                var email = parsedToken
+                var id = parsedToken
                         .getBody()
                         .getSubject();
 
-                ArrayList<String> authoritiesInToken
-                        = parsedToken.getBody().get("features", ArrayList.class);
+                String roleInToken = parsedToken.getBody().get("role", String.class);
+                if (roleInToken == null) {
+                    throw new MalformedJwtException("Token should contain a role claim");
+                }
 
-                var authorities = authoritiesInToken.stream()
+                Role parsedRole = Role.valueOf(roleInToken);
+                if (parsedRole == null) {
+                    throw new MalformedJwtException("Role claim in token does not match a known role");
+                }
+
+                var authorities = Feature.getForRole(parsedRole)
+                        .stream()
+                        .map(Feature::toString)
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-                if (!isEmpty(email)) {
-                    return new UsernamePasswordAuthenticationToken(email,null, authorities);
+                if (!isEmpty(id)) {
+                    return new UsernamePasswordAuthenticationToken(id,null, authorities);
                 }
             } catch (ExpiredJwtException exception) {
                 log.warn("Request to parse expired JWT : {} failed : {}", token, exception.getMessage());
