@@ -102,7 +102,7 @@ public class UserService {
 
     public void resetPassword(String token, String newPassword) {
         Optional<User> optionalUser = userRepository.findByResetToken(token);
-        if (optionalUser.isEmpty()) throw new IllegalArgumentException("Invalid reset code.");
+        if (optionalUser.isEmpty()) throw new IllegalArgumentException("Your password has not been changed. Please try again.");
         User user = optionalUser.get();
         user.setEncryptedPassword(passwordEncoder.encode(newPassword));
         user.setResetToken(null);
@@ -114,8 +114,9 @@ public class UserService {
         message.setFrom("spectangular.codecoach@gmail.com");
         message.setTo(user.getEmail());
         message.setSubject("Password Reset Request");
-        message.setText("To reset your password, click the link below:\n" + url
-        + "/reset-password?token=" + user.getResetToken());
+        message.setText("To reset your password, click the link below:\n"
+                + url + "/reset-password?token=" + user.getResetToken()
+                + "\nThis link will expire in 30 minutes.");
         emailService.sendEmail(message);
     }
 
