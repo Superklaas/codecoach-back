@@ -184,7 +184,6 @@ class UserServiceTest {
         UserDto actualUserDto = userService.updateToCoach(userDto.getId());
         //THEN
         verify(userRepository).findById(any());
-        verify(userRepository).save(any());
         verify(userMapper).toDto(any());
         assertThat(actualUserDto).isEqualTo(expectedUserDto);
     }
@@ -221,7 +220,6 @@ class UserServiceTest {
         userService.sendResetToken(user.getEmail(), "https://www.non-existent-website.org");
         //THEN
         verify(userRepository).findByEmail(any());
-        verify(userRepository).save(any());
     }
 
     @Test
@@ -243,7 +241,6 @@ class UserServiceTest {
         userService.resetPassword(token, "newYouC0ach");
         //THEN
         verify(userRepository).findByResetToken(any());
-        verify(userRepository).save(any());
     }
 
     @Test

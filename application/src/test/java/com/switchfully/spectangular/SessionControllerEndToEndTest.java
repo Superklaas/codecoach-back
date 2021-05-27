@@ -1,7 +1,6 @@
 package com.switchfully.spectangular;
 
 import com.switchfully.spectangular.dtos.SessionDto;
-import com.switchfully.spectangular.dtos.UserDto;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,7 @@ public class SessionControllerEndToEndTest {
     private int port;
 
     @Test
-    @Sql("/sql/insertUsers.sql")
+    @Sql("/sql/testSetup.sql")
     void createSession_whenCalled_thenOneMoreSessionIsPresent(){
         //GIVEN
         LocalDate testDate = LocalDate.now().plusDays(1);
@@ -69,7 +68,7 @@ public class SessionControllerEndToEndTest {
     }
 
     @Test
-    @Sql("/sql/insertUsers.sql")
+    @Sql("/sql/testSetup.sql")
     void getAllCoacheeSessions_givenRequestMadeByCoachee_thenAllCoacheeSessionsAreFound(){
         //GIVEN
        Response AuthorizepostResponse = given()
@@ -99,7 +98,7 @@ public class SessionControllerEndToEndTest {
     }
 
     @Test
-    @Sql("/sql/insertUsers.sql")
+    @Sql("/sql/testSetup.sql")
     void getAllCoachSessions_givenRequestMadeByCoach_thenAllCoachSessionsAreFound(){
         //GIVEN
         Response AuthorizepostResponse = given()
@@ -129,7 +128,7 @@ public class SessionControllerEndToEndTest {
     }
 
     @Test
-    @Sql("/sql/insertUsers.sql")
+    @Sql("/sql/testSetup.sql")
     void getAllCoacheeSessions_givenRequestMadeByCoach_thenAllCoacheeSessionsAreFound(){
         //GIVEN
         Response AuthorizepostResponse = given()
@@ -159,7 +158,7 @@ public class SessionControllerEndToEndTest {
     }
 
     @Test
-    @Sql("/sql/insertUsers.sql")
+    @Sql("/sql/testSetup.sql")
     void getAllCoachSessions_givenRequestMadeByCoachee_thenStatusCodeIsBadRequest(){
         //GIVEN
         Response AuthorizepostResponse = given()
@@ -187,7 +186,7 @@ public class SessionControllerEndToEndTest {
     }
 
     @Test
-    @Sql("/sql/insertUsers.sql")
+    @Sql("/sql/testSetup.sql")
     void updateStatus_updatesWithValidStatusChange_ReturnsSessionWithUpdatedStatus(){
         //GIVEN
         Response AuthorizepostResponse = given()
