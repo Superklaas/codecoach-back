@@ -1,13 +1,17 @@
 package com.switchfully.spectangular.services;
 
 
+import com.switchfully.spectangular.JSONObjectParser;
 import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.User;
+import com.switchfully.spectangular.domain.session.Session;
+import com.switchfully.spectangular.domain.session.SessionStatus;
 import com.switchfully.spectangular.dtos.*;
 import com.switchfully.spectangular.exceptions.*;
 import com.switchfully.spectangular.mappers.UserMapper;
 import com.switchfully.spectangular.repository.UserRepository;
 import com.switchfully.spectangular.services.timertasks.RemoveResetTokenTimerTask;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -80,7 +84,10 @@ public class UserService {
     }
 
 
-    public UserDto updateUser(UpdateUserProfileDto dto, int id) {
+    public UserDto updateUser(UpdateUserProfileDto dto, int id, String token) {
+        if(!userHasAuthorityToUpdateProfile(token, id)){
+            throw new UnauthorizedException("You are not authorized to make changes to this profile.");
+        }
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("The user you are trying to update does not exist"));
         user.setFirstName(dto.getFirstName())
                 .setLastName(dto.getLastName())
@@ -142,5 +149,21 @@ public class UserService {
         if (!unencryptedPassword.matches(".*[a-z]+.*")) {
             throw new InvalidPasswordException("password is invalid");
         }
+    }
+
+    public boolean userHasAuthorityToUpdateProfile(String token, int id  ) {
+        JSONObject tokenObject = JSONObjectParser.JwtTokenToJSONObject(token);
+        if(tokenObject.get("role").equals("ADMIN")){
+            return true;
+        }
+        if(getIdFromJwtToken(token)==id){
+            return true;
+        }
+        return false;
+    }
+
+    private int getIdFromJwtToken(String token) {
+        JSONObject tokenObject = JSONObjectParser.JwtTokenToJSONObject(token);
+        return Integer.parseInt(tokenObject.get("sub").toString());
     }
 }

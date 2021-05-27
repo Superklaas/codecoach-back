@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.List;
 
 
@@ -63,9 +64,9 @@ public class UserController {
     @PreAuthorize("hasAuthority('UPDATE_PROFILE')")
     @PutMapping(path = "/{id}" , produces = "application/json", consumes = "application/json" )
     @ResponseStatus(HttpStatus.OK)
-    public UserDto updateProfile(@PathVariable int id, @RequestBody UpdateUserProfileDto updateDto ) {
+    public UserDto updateProfile(@PathVariable int id, @RequestBody UpdateUserProfileDto updateDto, @RequestHeader (name="Authorization") String token) {
         logger.info("Received PUT request to update a user");
-        return userService.updateUser(updateDto, id);
+        return userService.updateUser(updateDto, id, token);
     }
 
     @PostMapping(path = "/forgot-password", produces = "application/json")
