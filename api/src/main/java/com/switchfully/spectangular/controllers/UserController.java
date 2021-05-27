@@ -1,14 +1,11 @@
 package com.switchfully.spectangular.controllers;
 
-<<<<<<< HEAD
 import com.switchfully.spectangular.dtos.CreateUserDto;
 import com.switchfully.spectangular.dtos.UpdateTopicsDto;
 import com.switchfully.spectangular.dtos.UpdateUserProfileDto;
 import com.switchfully.spectangular.dtos.UserDto;
 import com.switchfully.spectangular.services.TopicService;
-=======
 import com.switchfully.spectangular.dtos.*;
->>>>>>> df4d9e9e769007a94b6fb240a22be7ea87503dee
 import com.switchfully.spectangular.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
