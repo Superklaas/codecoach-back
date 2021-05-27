@@ -3,12 +3,13 @@ package com.switchfully.spectangular.services;
 
 import com.switchfully.spectangular.JSONObjectParser;
 import com.switchfully.spectangular.domain.Role;
+import com.switchfully.spectangular.domain.Topic;
 import com.switchfully.spectangular.domain.User;
-import com.switchfully.spectangular.domain.session.Session;
-import com.switchfully.spectangular.domain.session.SessionStatus;
 import com.switchfully.spectangular.dtos.*;
 import com.switchfully.spectangular.exceptions.*;
+import com.switchfully.spectangular.mappers.TopicMapper;
 import com.switchfully.spectangular.mappers.UserMapper;
+import com.switchfully.spectangular.repository.TopicRepository;
 import com.switchfully.spectangular.repository.UserRepository;
 import com.switchfully.spectangular.services.timertasks.RemoveResetTokenTimerTask;
 import org.json.JSONObject;
@@ -21,8 +22,6 @@ import javax.transaction.Transactional;
 
 import java.util.stream.Collectors;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -34,14 +33,18 @@ public class UserService {
     private final UserMapper userMapper;
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
+    private final TopicMapper topicMapper;
+    private final TopicRepository topicRepository;
 
 
     @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper, EmailService emailService, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, EmailService emailService, PasswordEncoder passwordEncoder, TopicMapper topicMapper, TopicRepository topicRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
+        this.topicMapper = topicMapper;
+        this.topicRepository = topicRepository;
     }
 
     public User findUserByEmail(String email) {
@@ -177,5 +180,15 @@ public class UserService {
     private int getIdFromJwtToken(String token) {
         JSONObject tokenObject = JSONObjectParser.JwtTokenToJSONObject(token);
         return Integer.parseInt(tokenObject.get("sub").toString());
+    }
+
+    public UserDto updateTopics(int userId, List<UpdateTopicsDto> topicDtos) {
+        List<Topic> topics = topicMapper.toEntity(topicDtos);
+        User user = userRepository.findById(userId).orElseThrow();
+
+        topics.forEach(topicRepository::save);
+        user.setTopicList(topics);
+
+        return userMapper.toDto(user);
     }
 }

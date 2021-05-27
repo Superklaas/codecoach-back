@@ -1,6 +1,7 @@
 package com.switchfully.spectangular.domain;
 
 import javax.persistence.*;
+import java.awt.*;
 import java.util.Objects;
 
 @Entity
@@ -10,6 +11,9 @@ public class Topic {
     @Id
     @Column(name = "name")
     private String name;
+
+//    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "topicList")
+//    private List<User> userList;
 
     public Topic(String name) {
         this.name = name;

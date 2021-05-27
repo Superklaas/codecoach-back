@@ -7,7 +7,6 @@ import org.apache.commons.validator.routines.EmailValidator;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "app_user")
@@ -43,7 +42,12 @@ public class User {
     @Column(name = "img_url")
     private String imageUrl;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
+// Deze werkt voor bestaande topics
+//      @ManyToMany(cascade = {}, fetch = FetchType.EAGER)
+//      @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+// Deze werkt voor nieuwe topic maar niet voor bestaande
+//    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {}, fetch = FetchType.EAGER)
     @JoinTable(name = "user_topics", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "topic_name"))
     private List<Topic> topicList;

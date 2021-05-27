@@ -98,7 +98,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public UserDto updateTopics(@PathVariable int id, @RequestBody List<UpdateTopicsDto> dtoList) {
         logger.info("Received POST request to update topics.");
-        return topicService.updateTopics(id, dtoList);
+        return userService.updateTopics(id, dtoList);
     }
 
     @PreAuthorize("hasAuthority('UPDATE_PROFILE')")

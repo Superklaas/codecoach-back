@@ -29,10 +29,5 @@ public class TopicService {
         return topicMapper.toDto(topicRepository.findAll());
     }
 
-    public UserDto updateTopics(int userId, List<UpdateTopicsDto> topicDtos) {
-       List<Topic> topics = topicMapper.toEntity(topicDtos);
 
-        System.out.println(topics);
-       return null;
-    }
 }
