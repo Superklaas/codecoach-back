@@ -220,8 +220,84 @@ public class SessionControllerEndToEndTest {
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.ACCEPTED.value());
-
-
     }
+/*
+
+    @Test
+    @Sql("/sql/testSetup.sql")
+    void createFeedbackForCoach_whenCalled_thenFeedbackIsAddedToSession(){
+        //GIVEN
+        Response AuthorizepostResponse = given()
+                .baseUri("http://localhost")
+                .port(port)
+                .basePath("/authenticate")
+                .body("{\"username\":\"test@spectangular.com\",\"password\":\"YouC0ach\"}")
+                .post();
+
+        String bearerToken = AuthorizepostResponse.header("Authorization");
+
+        String requestBody = "{\"explanation\": 1, " +
+                "\"usefulness\": 2, " +
+                "\"positive\": \"good\", " +
+                "\"negative\": \"none\"}";
+
+        //WHEN
+
+        Response postResponse = given()
+                .header("Authorization", (bearerToken == null) ? "" : bearerToken)
+                .baseUri("http://localhost")
+                .port(port)
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .and()
+                .body(requestBody)
+                .when()
+                .post("/sessions/1000000/feedback-for-coach");
+
+        //THEN
+        postResponse
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    @Sql("/sql/testSetup.sql")
+    void createFeedbackForCoachee_whenCalled_thenFeedbackIsAddedToSession(){
+        //GIVEN
+        Response AuthorizepostResponse = given()
+                .baseUri("http://localhost")
+                .port(port)
+                .basePath("/authenticate")
+                .body("{\"username\":\"coach@spectangular.com\",\"password\":\"YouC0ach\"}")
+                .post();
+
+        String bearerToken = AuthorizepostResponse.header("Authorization");
+
+        String requestBody = "{\"preparedness\": 1, " +
+                "\"willingness\": 2, " +
+                "\"positive\": \"good\", " +
+                "\"negative\": \"none\"}";
+
+        //WHEN
+
+        Response postResponse = given()
+                .header("Authorization", (bearerToken == null) ? "" : bearerToken)
+                .baseUri("http://localhost")
+                .port(port)
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .and()
+                .body(requestBody)
+                .when()
+                .post("/sessions/1000000/feedback-for-coachee");
+
+        //THEN
+        postResponse
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value());
+    }
+*/
 
 }

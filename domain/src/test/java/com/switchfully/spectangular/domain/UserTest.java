@@ -23,7 +23,6 @@ class UserTest {
     @ParameterizedTest
     @ValueSource(strings = {"testemailSpectangular.com", "testemail@Spectangularcom", "testemail@Spectangular.", "testemail@.com", "@Spectangular.com"})
     public void WhenUserCreatedWithInvalidEmailThenThrowsInvalidMailException(String input){
-        String invalidEmail = "testemailSpectangular.com";
         assertThatExceptionOfType(InvalidEmailException.class)
                 .isThrownBy(() -> new User(
                         "testFirstName",
