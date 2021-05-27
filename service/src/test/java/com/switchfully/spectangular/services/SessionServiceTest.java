@@ -339,5 +339,16 @@ class SessionServiceTest {
         assertThat(sessionService.userHasAuthorityToChangeState(TOKEN,5,SessionStatus.ACCEPTED)).isFalse();
     }
 
+    @Test
+    void addFeedbackForCoachee_givenSessionIdUserIdAndFeedbackDto_thenReturnSessionDto() {
+        //GIVEN
+        Session mockSession = mock(Session.class);
+        User mockUser = mock(User.class);
+        when(mockSession.getId()).thenReturn(1);
+        when(mockUser.getId()).thenReturn(2);
+        //WHEN
+        //THEN
+    }
+
 
 }

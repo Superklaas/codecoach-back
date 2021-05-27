@@ -71,7 +71,6 @@ public class UserService {
         if (optionalUser.isEmpty()) throw new IllegalArgumentException("User not found.");
         User user = optionalUser.get();
         user.becomeCoach();
-        userRepository.save(user);
         return userMapper.toDto(user);
     }
 
@@ -95,7 +94,6 @@ public class UserService {
         if (optionalUser.isEmpty()) throw new IllegalArgumentException("Email address doesn't exist.");
         User user = optionalUser.get();
         user.setResetToken(UUID.randomUUID().toString());
-        userRepository.save(user);
         sendEmailToResetPassword(user, requestUrl);
         expireResetToken(user);
     }
@@ -106,7 +104,6 @@ public class UserService {
         User user = optionalUser.get();
         user.setEncryptedPassword(passwordEncoder.encode(newPassword));
         user.setResetToken(null);
-        userRepository.save(user);
     }
 
     private void sendEmailToResetPassword(User user, String url) {
@@ -122,7 +119,7 @@ public class UserService {
 
     private void expireResetToken(User user) {
         Timer timer = new Timer();
-        TimerTask timerTask = new RemoveResetTokenTimerTask(user, userRepository);
+        TimerTask timerTask = new RemoveResetTokenTimerTask(user);
         timer.schedule(timerTask, 1800000); //1800000 = 30 minutes in milliseconds
     }
 
