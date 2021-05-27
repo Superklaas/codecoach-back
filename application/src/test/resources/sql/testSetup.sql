@@ -6,5 +6,5 @@ VALUES (1001, 'Coach', 'McCoachFace', 'coach@spectangular.com', 'C0achy', '$2a$1
 INSERT INTO sessions (session_id, subject, date, start_time, location, remarks, status, coach_id, coachee_id)
 VALUES (1000000, 'basic Java', '2030-10-10', '12:00:00', 'F2F', '', 'REQUESTED', 1001, 1000);
 
-INSERT INTO topic (topic_id, name)
-VALUES(1000, 'Angular')
+INSERT INTO topic (name)
+VALUES('Angular')
