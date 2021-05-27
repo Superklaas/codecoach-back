@@ -3,6 +3,7 @@ package com.switchfully.spectangular.mappers;
 import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.dtos.CreateUserDto;
+import com.switchfully.spectangular.dtos.UpdateUserProfileDto;
 import com.switchfully.spectangular.dtos.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,15 +48,6 @@ public class UserMapper {
         return users.stream().map(this::toDto).collect(Collectors.toList());
     }
 
-    public User updateUserFromDto(UserDto dto, User user) {
-        return new User(
-                dto.getFirstName() == null ? user.getFirstName() : dto.getFirstName(),
-                dto.getLastName() == null ? user.getLastName() : dto.getLastName(),
-                dto.getProfileName() == null ? user.getProfileName() : dto.getProfileName(),
-                dto.getEmail() == null ? user.getEmail() : dto.getEmail(),
-                user.getEncryptedPassword(),
-                user.getRole()
-                );
-    }
+
 
 }

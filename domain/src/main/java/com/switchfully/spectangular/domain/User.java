@@ -144,6 +144,26 @@ public class User {
         return this;
     }
 
+    public User setFirstName(String firstName) {
+        this.firstName = firstName;
+        return this;
+    }
+
+    public User setLastName(String lastName) {
+        this.lastName = lastName;
+        return this;
+    }
+
+    public User setProfileName(String profileName) {
+        this.profileName = profileName;
+        return this;
+    }
+
+    public User setEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
     public String getResetToken() {
         return resetToken;
     }

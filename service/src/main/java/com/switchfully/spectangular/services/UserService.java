@@ -3,11 +3,8 @@ package com.switchfully.spectangular.services;
 
 import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.User;
-import com.switchfully.spectangular.dtos.CreateUserDto;
-import com.switchfully.spectangular.dtos.UserDto;
-import com.switchfully.spectangular.exceptions.DuplicateEmailException;
-import com.switchfully.spectangular.exceptions.EmailNotFoundException;
-import com.switchfully.spectangular.exceptions.InvalidPasswordException;
+import com.switchfully.spectangular.dtos.*;
+import com.switchfully.spectangular.exceptions.*;
 import com.switchfully.spectangular.mappers.UserMapper;
 import com.switchfully.spectangular.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +16,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -77,13 +75,14 @@ public class UserService {
     }
 
 
-    public UserDto updateUser(UserDto dto,int id) {
-        if (dto.getId() != id) {
-            throw new IllegalArgumentException("Ids do not match");
-        }
-        Optional<User> user = userRepository.findById(id);
-        User result = userRepository.save(userMapper.updateUserFromDto(dto,
-                user.orElseThrow(() -> new IllegalArgumentException("The user you are trying to update does not exist"))));
+    public UserDto updateUser(UpdateUserProfileDto dto, int id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("The user you are trying to update does not exist"));
+        user.setFirstName(dto.getFirstName())
+                .setLastName(dto.getLastName())
+                .setProfileName(dto.getProfileName())
+                .setEmail(dto.getEmail())
+                .setImageUrl(dto.getImageUrl());
+        User result = userRepository.save(user);
         return userMapper.toDto(result);
     }
 
@@ -103,6 +102,10 @@ public class UserService {
         user.setEncryptedPassword(passwordEncoder.encode(newPassword));
         user.setResetToken(null);
         userRepository.save(user);
+    }
+
+    public List<UserDto> getAll(){
+        return userRepository.findAll().stream().map(userMapper::toDto).collect(Collectors.toList());
     }
 
     private void sendEmailToResetPassword(User user, String url) {

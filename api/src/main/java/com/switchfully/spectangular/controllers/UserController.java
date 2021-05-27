@@ -1,6 +1,7 @@
 package com.switchfully.spectangular.controllers;
 
 import com.switchfully.spectangular.dtos.CreateUserDto;
+import com.switchfully.spectangular.dtos.UpdateUserProfileDto;
 import com.switchfully.spectangular.dtos.UserDto;
 import com.switchfully.spectangular.services.UserService;
 import org.slf4j.Logger;
@@ -62,9 +63,9 @@ public class UserController {
     @PreAuthorize("hasAuthority('UPDATE_PROFILE')")
     @PutMapping(path = "/{id}" , produces = "application/json", consumes = "application/json" )
     @ResponseStatus(HttpStatus.OK)
-    public UserDto updateProfile(@PathVariable int id, @RequestBody UserDto userDto ) {
+    public UserDto updateProfile(@PathVariable int id, @RequestBody UpdateUserProfileDto updateDto ) {
         logger.info("Received PUT request to update a user");
-        return userService.updateUser(userDto, id);
+        return userService.updateUser(updateDto, id);
     }
 
     @PostMapping(path = "/forgot-password", produces = "application/json")
@@ -79,6 +80,14 @@ public class UserController {
     public void resetPassword(@RequestParam String token, @RequestBody String newPassword) {
         logger.info("Received POST request to reset the User's password.");
         userService.resetPassword(token, newPassword);
+    }
+
+    @PreAuthorize("hasAuthority('GET_ALL_USERS')")
+    @GetMapping( produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDto> getAllUsers() {
+        logger.info("Received GET request to get an overview of all the users.");
+        return userService.getAll();
     }
 
 }
