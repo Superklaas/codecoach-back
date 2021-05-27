@@ -5,9 +5,9 @@ import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.domain.session.Session;
 import com.switchfully.spectangular.domain.session.SessionStatus;
-import com.switchfully.spectangular.dtos.CreateSessionDto;
-import com.switchfully.spectangular.dtos.SessionDto;
+import com.switchfully.spectangular.dtos.*;
 import com.switchfully.spectangular.exceptions.UnauthorizedException;
+import com.switchfully.spectangular.mappers.FeedbackMapper;
 import com.switchfully.spectangular.mappers.SessionMapper;
 import com.switchfully.spectangular.repository.SessionRepository;
 import org.json.JSONException;
@@ -39,6 +39,8 @@ class SessionServiceTest {
     private UserService userService;
     @Mock
     private SessionMapper sessionMapper;
+    @Mock
+    private FeedbackMapper feedbackMapper;
     @InjectMocks
     private SessionService sessionService;
 
@@ -48,6 +50,8 @@ class SessionServiceTest {
     private Session session;
     private CreateSessionDto createSessionDto;
     private SessionDto sessionDto;
+    private AddFeedbackForCoacheeDto addCoacheeFeedbackDto;
+    private AddFeedbackForCoachDto addCoachFeedbackDto;
     private JSONObject testJsonObject;
     //token with id/sub = 1234567980
     private static final String TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
@@ -109,6 +113,18 @@ class SessionServiceTest {
                 .setRemarks(session.getRemarks())
                 .setCoacheeId(COACHEE_ID)
                 .setCoachId(COACH_ID);
+
+        addCoacheeFeedbackDto = new AddFeedbackForCoacheeDto()
+                .setPreparedness((short) 1)
+                .setWillingness((short) 2)
+                .setPositive("good good")
+                .setNegative("none");
+
+        addCoachFeedbackDto = new AddFeedbackForCoachDto()
+                .setExplanation((short) 1)
+                .setUsefulness((short) 2)
+                .setPositive("good good")
+                .setNegative("none");
 
 
         try {
@@ -337,6 +353,88 @@ class SessionServiceTest {
         when(sessionRepository.findById(5)).thenReturn(Optional.of(session));
 
         assertThat(sessionService.userHasAuthorityToChangeState(TOKEN,5,SessionStatus.ACCEPTED)).isFalse();
+    }
+
+    @Test
+    void addFeedbackForCoachee_givenSessionIdUserIdAndFeedbackDto_thenReturnSessionDto() {
+        //GIVEN
+        Session mockSession = mock(Session.class);
+        User mockUser = mock(User.class);
+        when(sessionRepository.findById(any())).thenReturn(Optional.of(mockSession));
+        when(mockSession.getCoach()).thenReturn(mockUser);
+        when(mockSession.getCoach().getId()).thenReturn(COACH_ID);
+        when(sessionMapper.toDto(any())).thenReturn(sessionDto);
+        //WHEN
+        SessionDto actualSessionDto = sessionService.addFeedbackForCoachee(1, COACH_ID, addCoacheeFeedbackDto);
+        //THEN
+        verify(sessionRepository).findById(any());
+        verify(feedbackMapper).toEntity(any(AddFeedbackForCoacheeDto.class));
+        verify(sessionMapper).toDto(any());
+        assertThat(actualSessionDto).isEqualTo(sessionDto);
+    }
+
+    @Test
+    void addFeedbackForCoachee_givenNonExistentSessionId_thenThrowIllegalArgumentException() {
+        //GIVEN
+        //WHEN
+        //THEN
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> sessionService.addFeedbackForCoachee(1, 2, addCoacheeFeedbackDto));
+    }
+
+    @Test
+    void addFeedbackForCoachee_givenNonExistentUserId_thenThrowUnauthorizedException() {
+        //GIVEN
+        Session mockSession = mock(Session.class);
+        User mockUser = mock(User.class);
+        when(sessionRepository.findById(any())).thenReturn(Optional.of(mockSession));
+        when(mockSession.getCoach()).thenReturn(mockUser);
+        when(mockSession.getCoach().getId()).thenReturn(1);
+        //WHEN
+        //THEN
+        assertThatExceptionOfType(UnauthorizedException.class)
+                .isThrownBy(() -> sessionService.addFeedbackForCoachee(1, 2, addCoacheeFeedbackDto));
+    }
+
+    @Test
+    void addFeedbackForCoach_givenSessionIdUserIdAndFeedbackDto_thenReturnSessionDto() {
+        //GIVEN
+        Session mockSession = mock(Session.class);
+        User mockUser = mock(User.class);
+        when(sessionRepository.findById(any())).thenReturn(Optional.of(mockSession));
+        when(mockSession.getCoachee()).thenReturn(mockUser);
+        when(mockSession.getCoachee().getId()).thenReturn(COACHEE_ID);
+        when(sessionMapper.toDto(any())).thenReturn(sessionDto);
+        //WHEN
+        SessionDto actualSessionDto = sessionService.addFeedbackForCoach(1, COACHEE_ID, addCoachFeedbackDto);
+        //THEN
+        verify(sessionRepository).findById(any());
+        verify(feedbackMapper).toEntity(any(AddFeedbackForCoachDto.class));
+        verify(sessionMapper).toDto(any());
+        assertThat(actualSessionDto).isEqualTo(sessionDto);
+    }
+
+    @Test
+    void addFeedbackForCoach_givenNonExistentSessionId_thenThrowIllegalArgumentException() {
+        //GIVEN
+        //WHEN
+        //THEN
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> sessionService.addFeedbackForCoach(1, 2, addCoachFeedbackDto));
+    }
+
+    @Test
+    void addFeedbackForCoach_givenNonExistentUserId_thenThrowUnauthorizedException() {
+        //GIVEN
+        Session mockSession = mock(Session.class);
+        User mockUser = mock(User.class);
+        when(sessionRepository.findById(any())).thenReturn(Optional.of(mockSession));
+        when(mockSession.getCoachee()).thenReturn(mockUser);
+        when(mockSession.getCoachee().getId()).thenReturn(1);
+        //WHEN
+        //THEN
+        assertThatExceptionOfType(UnauthorizedException.class)
+                .isThrownBy(() -> sessionService.addFeedbackForCoach(1, 2, addCoachFeedbackDto));
     }
 
 

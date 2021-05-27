@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class TopicMapperTest {
 
@@ -36,10 +38,14 @@ class TopicMapperTest {
     }
 
     @Test
-    void toDto() {
-    }
-
-    @Test
-    void testToDto() {
+    void toDto_givenTopic_thenReturnTopicDto() {
+        //GIVEN
+        Topic mockTopic = mock(Topic.class);
+        when(mockTopic.getId()).thenReturn(1);
+        when(mockTopic.getName()).thenReturn("Spring");
+        //WHEN
+        TopicDto actualTopicDto = topicMapper.toDto(mockTopic);
+        //THEN
+        assertThat(actualTopicDto).isEqualTo(topicDto);
     }
 }

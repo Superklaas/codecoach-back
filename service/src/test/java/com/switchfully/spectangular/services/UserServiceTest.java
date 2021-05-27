@@ -184,6 +184,7 @@ class UserServiceTest {
         UserDto actualUserDto = userService.updateToCoach(userDto.getId());
         //THEN
         verify(userRepository).findById(any());
+        verify(userRepository).save(any());
         verify(userMapper).toDto(any());
         assertThat(actualUserDto).isEqualTo(expectedUserDto);
     }

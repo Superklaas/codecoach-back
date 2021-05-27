@@ -7,16 +7,20 @@ import com.switchfully.spectangular.dtos.*;
 import com.switchfully.spectangular.exceptions.*;
 import com.switchfully.spectangular.mappers.UserMapper;
 import com.switchfully.spectangular.repository.UserRepository;
+import com.switchfully.spectangular.services.timertasks.RemoveResetTokenTimerTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+
 import java.util.stream.Collectors;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+
 
 @Service
 @Transactional
@@ -64,10 +68,11 @@ public class UserService {
     }
 
     public UserDto updateToCoach(int id) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isEmpty()) throw new IllegalArgumentException("User not found.");
-        user.get().becomeCoach();
-        return userMapper.toDto(user.get());
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) throw new IllegalArgumentException("User not found.");
+        User user = optionalUser.get();
+        user.becomeCoach();
+        return userMapper.toDto(user);
     }
 
     public List<UserDto> getAllCoaches() {
@@ -91,17 +96,16 @@ public class UserService {
         if (optionalUser.isEmpty()) throw new IllegalArgumentException("Email address doesn't exist.");
         User user = optionalUser.get();
         user.setResetToken(UUID.randomUUID().toString());
-        userRepository.save(user);
         sendEmailToResetPassword(user, requestUrl);
+        expireResetToken(user);
     }
 
     public void resetPassword(String token, String newPassword) {
         Optional<User> optionalUser = userRepository.findByResetToken(token);
-        if (optionalUser.isEmpty()) throw new IllegalArgumentException("Invalid reset code." + token);
+        if (optionalUser.isEmpty()) throw new IllegalArgumentException("Your password has not been changed. Please try again.");
         User user = optionalUser.get();
         user.setEncryptedPassword(passwordEncoder.encode(newPassword));
         user.setResetToken(null);
-        userRepository.save(user);
     }
 
     public List<UserDto> getAll(){
@@ -113,9 +117,16 @@ public class UserService {
         message.setFrom("spectangular.codecoach@gmail.com");
         message.setTo(user.getEmail());
         message.setSubject("Password Reset Request");
-        message.setText("To reset your password, click the link below:\n" + url
-        + "/reset-password?token=" + user.getResetToken());
+        message.setText("To reset your password, click the link below:\n"
+                + url + "/reset-password?token=" + user.getResetToken()
+                + "\nThis link will expire in 30 minutes.");
         emailService.sendEmail(message);
+    }
+
+    private void expireResetToken(User user) {
+        Timer timer = new Timer();
+        TimerTask timerTask = new RemoveResetTokenTimerTask(user);
+        timer.schedule(timerTask, 1800000); //1800000 = 30 minutes in milliseconds
     }
 
     private void assertValidPassword(String unencryptedPassword) {

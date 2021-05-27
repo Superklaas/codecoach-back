@@ -7,11 +7,13 @@ import com.switchfully.spectangular.dtos.CreateSessionDto;
 import com.switchfully.spectangular.dtos.SessionDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 class SessionMapperTest {
     private final SessionMapper sessionMapper = new SessionMapper(new FeedbackMapper());
@@ -79,14 +81,28 @@ class SessionMapperTest {
         //THEN
         assertThat(actualSession).isEqualTo(session);
     }
-
-/* //cannot test entities because they aren't assigned with an id yet -> NullPointer
+/* NULLPOINTEREXCEPTION
 
     @Test
     void toDto_givenSession_thenReturnSessionDto() {
         //GIVEN
+        Session mockSession = mock(Session.class);
+        User mockCoach = mock(User.class);
+        User mockCoachee = mock(User.class);
+        Mockito.when(mockCoach.getId()).thenReturn(1);
+        Mockito.when(mockCoachee.getId()).thenReturn(2);
+        Mockito.when(mockCoach.getProfileName()).thenReturn("CoachFace");
+        Mockito.when(mockCoachee.getProfileName()).thenReturn("TestFace");
+        Mockito.when(mockSession.getId()).thenReturn(1);
+        Mockito.when(mockSession.getSubject()).thenReturn(session.getSubject());
+        Mockito.when(mockSession.getStartTime()).thenReturn(session.getStartTime());
+        Mockito.when(mockSession.getLocation()).thenReturn(session.getLocation());
+        Mockito.when(mockSession.getRemarks()).thenReturn(session.getRemarks());
+        Mockito.when(mockSession.getCoach()).thenReturn(mockCoach);
+        Mockito.when(mockSession.getCoachee()).thenReturn(mockCoachee);
+        Mockito.when(mockSession.getStatus()).thenReturn(session.getStatus());
         //WHEN
-        SessionDto actualSessionDto = sessionMapper.toDto(session);
+        SessionDto actualSessionDto = sessionMapper.toDto(mockSession);
         //THEN
         assertThat(actualSessionDto).isEqualTo(sessionDto);
     }

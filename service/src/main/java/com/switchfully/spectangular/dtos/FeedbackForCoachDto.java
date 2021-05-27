@@ -1,5 +1,7 @@
 package com.switchfully.spectangular.dtos;
 
+import java.util.Objects;
+
 public class FeedbackForCoachDto {
 
     Short explanation;
@@ -41,5 +43,18 @@ public class FeedbackForCoachDto {
     public FeedbackForCoachDto setNegative(String negative) {
         this.negative = negative;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FeedbackForCoachDto that = (FeedbackForCoachDto) o;
+        return Objects.equals(explanation, that.explanation) && Objects.equals(usefulness, that.usefulness) && Objects.equals(positive, that.positive) && Objects.equals(negative, that.negative);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(explanation, usefulness, positive, negative);
     }
 }
