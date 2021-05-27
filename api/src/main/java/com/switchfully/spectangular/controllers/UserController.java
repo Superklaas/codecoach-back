@@ -1,19 +1,18 @@
 package com.switchfully.spectangular.controllers;
 
 import com.switchfully.spectangular.dtos.CreateUserDto;
+import com.switchfully.spectangular.dtos.UpdateTopicsDto;
 import com.switchfully.spectangular.dtos.UpdateUserProfileDto;
 import com.switchfully.spectangular.dtos.UserDto;
+import com.switchfully.spectangular.services.TopicService;
 import com.switchfully.spectangular.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.util.List;
 
 
@@ -23,10 +22,12 @@ public class UserController {
 
     private final UserService userService;
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final TopicService topicService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, TopicService topicService) {
         this.userService = userService;
+        this.topicService = topicService;
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
@@ -91,5 +92,12 @@ public class UserController {
         return userService.getAll();
     }
 
+    @PreAuthorize(value = "hasAuthority('UPDATE_TOPICS')")
+    @PostMapping(path = "/{id}/topics", produces = "application/json", consumes = "application/json")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public UserDto updateTopics(@PathVariable int id, @RequestBody List<UpdateTopicsDto> dtoList) {
+        logger.info("Received POST request to update topics.");
+        return topicService.updateTopics(id, dtoList);
+    }
 }
 

@@ -45,7 +45,7 @@ public class User {
 
     @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "user_topics", joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "topic_id"))
+            inverseJoinColumns = @JoinColumn(name = "topic_name"))
     private List<Topic> topicList;
 
     @Column(name = "reset_token")

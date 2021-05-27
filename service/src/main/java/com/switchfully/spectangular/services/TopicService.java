@@ -1,6 +1,9 @@
 package com.switchfully.spectangular.services;
 
+import com.switchfully.spectangular.domain.Topic;
 import com.switchfully.spectangular.dtos.TopicDto;
+import com.switchfully.spectangular.dtos.UpdateTopicsDto;
+import com.switchfully.spectangular.dtos.UserDto;
 import com.switchfully.spectangular.mappers.TopicMapper;
 import com.switchfully.spectangular.repository.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,5 +27,12 @@ public class TopicService {
 
     public List<TopicDto> getAllTopics() {
         return topicMapper.toDto(topicRepository.findAll());
+    }
+
+    public UserDto updateTopics(int userId, List<UpdateTopicsDto> topicDtos) {
+       List<Topic> topics = topicMapper.toEntity(topicDtos);
+
+        System.out.println(topics);
+       return null;
     }
 }

@@ -3,6 +3,7 @@ package com.switchfully.spectangular.mappers;
 import com.switchfully.spectangular.domain.Topic;
 import com.switchfully.spectangular.dtos.CreateTopicDto;
 import com.switchfully.spectangular.dtos.TopicDto;
+import com.switchfully.spectangular.dtos.UpdateTopicsDto;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,9 +16,16 @@ public class TopicMapper {
         return new Topic(dto.getName());
     }
 
+    public Topic toEntity(UpdateTopicsDto dto) {
+        return new Topic(dto.getName());
+    }
+
+    public List<Topic> toEntity(List<UpdateTopicsDto> topicdtos) {
+        return topicdtos.stream().map(this::toEntity).collect(Collectors.toList());
+    }
+
     public TopicDto toDto(Topic topic) {
         return new TopicDto()
-                .setId(topic.getId())
                 .setName(topic.getName());
     }
 

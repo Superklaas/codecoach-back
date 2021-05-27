@@ -27,7 +27,6 @@ class TopicServiceTest {
 
     Topic topic = new Topic("Angular");
     TopicDto topicDto = new TopicDto()
-            .setId(1)
             .setName(topic.getName());
 
     @Test

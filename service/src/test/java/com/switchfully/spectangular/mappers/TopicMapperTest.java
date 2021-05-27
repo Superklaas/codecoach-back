@@ -41,7 +41,6 @@ class TopicMapperTest {
     void toDto_givenTopic_thenReturnTopicDto() {
         //GIVEN
         Topic mockTopic = mock(Topic.class);
-        when(mockTopic.getId()).thenReturn(1);
         when(mockTopic.getName()).thenReturn("Spring");
         //WHEN
         TopicDto actualTopicDto = topicMapper.toDto(mockTopic);
