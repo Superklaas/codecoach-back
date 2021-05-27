@@ -1,25 +1,30 @@
 package com.switchfully.spectangular.services;
 
 
+import com.switchfully.spectangular.JSONObjectParser;
 import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.User;
-import com.switchfully.spectangular.dtos.CreateUserDto;
-import com.switchfully.spectangular.dtos.UserDto;
-import com.switchfully.spectangular.exceptions.DuplicateEmailException;
-import com.switchfully.spectangular.exceptions.EmailNotFoundException;
-import com.switchfully.spectangular.exceptions.InvalidPasswordException;
+import com.switchfully.spectangular.domain.session.Session;
+import com.switchfully.spectangular.domain.session.SessionStatus;
+import com.switchfully.spectangular.dtos.*;
+import com.switchfully.spectangular.exceptions.*;
 import com.switchfully.spectangular.mappers.UserMapper;
 import com.switchfully.spectangular.repository.UserRepository;
 import com.switchfully.spectangular.services.timertasks.RemoveResetTokenTimerTask;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+
+import java.util.stream.Collectors;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+
 
 @Service
 @Transactional
@@ -79,13 +84,17 @@ public class UserService {
     }
 
 
-    public UserDto updateUser(UserDto dto,int id) {
-        if (dto.getId() != id) {
-            throw new IllegalArgumentException("Ids do not match");
+    public UserDto updateUser(UpdateUserProfileDto dto, int id, String token) {
+        if(!userHasAuthorityToUpdateProfile(token, id)){
+            throw new UnauthorizedException("You are not authorized to make changes to this profile.");
         }
-        Optional<User> user = userRepository.findById(id);
-        User result = userRepository.save(userMapper.updateUserFromDto(dto,
-                user.orElseThrow(() -> new IllegalArgumentException("The user you are trying to update does not exist"))));
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("The user you are trying to update does not exist"));
+        user.setFirstName(dto.getFirstName())
+                .setLastName(dto.getLastName())
+                .setProfileName(dto.getProfileName())
+                .setEmail(dto.getEmail())
+                .setImageUrl(dto.getImageUrl());
+        User result = userRepository.save(user);
         return userMapper.toDto(result);
     }
 
@@ -104,6 +113,10 @@ public class UserService {
         User user = optionalUser.get();
         user.setEncryptedPassword(passwordEncoder.encode(newPassword));
         user.setResetToken(null);
+    }
+
+    public List<UserDto> getAll(){
+        return userRepository.findAll().stream().map(userMapper::toDto).collect(Collectors.toList());
     }
 
     private void sendEmailToResetPassword(User user, String url) {
@@ -136,5 +149,21 @@ public class UserService {
         if (!unencryptedPassword.matches(".*[a-z]+.*")) {
             throw new InvalidPasswordException("password is invalid");
         }
+    }
+
+    public boolean userHasAuthorityToUpdateProfile(String token, int id  ) {
+        JSONObject tokenObject = JSONObjectParser.JwtTokenToJSONObject(token);
+        if(tokenObject.get("role").equals("ADMIN")){
+            return true;
+        }
+        if(getIdFromJwtToken(token)==id){
+            return true;
+        }
+        return false;
+    }
+
+    private int getIdFromJwtToken(String token) {
+        JSONObject tokenObject = JSONObjectParser.JwtTokenToJSONObject(token);
+        return Integer.parseInt(tokenObject.get("sub").toString());
     }
 }
