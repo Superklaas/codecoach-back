@@ -1,8 +1,6 @@
 package com.switchfully.spectangular.controllers;
 
-import com.switchfully.spectangular.dtos.CreateUserDto;
-import com.switchfully.spectangular.dtos.UpdateUserProfileDto;
-import com.switchfully.spectangular.dtos.UserDto;
+import com.switchfully.spectangular.dtos.*;
 import com.switchfully.spectangular.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,6 +88,17 @@ public class UserController {
         logger.info("Received GET request to get an overview of all the users.");
         return userService.getAll();
     }
+
+    @PreAuthorize("hasAuthority('UPDATE_PROFILE')")
+    @PutMapping(path = "/{id}/coach" , produces = "application/json", consumes = "application/json" )
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto updateCoach(@PathVariable int id, @RequestBody UpdateCoachProfileDto updateDto,
+                                  @RequestHeader (name="Authorization") String token) {
+        logger.info("Received PUT request to update a coach");
+        return userService.updateCoach(updateDto, id, token);
+    }
+
+
 
 }
 

@@ -97,6 +97,18 @@ public class UserService {
         User result = userRepository.save(user);
         return userMapper.toDto(result);
     }
+    public UserDto updateCoach(UpdateCoachProfileDto dto, int id, String token) {
+        if(!userHasAuthorityToUpdateProfile(token, id)){
+            throw new UnauthorizedException("You are not authorized to make changes to this profile.");
+        }
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("The user you are trying to update does not exist"));
+        user.setAvailability(dto.getAvailability())
+                .setIntroduction(dto.getIntroduction());
+        User result = userRepository.save(user);
+        System.out.println(user.getAvailability());
+        System.out.println(user.getIntroduction());
+        return userMapper.toDto(result);
+    }
 
     public void sendResetToken(String email, String requestUrl) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
