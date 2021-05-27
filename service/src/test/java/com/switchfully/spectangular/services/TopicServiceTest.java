@@ -1,14 +1,9 @@
 package com.switchfully.spectangular.services;
 
-import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.Topic;
-import com.switchfully.spectangular.domain.User;
-import com.switchfully.spectangular.dtos.CreateUserDto;
 import com.switchfully.spectangular.dtos.TopicDto;
-import com.switchfully.spectangular.dtos.UserDto;
 import com.switchfully.spectangular.mappers.TopicMapper;
 import com.switchfully.spectangular.repository.TopicRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
