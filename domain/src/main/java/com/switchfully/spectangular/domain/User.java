@@ -11,6 +11,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "app_user")
 public class User {
+    public static final int MAX_COACH_TOPICS = 2;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +42,7 @@ public class User {
 
     @Column(name = "img_url")
     private String imageUrl;
+
 
     @ManyToMany(cascade = {}, fetch = FetchType.EAGER)
     @JoinTable(name = "user_topics", joinColumns = @JoinColumn(name = "user_id"),

@@ -182,13 +182,32 @@ public class UserService {
         return Integer.parseInt(tokenObject.get("sub").toString());
     }
 
-    public UserDto updateTopics(int userId, List<UpdateTopicsDto> topicDtos) {
+    public UserDto updateTopics(int coachId, List<UpdateTopicsDto> topicDtos, int requestedBy ) {
+        if (topicDtos.size() > User.MAX_COACH_TOPICS) {
+            throw new IllegalStateException("Too many topics");
+        }
+
+        assertSameUserOrAdmin(coachId, requestedBy);
+
+        User coach = userRepository.findById(coachId).orElseThrow();
+        if (!coach.getRole().equals(Role.COACH)) {
+            throw new IllegalStateException("Cannot set topics for a non-coach user");
+        }
+
         List<Topic> topics = topicMapper.toEntity(topicDtos);
-        User user = userRepository.findById(userId).orElseThrow();
-
         topics.forEach(topicRepository::save);
-        user.setTopicList(topics);
 
-        return userMapper.toDto(user);
+        coach.setTopicList(topics);
+
+        return userMapper.toDto(coach);
+    }
+
+    private void assertSameUserOrAdmin(int userResourceId, int requestedBy) {
+        if (requestedBy != userResourceId) {
+            User requester = userRepository.findById(requestedBy).orElseThrow();
+            if (!requester.getRole().equals(Role.ADMIN)) {
+                throw new UnauthorizedException("You are not authorized to set topics of this coach");
+            }
+        }
     }
 }

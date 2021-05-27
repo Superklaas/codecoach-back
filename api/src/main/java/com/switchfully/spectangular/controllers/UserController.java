@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 
@@ -96,9 +97,9 @@ public class UserController {
     @PreAuthorize(value = "hasAuthority('UPDATE_TOPICS')")
     @PostMapping(path = "/{id}/topics", produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserDto updateTopics(@PathVariable int id, @RequestBody List<UpdateTopicsDto> dtoList) {
+    public UserDto updateTopics(Principal principal, @PathVariable int id, @RequestBody List<UpdateTopicsDto> dtoList) {
         logger.info("Received POST request to update topics.");
-        return userService.updateTopics(id, dtoList);
+        return userService.updateTopics(id, dtoList, Integer.parseInt(principal.getName()));
     }
 
     @PreAuthorize("hasAuthority('UPDATE_PROFILE')")
