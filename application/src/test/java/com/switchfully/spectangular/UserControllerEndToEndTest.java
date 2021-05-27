@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.List;
-
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -54,7 +52,7 @@ public class UserControllerEndToEndTest {
     }
 
     @Test
-    @Sql("/sql/insertUsers.sql")
+    @Sql("/sql/testSetup.sql")
     void createUser_whenCalledWithExistingEmail_thenStatusCodeIsBadRequest() {
         //GIVEN
         String requestBody = """
@@ -84,7 +82,7 @@ public class UserControllerEndToEndTest {
     }
 
     @Test
-    @Sql("/sql/insertUsers.sql")
+    @Sql("/sql/testSetup.sql")
     void getUserById_whenCalled_thenOneUserIsFound() {
         //GIVEN
         Response postResponse = given()
@@ -112,7 +110,7 @@ public class UserControllerEndToEndTest {
     }
 
     @Test
-    @Sql("/sql/insertUsers.sql")
+    @Sql("/sql/testSetup.sql")
     void updateToCoach_whenCalled_thenUserIsUpdated() {
         //GIVEN
         Response postResponse = given()
@@ -142,7 +140,7 @@ public class UserControllerEndToEndTest {
     }
 
     @Test
-    @Sql("/sql/insertUsers.sql")
+    @Sql("/sql/testSetup.sql")
     void getAllCoaches_whenCalled_thenAllCoachesAreFound() {
         //GIVEN
         Response postResponse = given()
@@ -173,7 +171,7 @@ public class UserControllerEndToEndTest {
     }
 
     @Test
-    @Sql("/sql/insertUsers.sql")
+    @Sql("/sql/testSetup.sql")
     void sendResetToken_whenCalled_thenAnEmailIsSent() {
         //GIVEN
         //WHEN
@@ -192,7 +190,7 @@ public class UserControllerEndToEndTest {
     }
 
     @Test
-    @Sql("/sql/insertUsers.sql")
+    @Sql("/sql/testSetup.sql")
     void sendResetToken_givenNonExistentEmail_thenStatusCodeIsBadRequest() {
         //GIVEN
         //WHEN
@@ -211,7 +209,7 @@ public class UserControllerEndToEndTest {
     }
 
     @Test
-    @Sql("/sql/insertUsers.sql")
+    @Sql("/sql/testSetup.sql")
     void resetPassword_givenNonExistentEmail_thenStatusCodeIsBadRequest() {
         //GIVEN
         String validToken = "cba90cb7-4ef5-4fcb-a4a1-6d7177ce75e8";
@@ -230,7 +228,7 @@ public class UserControllerEndToEndTest {
     }
 
     @Test
-    @Sql("/sql/insertUsers.sql")
+    @Sql("/sql/testSetup.sql")
     void resetPassword_givenNonExistentResetToken_thenStatusCodeIsBadRequest() {
         //GIVEN
         String invalidToken = "cba90cb7-4ef5-4fcb-a4a1-6d7177ce75e9";
