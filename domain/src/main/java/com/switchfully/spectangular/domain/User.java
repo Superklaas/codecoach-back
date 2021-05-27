@@ -42,11 +42,6 @@ public class User {
     @Column(name = "img_url")
     private String imageUrl;
 
-// Deze werkt voor bestaande topics
-//      @ManyToMany(cascade = {}, fetch = FetchType.EAGER)
-//      @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
-// Deze werkt voor nieuwe topic maar niet voor bestaande
-//    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @ManyToMany(cascade = {}, fetch = FetchType.EAGER)
     @JoinTable(name = "user_topics", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "topic_name"))

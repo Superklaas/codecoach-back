@@ -12,9 +12,6 @@ public class Topic {
     @Column(name = "name")
     private String name;
 
-//    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "topicList")
-//    private List<User> userList;
-
     public Topic(String name) {
         this.name = name;
     }
