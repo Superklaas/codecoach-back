@@ -13,8 +13,8 @@ import java.util.List;
 @Transactional
 public class TopicService {
 
-    private TopicRepository topicRepository;
-    private TopicMapper topicMapper;
+    private final TopicRepository topicRepository;
+    private final TopicMapper topicMapper;
 
     @Autowired
     public TopicService(TopicRepository topicRepository, TopicMapper topicMapper) {
