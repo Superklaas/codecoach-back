@@ -2,6 +2,7 @@ package com.switchfully.spectangular.domain.session;
 
 
 import javax.persistence.Embeddable;
+import java.util.Objects;
 
 @Embeddable
 public class FeedbackForCoachee {
@@ -56,5 +57,18 @@ public class FeedbackForCoachee {
         if (score == null || score < 1 || score > 5) {
             throw new IllegalArgumentException("Given score must be between 1 and 5");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FeedbackForCoachee that = (FeedbackForCoachee) o;
+        return Objects.equals(preparedness, that.preparedness) && Objects.equals(willingness, that.willingness) && Objects.equals(positive, that.positive) && Objects.equals(negative, that.negative);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(preparedness, willingness, positive, negative);
     }
 }
