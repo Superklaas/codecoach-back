@@ -56,4 +56,9 @@ public class ControllerExceptionHandler {
         response.sendError(HttpStatus.BAD_REQUEST.value(),ex.getMessage());
     }
 
+    @ExceptionHandler(NullPointerException.class)
+    protected void nullPointer(NullPointerException ex, HttpServletResponse response) throws IOException {
+        logger.error(ex.getMessage());
+        response.sendError(HttpStatus.BAD_REQUEST.value(),"Oops, something went wrong.");
+    }
 }
