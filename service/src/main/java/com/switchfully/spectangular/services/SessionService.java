@@ -48,7 +48,7 @@ public class SessionService {
     public List<SessionDto> getAllSessionByCoach(String token) {
         int id = getIdFromJwtToken(token);
         User user = userService.findUserById(id);
-        if (user.getRole() != Role.COACH) {
+        if (!List.of(Role.COACH, Role.ADMIN).contains(user.getRole())) {
             throw new IllegalArgumentException("user is not a coach");
         }
 
