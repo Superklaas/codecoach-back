@@ -12,6 +12,8 @@ import java.util.Objects;
 @Table(name = "app_user")
 public class User {
     public static final int MAX_COACH_TOPICS = 2;
+    public static final int MAX_AVAILABILITY_DESCRIPTION_LENGTH = 255;
+    public static final int MAX_INTRODUCTION_LENGTH = 500;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,19 +60,12 @@ public class User {
 
     public User(String firstName, String lastName, String profileName, String email, String encryptedPassword,
                 Role role) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.profileName = profileName;
-        this.email = validEmail(email);
-        this.encryptedPassword = encryptedPassword;
-        this.role = role;
-    }
-
-    public String validEmail(String emailAddress) {
-        if (!EmailValidator.getInstance().isValid(emailAddress)) {
-            throw new InvalidEmailException("user has invalid email address");
-        }
-        return emailAddress;
+        this.setFirstName(firstName);
+        this.setLastName(lastName);
+        this.setProfileName(profileName);
+        this.setEmail(email);
+        this.setEncryptedPassword(encryptedPassword);
+        this.setRole(role);
     }
 
     public Integer getId() {
@@ -114,6 +109,9 @@ public class User {
     }
 
     public User setAvailability(String availability) {
+        if (availability != null && availability.length() > MAX_AVAILABILITY_DESCRIPTION_LENGTH) {
+            throw new IllegalArgumentException("Introduction cannot be more than 500 characters");
+        }
         this.availability = availability;
         return this;
     }
@@ -123,6 +121,9 @@ public class User {
     }
 
     public User setIntroduction(String introduction) {
+        if (introduction != null && introduction.length() > MAX_INTRODUCTION_LENGTH) {
+            throw new IllegalArgumentException("Introduction cannot be more than 500 characters");
+        }
         this.introduction = introduction;
         return this;
     }
@@ -150,26 +151,32 @@ public class User {
     }
 
     public User setFirstName(String firstName) {
-        this.firstName = firstName;
+        assertValidName(firstName);
+        this.firstName = firstName.trim();
         return this;
     }
 
     public User setLastName(String lastName) {
-        this.lastName = lastName;
+        assertValidName(lastName);
+        this.lastName = lastName.trim();
         return this;
     }
 
     public User setProfileName(String profileName) {
-        this.profileName = profileName;
+        assertValidName(profileName);
+        this.profileName = profileName.trim();
         return this;
     }
 
     public User setEmail(String email) {
-        this.email = email;
+        this.email = validEmail(email);
         return this;
     }
 
     public User setRole(Role role) {
+        if (role == null) {
+            throw new IllegalArgumentException("Role cannot be null");
+        }
         this.role = role;
         return this;
     }
@@ -180,6 +187,22 @@ public class User {
 
     public void becomeCoach() {
         this.role = Role.COACH;
+    }
+
+    public String validEmail(String emailAddress) {
+        if (!EmailValidator.getInstance().isValid(emailAddress)) {
+            throw new InvalidEmailException("user has invalid email address");
+        }
+        return emailAddress;
+    }
+
+    private void assertValidName(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("Name must be set");
+        }
+        if (name.trim().length() == 0) {
+            throw new IllegalArgumentException("Name cannot be 0 length");
+        }
     }
 
     @Override

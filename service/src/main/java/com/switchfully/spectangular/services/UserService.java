@@ -118,7 +118,7 @@ public class UserService {
         }
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("The user you are trying to update does not exist"));
         user.setAvailability(dto.getAvailability())
-                .setIntroduction(dto.getIntroduction());
+            .setIntroduction(dto.getIntroduction());
         User result = userRepository.save(user);
         System.out.println(user.getAvailability());
         System.out.println(user.getIntroduction());
@@ -198,6 +198,8 @@ public class UserService {
             throw new IllegalStateException("Too many topics");
         }
 
+        List<Topic> topics = topicMapper.toEntity(topicDtos);
+
         assertSameUserOrAdmin(coachId, requestedBy);
 
         User coach = userRepository.findById(coachId).orElseThrow();
@@ -205,7 +207,6 @@ public class UserService {
             throw new IllegalStateException("Cannot set topics for a non-coach user");
         }
 
-        List<Topic> topics = topicMapper.toEntity(topicDtos);
         topics.forEach(topicRepository::save);
 
         coach.setTopicList(topics);
