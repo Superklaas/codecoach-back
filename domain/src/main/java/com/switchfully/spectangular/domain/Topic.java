@@ -8,12 +8,14 @@ import java.util.Objects;
 @Table(name = "topic")
 public class Topic {
 
+    public static final int MAX_TOPIC_LENGTH = 50;
+
     @Id
     @Column(name = "name")
     private String name;
 
     public Topic(String name) {
-        this.name = name;
+        this.setName(name);
     }
 
     public Topic() {
@@ -21,6 +23,14 @@ public class Topic {
 
     public String getName() {
         return name;
+    }
+
+    public Topic setName(String name) {
+        if (name.length() > MAX_TOPIC_LENGTH) {
+            throw new IllegalArgumentException("Cannot set a topic name longer than " + MAX_TOPIC_LENGTH + " characters");
+        }
+        this.name = name;
+        return this;
     }
 
     @Override
