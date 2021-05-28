@@ -1,6 +1,7 @@
 package com.switchfully.spectangular.domain;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,5 +30,9 @@ public enum Feature {
 
     public static List<Feature> getForRole(Role role) {
         return Arrays.stream(Feature.values()).filter(f -> f.roleList.contains(role)).collect(Collectors.toList());
+    }
+
+    public List<Role> getRoleList() {
+        return Collections.unmodifiableList(roleList);
     }
 }

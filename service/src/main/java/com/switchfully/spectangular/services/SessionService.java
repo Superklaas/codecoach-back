@@ -1,6 +1,7 @@
 package com.switchfully.spectangular.services;
 
 import com.switchfully.spectangular.JSONObjectParser;
+import com.switchfully.spectangular.domain.Feature;
 import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.domain.session.Session;
@@ -48,7 +49,7 @@ public class SessionService {
     public List<SessionDto> getAllSessionByCoach(String token) {
         int id = getIdFromJwtToken(token);
         User user = userService.findUserById(id);
-        if (user.getRole() != Role.COACH) {
+        if (!Feature.GET_ALL_COACHING_SESSION.getRoleList().contains(user.getRole())) {
             throw new IllegalArgumentException("user is not a coach");
         }
 
