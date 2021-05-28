@@ -1,16 +1,12 @@
 package com.switchfully.spectangular.controllers;
 
 import com.switchfully.spectangular.dtos.*;
-import com.switchfully.spectangular.exceptions.UnauthorizedException;
 import com.switchfully.spectangular.services.SessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
 import java.security.Principal;
 import java.util.List;
 
@@ -64,7 +60,6 @@ public class SessionController {
 
         return sessionService.addFeedbackForCoach(id, uid, addFeedbackDto);
     }
-
 
     @PostMapping(path="/{id}/feedback-for-coachee", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)

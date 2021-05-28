@@ -132,6 +132,10 @@ public class User {
     }
 
     public User setImageUrl(String imageUrl) {
+        if (imageUrl.length() >= 255) {
+            throw new IllegalArgumentException("Image url is too long...");
+        }
+
         this.imageUrl = imageUrl;
         return this;
     }
