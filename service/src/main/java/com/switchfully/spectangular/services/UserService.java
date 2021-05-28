@@ -97,9 +97,21 @@ public class UserService {
                 .setProfileName(dto.getProfileName())
                 .setEmail(dto.getEmail())
                 .setImageUrl(dto.getImageUrl());
+        if(userIsAdmin(token)){
+            user.setRole(Role.valueOf(dto.getRole().toUpperCase()));
+        }
         User result = userRepository.save(user);
         return userMapper.toDto(result);
     }
+
+    private boolean userIsAdmin(String token) {
+        JSONObject tokenObject = JSONObjectParser.JwtTokenToJSONObject(token);
+        if(tokenObject.get("role").equals("ADMIN")){
+            return true;
+        }
+        return false;
+    }
+
     public UserDto updateCoach(UpdateCoachProfileDto dto, int id, String token) {
         if(!userHasAuthorityToUpdateProfile(token, id)){
             throw new UnauthorizedException("You are not authorized to make changes to this profile.");
@@ -167,9 +179,8 @@ public class UserService {
     }
 
     public boolean userHasAuthorityToUpdateProfile(String token, int id  ) {
-        JSONObject tokenObject = JSONObjectParser.JwtTokenToJSONObject(token);
-        if(tokenObject.get("role").equals("ADMIN")){
-            return true;
+       if(userIsAdmin(token)){
+           return true;
         }
         if(getIdFromJwtToken(token)==id){
             return true;

@@ -165,6 +165,11 @@ public class User {
         return this;
     }
 
+    public User setRole(Role role) {
+        this.role = role;
+        return this;
+    }
+
     public String getResetToken() {
         return resetToken;
     }

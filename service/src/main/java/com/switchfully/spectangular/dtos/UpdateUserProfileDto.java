@@ -7,6 +7,7 @@ public class UpdateUserProfileDto {
     String lastName;
     String profileName;
     String imageUrl;
+    String role;
 
     public String getEmail() {
         return email;
@@ -26,5 +27,9 @@ public class UpdateUserProfileDto {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public String getRole() {
+        return role;
     }
 }
