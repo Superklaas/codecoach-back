@@ -97,7 +97,7 @@ public class UserService {
                 .setProfileName(dto.getProfileName())
                 .setEmail(dto.getEmail())
                 .setImageUrl(dto.getImageUrl());
-        if(userIsAdmin(token)){
+        if(userIsAdmin(token)&&dto.getRole()!=null){
             user.setRole(Role.valueOf(dto.getRole().toUpperCase()));
         }
         User result = userRepository.save(user);
