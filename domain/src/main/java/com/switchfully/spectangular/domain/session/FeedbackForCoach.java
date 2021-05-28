@@ -6,6 +6,7 @@ import java.util.Objects;
 @Embeddable
 public class FeedbackForCoach {
 
+    public static final int MAX_FEEDBACK_LENGTH = 2000;
     private Short explanation;
     private Short usefulness;
     private String positive;
@@ -42,8 +43,15 @@ public class FeedbackForCoach {
     }
 
     public FeedbackForCoach setPositive(String positive) {
+        assertWrittenFeedback(positive);
         this.positive = positive;
         return this;
+    }
+
+    private void assertWrittenFeedback(String feedback) {
+        if (feedback != null && feedback.length() > MAX_FEEDBACK_LENGTH) {
+            throw new IllegalArgumentException("Feedback length is max 2000 characters");
+        }
     }
 
     public String getNegative() {
@@ -51,6 +59,7 @@ public class FeedbackForCoach {
     }
 
     public FeedbackForCoach setNegative(String negative) {
+        assertWrittenFeedback(negative);
         this.negative = negative;
         return this;
     }
