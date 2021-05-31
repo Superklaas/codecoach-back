@@ -74,9 +74,9 @@ public class UserService {
         return userMapper.toListOfDtos(userRepository.findUsersByRole(Role.COACH));
     }
 
-    public UserDto updateUser(UpdateUserProfileDto dto, int id, String token) {
-        assertPrincipalCanUpdateProfile(id, token);
-        if (dto.getRole() != null && !userIsAdmin(token)) {
+    public UserDto updateUser(UpdateUserProfileDto dto, int id, int principalId) {
+        assertPrincipalCanUpdateProfile(id, principalId);
+        if (dto.getRole() != null && !userIsAdmin(principalId)) {
             throw new UnauthorizedException("Only admin can change role");
         }
         User user = findUserById(id);
@@ -91,8 +91,8 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
-    public UserDto updateCoach(UpdateCoachProfileDto dto, int id, String token) {
-        assertPrincipalCanUpdateProfile(id, token);
+    public UserDto updateCoach(UpdateCoachProfileDto dto, int id, int principalId) {
+        assertPrincipalCanUpdateProfile(id, principalId);
         User user = findUserById(id);
         userMapper.applyToEntity(dto, user);
         return userMapper.toDto(userRepository.save(user));
@@ -143,18 +143,14 @@ public class UserService {
         }
     }
 
-    private void assertPrincipalCanUpdateProfile(int id, String token) {
-        if (!userHasAuthorityToUpdateProfile(token, id)) {
+    private void assertPrincipalCanUpdateProfile(int id, int principalId) {
+        if (!userHasAuthorityToUpdateProfile(principalId, id)) {
             throw new UnauthorizedException("You are not authorized to make changes to this profile.");
         }
     }
 
-    private boolean userIsAdmin(String token) {
-        JSONObject tokenObject = JSONObjectParser.JwtTokenToJSONObject(token);
-        if (tokenObject.get("role").equals("ADMIN")) {
-            return true;
-        }
-        return false;
+    private boolean userIsAdmin(int principalId) {
+        return this.findUserById(principalId).getRole() == Role.ADMIN;
     }
 
     private void expireResetToken(User user) {
@@ -163,19 +159,11 @@ public class UserService {
         timer.schedule(timerTask, RESET_TOKEN_EXPIRATION_DELAY);
     }
 
-    private boolean userHasAuthorityToUpdateProfile(String token, int id) {
-        if (userIsAdmin(token)) {
+    private boolean userHasAuthorityToUpdateProfile(int principalId, int id) {
+        if (userIsAdmin(principalId)) {
             return true;
         }
-        if (getIdFromJwtToken(token) == id) {
-            return true;
-        }
-        return false;
-    }
-
-    private int getIdFromJwtToken(String token) {
-        JSONObject tokenObject = JSONObjectParser.JwtTokenToJSONObject(token);
-        return Integer.parseInt(tokenObject.get("sub").toString());
+        return principalId == id;
     }
 
 }

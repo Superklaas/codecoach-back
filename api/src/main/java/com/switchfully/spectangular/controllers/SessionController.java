@@ -24,9 +24,11 @@ public class SessionController {
     @PreAuthorize(value = "hasAuthority('CREATE_SESSION')")
     @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public SessionDto createSession(@RequestBody CreateSessionDto createSessionDto, @RequestHeader (name="Authorization") String token){
-        logger.info("Received POST request to create a new session: " + createSessionDto.toString() + "by user: " + token);
-        return sessionService.createSession(createSessionDto, token);
+    public SessionDto createSession(Principal principal, @RequestBody CreateSessionDto createSessionDto){
+        int uid = Integer.parseInt(principal.getName());
+
+        logger.info("Received POST request to create a new session: " + createSessionDto.toString() + "by user: " + uid);
+        return sessionService.createSession(createSessionDto, uid);
     }
 
     @PreAuthorize(value = "hasAuthority('GET_ALL_SESSIONS')")
@@ -39,23 +41,30 @@ public class SessionController {
     @PreAuthorize(value = "hasAuthority('GET_ALL_COACHING_SESSION')")
     @GetMapping(path = "/coach", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<SessionDto> getAllCoachSessions(@RequestHeader (name="Authorization") String token){
-        return sessionService.getAllSessionByCoach(token);
+    public List<SessionDto> getAllCoachSessions(Principal principal){
+        int uid = Integer.parseInt(principal.getName());
+
+        return sessionService.getAllSessionByCoach(uid);
     }
 
     @PreAuthorize(value = "hasAuthority('GET_ALL_COACHEE_SESSIONS')")
     @GetMapping(path = "/coachee", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<SessionDto> getAllCoacheeSessions(@RequestHeader (name="Authorization") String token){
-        return sessionService.getAllSessionByCoachee(token);
+    public List<SessionDto> getAllCoacheeSessions(Principal principal){
+
+        int uid = Integer.parseInt(principal.getName());
+
+        return sessionService.getAllSessionByCoachee(uid);
     }
 
     @PreAuthorize(value = "hasAuthority('UPDATE_SESSION_STATUS')")
     @PostMapping(path = "/{id}/status", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public SessionDto updateStatus(@RequestHeader (name="Authorization") String token, @PathVariable int id, @RequestBody SessionStatusDto status){
-        logger.info("Received POST request to update status of session: " + id + "by user: " + token + "to status: " + status.toString());
-        return sessionService.updateSessionStatus(id, status.getStatus());
+    public SessionDto updateStatus(Principal principal, @PathVariable int id, @RequestBody SessionStatusDto status){
+        int uid = Integer.parseInt(principal.getName());
+
+        logger.info("Received POST request to update status of session: " + id + "by user: " + uid + "to status: " + status.toString());
+        return sessionService.updateSessionStatus(uid, id, status.getStatus());
     }
 
     @PostMapping(path="/{id}/feedback-for-coach", consumes = "application/json", produces = "application/json")
@@ -65,7 +74,6 @@ public class SessionController {
                 id + " by user: " + principal.getName() + "to feedback: " + addFeedbackDto.toString());
 
         int uid = Integer.parseInt(principal.getName());
-
         return sessionService.addFeedbackForCoach(id, uid, addFeedbackDto);
     }
 
@@ -76,7 +84,7 @@ public class SessionController {
                 id + " by user: " + principal.getName() + "to feedback: " + addFeedbackDto.toString());
 
         int uid = Integer.parseInt(principal.getName());
-
         return sessionService.addFeedbackForCoachee(id, uid, addFeedbackDto);
     }
+
 }

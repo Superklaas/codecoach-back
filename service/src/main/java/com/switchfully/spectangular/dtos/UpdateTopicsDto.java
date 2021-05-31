@@ -12,4 +12,8 @@ public class UpdateTopicsDto {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "UpdateTopicsDto{" + "name='" + name + '\'' + '}';
+    }
 }
