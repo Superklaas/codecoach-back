@@ -26,6 +26,9 @@ public class Topic {
     }
 
     public Topic setName(String name) {
+        if (name == null || name.isBlank()){
+            throw new IllegalArgumentException("topic name cannot be empty");
+        }
         name = name.trim();
         if (name.length() > MAX_TOPIC_LENGTH) {
             throw new IllegalArgumentException("Cannot set a topic name longer than " + MAX_TOPIC_LENGTH + " characters");

@@ -45,7 +45,6 @@ public class User {
     @Column(name = "img_url")
     private String imageUrl;
 
-
     @ManyToMany(cascade = {}, fetch = FetchType.EAGER)
     @JoinTable(name = "user_topics", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "topic_name"))
@@ -58,8 +57,7 @@ public class User {
     public User() {
     }
 
-    public User(String firstName, String lastName, String profileName, String email, String encryptedPassword,
-                Role role) {
+    public User(String firstName, String lastName, String profileName, String email, String encryptedPassword, Role role) {
         this.setFirstName(firstName);
         this.setLastName(lastName);
         this.setProfileName(profileName);
@@ -186,7 +184,7 @@ public class User {
     }
 
     public void becomeCoach() {
-        this.role = Role.COACH;
+        this.setRole(Role.COACH);
     }
 
     public String validEmail(String emailAddress) {

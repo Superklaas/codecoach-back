@@ -26,7 +26,6 @@ public class FeedbackForCoach {
         return this;
     }
 
-
     public Short getUsefulness() {
         return usefulness;
     }
@@ -48,12 +47,6 @@ public class FeedbackForCoach {
         return this;
     }
 
-    private void assertWrittenFeedback(String feedback) {
-        if (feedback != null && feedback.length() > MAX_FEEDBACK_LENGTH) {
-            throw new IllegalArgumentException("Feedback length is max 2000 characters");
-        }
-    }
-
     public String getNegative() {
         return negative;
     }
@@ -62,6 +55,12 @@ public class FeedbackForCoach {
         assertWrittenFeedback(negative);
         this.negative = negative;
         return this;
+    }
+
+    private void assertWrittenFeedback(String feedback) {
+        if (feedback != null && feedback.length() > MAX_FEEDBACK_LENGTH) {
+            throw new IllegalArgumentException("Feedback length is max 2000 characters");
+        }
     }
 
     private void assertValidScore(Short score) {
