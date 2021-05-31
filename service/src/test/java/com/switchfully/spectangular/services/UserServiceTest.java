@@ -9,6 +9,7 @@ import com.switchfully.spectangular.exceptions.EmailNotFoundException;
 import com.switchfully.spectangular.exceptions.InvalidPasswordException;
 import com.switchfully.spectangular.mappers.UserMapper;
 import com.switchfully.spectangular.repository.UserRepository;
+import com.switchfully.spectangular.services.mailing.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

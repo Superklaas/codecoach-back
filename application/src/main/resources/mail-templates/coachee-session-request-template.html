@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<p th:text="|Hello ${recipientName},|"></p>
+<p>Thank you for booking a session on CodeCoach.</p>
+<p>Below, you can find your session details.</p>
+<dl>
+    <dt>Coach</dt>
+    <dd th:text="|${coachFirstName} ${coachLastName}|"></dd>
+    <dt>Subject</dt>
+    <dd th:text="${subject}"></dd>
+    <dt>When</dt>
+    <dd th:text="|${date} ${time}|"></dd>
+    <dt>Where</dt>
+    <dd th:text="${location}"></dd>
+    <dt>Your remarks for the coach</dt>
+    <dd th:text="${remarks}"></dd>
+</dl>
+<p>Have fun learning!</p>
+<br>
+<p th:text="${regards}"></p>
+<p>
+    <em th:text="${senderName}"></em> <br>
+</p>
+</body>
+</html>

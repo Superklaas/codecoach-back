@@ -1,7 +1,6 @@
 package com.switchfully.spectangular.services;
 
 
-import com.switchfully.spectangular.JSONObjectParser;
 import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.Topic;
 import com.switchfully.spectangular.domain.User;
@@ -11,9 +10,9 @@ import com.switchfully.spectangular.mappers.TopicMapper;
 import com.switchfully.spectangular.mappers.UserMapper;
 import com.switchfully.spectangular.repository.TopicRepository;
 import com.switchfully.spectangular.repository.UserRepository;
+import com.switchfully.spectangular.services.mailing.EmailService;
 import com.switchfully.spectangular.services.timertasks.RemoveResetTokenTimerTask;
 import com.switchfully.spectangular.validators.UserValidator;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -50,7 +49,9 @@ public class UserService {
     public UserDto createUser(CreateUserDto dto) {
         UserValidator.assertValidPassword(dto.getPassword());
         assertEmailDoesNotExist(dto.getEmail());
-        return userMapper.toDto(userRepository.save(userMapper.toEntity(dto)));
+        User user = userRepository.save(userMapper.toEntity(dto));
+        emailService.mailForRegistering(user);
+        return userMapper.toDto(user);
     }
 
     public UserDto getUserById(int id) {
@@ -116,7 +117,7 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Email address doesn't exist."));
         user.setResetToken(UUID.randomUUID().toString());
-        emailService.sendEmailToResetPassword(user, requestUrl);
+        emailService.mailToResetPassword(user, requestUrl);
         expireResetToken(user);
     }
 

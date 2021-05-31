@@ -14,6 +14,7 @@ import com.switchfully.spectangular.exceptions.UnauthorizedException;
 import com.switchfully.spectangular.mappers.FeedbackMapper;
 import com.switchfully.spectangular.mappers.SessionMapper;
 import com.switchfully.spectangular.repository.SessionRepository;
+import com.switchfully.spectangular.services.mailing.EmailService;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +27,14 @@ public class SessionService {
 
     private final SessionRepository sessionRepository;
     private final UserService userService;
+    private final EmailService emailService;
     private final SessionMapper sessionMapper;
     private final FeedbackMapper feedbackMapper;
 
-    public SessionService(SessionRepository sessionRepository, UserService userService, SessionMapper sessionMapper, FeedbackMapper feedbackMapper) {
+    public SessionService(SessionRepository sessionRepository, UserService userService, EmailService emailService, SessionMapper sessionMapper, FeedbackMapper feedbackMapper) {
         this.sessionRepository = sessionRepository;
         this.userService = userService;
+        this.emailService = emailService;
         this.sessionMapper = sessionMapper;
         this.feedbackMapper = feedbackMapper;
     }
@@ -41,9 +44,10 @@ public class SessionService {
         User coach = userService.findUserById(createSessionDto.getCoachId());
         User coachee = userService.findUserById(createSessionDto.getCoacheeId());
 
-        Session session = sessionMapper.toEntity(createSessionDto, coach, coachee);
-
-        return sessionMapper.toDto(sessionRepository.save(session));
+        Session session = sessionRepository.save(sessionMapper.toEntity(createSessionDto, coach, coachee));
+        emailService.mailCoacheeForSessionRequest(session);
+        emailService.mailCoachForSessionRequest(session);
+        return sessionMapper.toDto(session);
     }
 
     public List<SessionDto> getAllSessionByCoach(int uid) {

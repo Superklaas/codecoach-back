@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<p th:text="|Hello ${recipientName},|"></p>
+<p>You have received a new session request.</p>
+<p>Below, you can find the details of the request.</p>
+<dl>
+    <dt>Coachee</dt>
+    <dd th:text="|${coacheeFirstName} ${coacheeLastName}|"></dd>
+    <dt>Subject</dt>
+    <dd th:text="${subject}"></dd>
+    <dt>When</dt>
+    <dd th:text="|${date} ${time}|"></dd>
+    <dt>Where</dt>
+    <dd th:text="${location}"></dd>
+    <dt>Remarks for you</dt>
+    <dd th:text="${remarks}"></dd>
+</dl>
+<p>Make sure to accept/decline this session request.</p>
+<br>
+<p th:text="${regards}"></p>
+<p>
+    <em th:text="${senderName}"></em> <br>
+</p>
+</body>
+</html>
