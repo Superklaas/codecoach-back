@@ -4,7 +4,6 @@ import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.domain.session.Session;
 import com.switchfully.spectangular.exceptions.UnableToSendEmailException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;

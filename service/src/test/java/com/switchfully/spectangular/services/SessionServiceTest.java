@@ -10,6 +10,7 @@ import com.switchfully.spectangular.exceptions.UnauthorizedException;
 import com.switchfully.spectangular.mappers.FeedbackMapper;
 import com.switchfully.spectangular.mappers.SessionMapper;
 import com.switchfully.spectangular.repository.SessionRepository;
+import com.switchfully.spectangular.services.mailing.EmailService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +38,8 @@ class SessionServiceTest {
     private SessionRepository sessionRepository;
     @Mock
     private UserService userService;
+    @Mock
+    private EmailService emailService;
     @Mock
     private SessionMapper sessionMapper;
     @Mock
