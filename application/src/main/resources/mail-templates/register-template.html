@@ -3,9 +3,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
-<body>
-<p th:text="|Welcome ${recipientName},|"></p>
-<br>
+<body th:object="${user}">
+<p th:text="|Welcome *{profileName},|"></p>
 <p>Thank you for joining our wonderful community.</p>
 <p>Don't hesitate to book a session with one of our coaches and start learning!</p>
 <br>

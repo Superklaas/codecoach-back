@@ -3,22 +3,21 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
-<body>
-<p th:text="|Hello ${coach.profileName},|"></p>
-<br>
+<body th:object="${session}">
+<p th:text="|Hello *{coach.profileName},|"></p>
 <p>You have received a new session request.</p>
 <p>Below, you can find the details of the request.</p>
 <dl>
     <dt>Coachee</dt>
-    <dd th:text="|${coachee.firstName} ${coachee.lastName}|"></dd>
+    <dd th:text="|*{coachee.firstName} *{coachee.lastName}|"></dd>
     <dt>Subject</dt>
-    <dd th:text="${subject}"></dd>
+    <dd th:text="*{subject}"></dd>
     <dt>When</dt>
-    <dd th:text="|${date} ${time}|"></dd>
+    <dd th:text="|*{date} *{time}|"></dd>
     <dt>Where</dt>
-    <dd th:text="${location}"></dd>
+    <dd th:text="*{location}"></dd>
     <dt>Remarks for you</dt>
-    <dd th:text="${remarks}"></dd>
+    <dd th:text="*{remarks}"></dd>
 </dl>
 <p>Make sure to accept/decline this session request.</p>
 <br>

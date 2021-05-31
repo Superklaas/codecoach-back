@@ -37,8 +37,8 @@ public class EmailService {
 
     public void mailToResetPassword(User user, String url) {
         Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("recipientName", user.getProfileName());
-        templateModel.put("url", url + "/reset-password?token=" + user.getResetToken());
+        templateModel.put("user", user);
+        templateModel.put("url", url + "/reset-password");
         sign(templateModel);
         Context thymeleafContext = new Context();
         thymeleafContext.setVariables(templateModel);
@@ -49,7 +49,7 @@ public class EmailService {
 
     public void mailForRegistering(User user) {
         Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("recipientName", user.getProfileName());
+        templateModel.put("user", user);
         sign(templateModel);
         Context thymeleafContext = new Context();
         thymeleafContext.setVariables(templateModel);
@@ -60,7 +60,7 @@ public class EmailService {
 
     public void mailCoacheeForSessionRequest(Session session) {
         Map<String, Object> templateModel = new HashMap<>();
-        provideSessionDetails(templateModel, session);
+        templateModel.put("session", session);
         sign(templateModel);
         Context thymeleafContext = new Context();
         thymeleafContext.setVariables(templateModel);
@@ -71,7 +71,7 @@ public class EmailService {
 
     public void mailCoachForSessionRequest(Session session) {
         Map<String, Object> templateModel = new HashMap<>();
-        provideSessionDetails(templateModel, session);
+        templateModel.put("session", session);
         sign(templateModel);
         Context thymeleafContext = new Context();
         thymeleafContext.setVariables(templateModel);
@@ -97,16 +97,6 @@ public class EmailService {
     private void sign(Map<String, Object> templateModel) {
         templateModel.put("regards", REGARDS);
         templateModel.put("senderName", SENDER_NAME);
-    }
-
-    private void provideSessionDetails(Map<String, Object> templateModel, Session session) {
-        templateModel.put("coach", session.getCoach());
-        templateModel.put("coachee", session.getCoachee());
-        templateModel.put("subject", session.getSubject());
-        templateModel.put("date", session.getDate());
-        templateModel.put("time", session.getStartTime());
-        templateModel.put("location", session.getLocation());
-        templateModel.put("remarks", session.getRemarks());
     }
 
 }

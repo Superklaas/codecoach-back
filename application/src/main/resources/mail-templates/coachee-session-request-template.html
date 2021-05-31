@@ -3,22 +3,21 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
-<body>
-<p th:text="|Hello ${coachee.profileName},|"></p>
-<br>
+<body th:object="${session}">
+<p th:text="|Hello *{coachee.profileName},|"></p>
 <p>Thank you for booking a session on CodeCoach.</p>
 <p>Below, you can find your session details.</p>
 <dl>
     <dt>Coach</dt>
-    <dd th:text="|${coach.firstName} ${coach.lastName}|"></dd>
+    <dd th:text="|*{coach.firstName} *{coach.lastName}|"></dd>
     <dt>Subject</dt>
-    <dd th:text="${subject}"></dd>
+    <dd th:text="*{subject}"></dd>
     <dt>When</dt>
-    <dd th:text="|${date} ${time}|"></dd>
+    <dd th:text="|*{date} *{time}|"></dd>
     <dt>Where</dt>
-    <dd th:text="${location}"></dd>
+    <dd th:text="*{location}"></dd>
     <dt>Your remarks for the coach</dt>
-    <dd th:text="${remarks}"></dd>
+    <dd th:text="*{remarks}"></dd>
 </dl>
 <p>Have fun learning!</p>
 <br>
