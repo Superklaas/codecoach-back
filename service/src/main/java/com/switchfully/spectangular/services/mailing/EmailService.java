@@ -60,9 +60,6 @@ public class EmailService {
 
     public void mailCoacheeForSessionRequest(Session session) {
         Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("recipientName", session.getCoachee().getProfileName());
-        templateModel.put("coachFirstName", session.getCoach().getFirstName());
-        templateModel.put("coachLastName", session.getCoach().getLastName());
         provideSessionDetails(templateModel, session);
         sign(templateModel);
         Context thymeleafContext = new Context();
@@ -74,9 +71,6 @@ public class EmailService {
 
     public void mailCoachForSessionRequest(Session session) {
         Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("recipientName", session.getCoach().getProfileName());
-        templateModel.put("coacheeFirstName", session.getCoachee().getFirstName());
-        templateModel.put("coacheeLastName", session.getCoachee().getLastName());
         provideSessionDetails(templateModel, session);
         sign(templateModel);
         Context thymeleafContext = new Context();
@@ -106,6 +100,8 @@ public class EmailService {
     }
 
     private void provideSessionDetails(Map<String, Object> templateModel, Session session) {
+        templateModel.put("coach", session.getCoach());
+        templateModel.put("coachee", session.getCoachee());
         templateModel.put("subject", session.getSubject());
         templateModel.put("date", session.getDate());
         templateModel.put("time", session.getStartTime());

@@ -4,12 +4,13 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<p th:text="|Hello ${recipientName},|"></p>
+<p th:text="|Hello ${coachee.profileName},|"></p>
+<br>
 <p>Thank you for booking a session on CodeCoach.</p>
 <p>Below, you can find your session details.</p>
 <dl>
     <dt>Coach</dt>
-    <dd th:text="|${coachFirstName} ${coachLastName}|"></dd>
+    <dd th:text="|${coach.firstName} ${coach.lastName}|"></dd>
     <dt>Subject</dt>
     <dd th:text="${subject}"></dd>
     <dt>When</dt>
