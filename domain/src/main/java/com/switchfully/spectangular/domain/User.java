@@ -2,6 +2,7 @@ package com.switchfully.spectangular.domain;
 
 import com.switchfully.spectangular.exceptions.InvalidEmailException;
 import com.switchfully.spectangular.exceptions.InvalidPasswordException;
+import com.switchfully.spectangular.validators.UserValidator;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import javax.persistence.*;
@@ -45,7 +46,7 @@ public class User {
     @Column(name = "img_url")
     private String imageUrl;
 
-    @ManyToMany(cascade = {}, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_topics", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "topic_name"))
     private List<Topic> topicList;
@@ -149,25 +150,25 @@ public class User {
     }
 
     public User setFirstName(String firstName) {
-        assertValidName(firstName);
+        UserValidator.assertValidName(firstName);
         this.firstName = firstName.trim();
         return this;
     }
 
     public User setLastName(String lastName) {
-        assertValidName(lastName);
+        UserValidator.assertValidName(lastName);
         this.lastName = lastName.trim();
         return this;
     }
 
     public User setProfileName(String profileName) {
-        assertValidName(profileName);
+        UserValidator.assertValidName(profileName);
         this.profileName = profileName.trim();
         return this;
     }
 
     public User setEmail(String email) {
-        this.email = validEmail(email);
+        this.email = UserValidator.validEmail(email);
         return this;
     }
 
@@ -185,22 +186,6 @@ public class User {
 
     public void becomeCoach() {
         this.setRole(Role.COACH);
-    }
-
-    public String validEmail(String emailAddress) {
-        if (!EmailValidator.getInstance().isValid(emailAddress)) {
-            throw new InvalidEmailException("user has invalid email address");
-        }
-        return emailAddress;
-    }
-
-    private void assertValidName(String name) {
-        if (name == null) {
-            throw new IllegalArgumentException("Name must be set");
-        }
-        if (name.trim().length() == 0) {
-            throw new IllegalArgumentException("Name cannot be 0 length");
-        }
     }
 
     @Override

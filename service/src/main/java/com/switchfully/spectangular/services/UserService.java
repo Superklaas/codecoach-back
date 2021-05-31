@@ -12,6 +12,7 @@ import com.switchfully.spectangular.mappers.UserMapper;
 import com.switchfully.spectangular.repository.TopicRepository;
 import com.switchfully.spectangular.repository.UserRepository;
 import com.switchfully.spectangular.services.timertasks.RemoveResetTokenTimerTask;
+import com.switchfully.spectangular.validators.UserValidator;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,7 +48,7 @@ public class UserService {
     }
 
     public UserDto createUser(CreateUserDto dto) {
-        assertValidPassword(dto.getPassword());
+        UserValidator.assertValidPassword(dto.getPassword());
         assertEmailDoesNotExist(dto.getEmail());
         return userMapper.toDto(userRepository.save(userMapper.toEntity(dto)));
     }
@@ -160,21 +161,6 @@ public class UserService {
         Timer timer = new Timer();
         TimerTask timerTask = new RemoveResetTokenTimerTask(user);
         timer.schedule(timerTask, RESET_TOKEN_EXPIRATION_DELAY);
-    }
-
-    private void assertValidPassword(String unencryptedPassword) {
-        if (unencryptedPassword.length() < 8) {
-            throw new InvalidPasswordException("password is invalid");
-        }
-        if (!unencryptedPassword.matches(".*[0-9]+.*")) {
-            throw new InvalidPasswordException("password is invalid");
-        }
-        if (!unencryptedPassword.matches(".*[A-Z]+.*")) {
-            throw new InvalidPasswordException("password is invalid");
-        }
-        if (!unencryptedPassword.matches(".*[a-z]+.*")) {
-            throw new InvalidPasswordException("password is invalid");
-        }
     }
 
     private boolean userHasAuthorityToUpdateProfile(String token, int id) {
