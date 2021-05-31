@@ -38,7 +38,7 @@ class SessionTest {
 
         session = new Session(
                 "Spring",
-                LocalDate.now(),
+                LocalDate.now().plusDays(1),
                 LocalTime.now().plusHours(2),
                 "Zoom",
                 "These are remarks.",
