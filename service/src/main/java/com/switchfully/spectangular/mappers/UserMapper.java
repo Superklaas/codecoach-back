@@ -3,6 +3,7 @@ package com.switchfully.spectangular.mappers;
 import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.dtos.CreateUserDto;
+import com.switchfully.spectangular.dtos.UpdateCoachProfileDto;
 import com.switchfully.spectangular.dtos.UpdateUserProfileDto;
 import com.switchfully.spectangular.dtos.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,5 +50,16 @@ public class UserMapper {
     }
 
 
+    public void applyToEntity(UpdateUserProfileDto dto, User user) {
+        if(dto.getRole()!=null) user.setRole(Role.valueOf(dto.getRole().toUpperCase()));
+        user.setFirstName(dto.getFirstName())
+                .setLastName(dto.getLastName())
+                .setProfileName(dto.getProfileName())
+                .setEmail(dto.getEmail())
+                .setImageUrl(dto.getImageUrl());
+    }
 
+    public void applyToEntity(UpdateCoachProfileDto dto, User user) {
+        user.setAvailability(dto.getAvailability()).setIntroduction(dto.getIntroduction());
+    }
 }
