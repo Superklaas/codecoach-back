@@ -28,6 +28,14 @@ public class SessionController {
         logger.info("Received POST request to create a new session: " + createSessionDto.toString() + "by user: " + token);
         return sessionService.createSession(createSessionDto, token);
     }
+
+    @PreAuthorize(value = "hasAuthority('GET_ALL_SESSIONS')")
+    @GetMapping(produces = "application/json")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public List<SessionDto> getAllSessions(){
+        return sessionService.getAll();
+    }
+
     @PreAuthorize(value = "hasAuthority('GET_ALL_COACHING_SESSION')")
     @GetMapping(path = "/coach", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)

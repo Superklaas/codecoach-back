@@ -143,4 +143,10 @@ public class SessionService {
         session.setFeedbackForCoachee(feedbackMapper.toEntity(addFeedbackDto));
         return sessionMapper.toDto(session);
     }
+
+    public  List<SessionDto> getAll(){
+        List<Session> sessions = sessionRepository.findAll();
+        updateStatusSessionList(sessions);
+        return sessionMapper.toListOfDtos(sessions);
+    }
 }

@@ -20,6 +20,7 @@ public enum Feature {
     UPDATE_PROFILE(ADMIN, COACH, COACHEE),
     GET_ALL_USERS(ADMIN),
     GET_ALL_TOPICS(ADMIN, COACH, COACHEE),
+    GET_ALL_SESSIONS(ADMIN),
     UPDATE_TOPICS(ADMIN, COACH);
 
     private final List<Role> roleList;
