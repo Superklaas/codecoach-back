@@ -76,7 +76,6 @@ public class Session {
         this.status = SessionStatus.REQUESTED;
     }
 
-
     public Session() {}
 
     public Integer getId() {
@@ -235,7 +234,6 @@ public class Session {
     public LocalDateTime getDateTime() {
         return LocalDateTime.of(this.getDate(),this.getStartTime());
     }
-
 
     private void assertOpenToFeedback() {
         if (!getStatus().equals(SessionStatus.WAITING_FEEDBACK)) {

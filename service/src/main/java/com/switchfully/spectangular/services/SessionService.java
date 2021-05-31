@@ -36,8 +36,8 @@ public class SessionService {
         this.feedbackMapper = feedbackMapper;
     }
 
-    public SessionDto createSession(CreateSessionDto createSessionDto, String token) {
-        validateCreateSession(createSessionDto, token);
+    public SessionDto createSession(CreateSessionDto createSessionDto, int uid) {
+        validateCreateSession(createSessionDto, uid);
         User coach = userService.findUserById(createSessionDto.getCoachId());
         User coachee = userService.findUserById(createSessionDto.getCoacheeId());
 
@@ -46,9 +46,9 @@ public class SessionService {
         return sessionMapper.toDto(sessionRepository.save(session));
     }
 
-    public List<SessionDto> getAllSessionByCoach(String token) {
-        int id = getIdFromJwtToken(token);
-        User user = userService.findUserById(id);
+    public List<SessionDto> getAllSessionByCoach(int uid) {
+        User user = userService.findUserById(uid);
+
         if (!Feature.GET_ALL_COACHING_SESSION.getRoleList().contains(user.getRole())) {
             throw new IllegalArgumentException("user is not a coach");
         }
@@ -58,14 +58,18 @@ public class SessionService {
         return sessionMapper.toListOfDtos(coachSessions);
     }
 
-    public List<SessionDto> getAllSessionByCoachee(String token) {
-        int id = getIdFromJwtToken(token);
-        List<Session> coacheeSessions = sessionRepository.findAllByCoachee(userService.findUserById(id));
+    public List<SessionDto> getAllSessionByCoachee(int uid) {
+
+        List<Session> coacheeSessions = sessionRepository.findAllByCoachee(userService.findUserById(uid));
         updateStatusSessionList(coacheeSessions);
         return sessionMapper.toListOfDtos(coacheeSessions);
     }
 
-    public SessionDto updateSessionStatus(int id, SessionStatus status) {
+    public SessionDto updateSessionStatus(int uid, int id, SessionStatus status) {
+        if (!userHasAuthorityToChangeState(uid, id, status)){
+            throw new UnauthorizedException("user cant change status of another user");
+        }
+
         Session session = findSessionById(id);
 
         session.setStatus(status);
@@ -73,8 +77,8 @@ public class SessionService {
         return sessionMapper.toDto(session);
     }
 
-    public boolean userHasAuthorityToChangeState(String token, int sessionId, SessionStatus status) {
-        User user = userService.findUserById(this.getIdFromJwtToken(token));
+    public boolean userHasAuthorityToChangeState(int uid, int sessionId, SessionStatus status) {
+        User user = userService.findUserById(uid);
         Session session = this.findSessionById(sessionId);
         if (user.equals(session.getCoach())){
             return hacCoachAuthorityToChange(status);
@@ -94,10 +98,9 @@ public class SessionService {
         return Integer.parseInt(tokenObject.get("sub").toString());
     }
 
-    private void validateCreateSession(CreateSessionDto createSessionDto, String token) {
-        JSONObject tokenObject = JSONObjectParser.JwtTokenToJSONObject(token);
+    private void validateCreateSession(CreateSessionDto createSessionDto, int uid) {
 
-        if (!tokenObject.get("sub").equals("" + createSessionDto.getCoacheeId())) {
+        if (uid != createSessionDto.getCoacheeId()) {
             throw new UnauthorizedException("User can't make session for other users");
         }
 
@@ -130,7 +133,6 @@ public class SessionService {
         session.setFeedbackForCoach(feedbackMapper.toEntity(addFeedbackDto));
         return sessionMapper.toDto(session);
     }
-
 
     public SessionDto addFeedbackForCoachee(int sessionId, int userId, AddFeedbackForCoacheeDto addFeedbackDto) {
         Session session = sessionRepository.findById(sessionId)

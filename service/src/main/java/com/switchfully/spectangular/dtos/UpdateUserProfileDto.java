@@ -32,4 +32,9 @@ public class UpdateUserProfileDto {
     public String getRole() {
         return role;
     }
+
+    @Override
+    public String toString() {
+        return "UpdateUserProfileDto{" + "email='" + email + '\'' + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", profileName='" + profileName + '\'' + ", imageUrl='" + imageUrl + '\'' + ", role='" + role + '\'' + '}';
+    }
 }

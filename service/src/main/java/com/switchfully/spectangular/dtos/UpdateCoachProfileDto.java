@@ -12,4 +12,9 @@ public class UpdateCoachProfileDto {
     public String getIntroduction() {
         return introduction;
     }
+
+    @Override
+    public String toString() {
+        return "UpdateCoachProfileDto{" + "availability='" + availability + '\'' + ", introduction='" + introduction + '\'' + '}';
+    }
 }

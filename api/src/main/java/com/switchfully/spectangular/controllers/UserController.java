@@ -67,14 +67,18 @@ public class UserController {
     @PreAuthorize("hasAuthority('UPDATE_PROFILE')")
     @PutMapping(path = "/{id}" , produces = "application/json", consumes = "application/json" )
     @ResponseStatus(HttpStatus.OK)
-    public UserDto updateProfile(@PathVariable int id, @RequestBody UpdateUserProfileDto updateDto, @RequestHeader (name="Authorization") String token) {
-        logger.info("Received PUT request to update a user");
-        return userService.updateUser(updateDto, id, token);
+    public UserDto updateProfile(@PathVariable int id, @RequestBody UpdateUserProfileDto updateDto, Principal principal) {
+        int uid = Integer.parseInt(principal.getName());
+
+        logger.info("Received PUT request to update a user:" + uid + "data: " + updateDto.toString());
+        return userService.updateUser(updateDto, id, uid);
     }
 
     @PostMapping(path = "/forgot-password", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public void sendResetToken(@RequestHeader String email, @RequestBody String url) {
+
+
         logger.info("Received POST request to set and retrieve a reset token.");
         userService.sendResetToken(email, url);
     }
@@ -98,17 +102,18 @@ public class UserController {
     @PostMapping(path = "/{id}/topics", produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public UserDto updateTopics(Principal principal, @PathVariable int id, @RequestBody List<UpdateTopicsDto> dtoList) {
-        logger.info("Received POST request to update topics.");
+        logger.info("Received POST request to update topics by user:" + principal.getName() + " data: " + dtoList.toString());
         return userService.updateTopics(id, dtoList, Integer.parseInt(principal.getName()));
     }
 
     @PreAuthorize("hasAuthority('UPDATE_PROFILE')")
     @PutMapping(path = "/{id}/coach" , produces = "application/json", consumes = "application/json" )
     @ResponseStatus(HttpStatus.OK)
-    public UserDto updateCoach(@PathVariable int id, @RequestBody UpdateCoachProfileDto updateDto,
-                                  @RequestHeader (name="Authorization") String token) {
-        logger.info("Received PUT request to update a coach");
-        return userService.updateCoach(updateDto, id, token);
+    public UserDto updateCoach(@PathVariable int id, @RequestBody UpdateCoachProfileDto updateDto, Principal principal) {
+        int uid = Integer.parseInt(principal.getName());
+
+        logger.info("Received PUT request to update a coach:" + uid + "data: " + updateDto.toString());
+        return userService.updateCoach(updateDto, id, uid);
     }
 
 }

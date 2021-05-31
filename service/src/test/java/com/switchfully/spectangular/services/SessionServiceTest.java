@@ -142,7 +142,7 @@ class SessionServiceTest {
         Mockito.when(sessionRepository.save(any())).thenReturn(session);
         Mockito.when(sessionMapper.toDto(any())).thenReturn(sessionDto);
         //WHEN
-        SessionDto actualSessionDto = sessionService.createSession(createSessionDto, TOKEN);
+        SessionDto actualSessionDto = sessionService.createSession(createSessionDto, COACHEE_ID);
         //THEN
         verify(userService, times(2)).findUserById(COACH_ID);
         verify(userService).findUserById(COACHEE_ID);
@@ -160,12 +160,11 @@ class SessionServiceTest {
                 .setStartTime(session.getStartTime().toString())
                 .setLocation(session.getLocation())
                 .setRemarks(session.getRemarks())
-                .setCoacheeId(1)
+                .setCoacheeId(COACHEE_ID)
                 .setCoachId(COACH_ID);
-        //WHEN
         //THEN
         assertThatExceptionOfType(UnauthorizedException.class)
-                .isThrownBy(() -> sessionService.createSession(invalidDto, TOKEN));
+                .isThrownBy(() -> sessionService.createSession(invalidDto, 1));
     }
 
     @Test
@@ -191,29 +190,29 @@ class SessionServiceTest {
         //WHEN
         //THEN
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> sessionService.createSession(invalidDto, TOKEN));
+                .isThrownBy(() -> sessionService.createSession(invalidDto, COACHEE_ID));
     }
 
     @Test
-    void getAllSessionByCoachee_givenValidTokenCoachee_thenReturnListSessionDtos() {
+    void getAllSessionByCoachee_givenValidCoacheeId_thenReturnListSessionDtos() {
         //GIVEN
         when(userService.findUserById(anyInt())).thenReturn(coachee);
         when(sessionRepository.findAllByCoachee(coachee)).thenReturn(List.of(session));
         when(sessionMapper.toListOfDtos(List.of(session))).thenReturn(List.of(sessionDto));
         //WHEN
-        List<SessionDto> actualSessionDtos = sessionService.getAllSessionByCoachee(TOKEN);
+        List<SessionDto> actualSessionDtos = sessionService.getAllSessionByCoachee(COACHEE_ID);
         //THEN
         assertThat(actualSessionDtos).containsExactly(sessionDto);
     }
 
     @Test
-    void getAllSessionByCoach_givenValidTokenCoach_thenReturnListSessionDtos() {
+    void getAllSessionByCoach_givenValidCoachId_thenReturnListSessionDtos() {
         //GIVEN
         when(userService.findUserById(anyInt())).thenReturn(coach);
         when(sessionRepository.findAllByCoach(coach)).thenReturn(List.of(session));
         when(sessionMapper.toListOfDtos(List.of(session))).thenReturn(List.of(sessionDto));
         //WHEN
-        List<SessionDto> actualSessionDtos = sessionService.getAllSessionByCoach(TOKEN);
+        List<SessionDto> actualSessionDtos = sessionService.getAllSessionByCoach(COACH_ID);
         //THEN
         assertThat(actualSessionDtos).containsExactly(sessionDto);
     }
@@ -233,7 +232,7 @@ class SessionServiceTest {
         //WHEN
         //THEN
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> sessionService.getAllSessionByCoach(TOKEN));
+                .isThrownBy(() -> sessionService.getAllSessionByCoach(COACHEE_ID));
 
     }
 
@@ -245,7 +244,7 @@ class SessionServiceTest {
         when(sessionRepository.findAllByCoach(coach)).thenReturn(List.of(session));
         when(sessionMapper.toListOfDtos(List.of(session))).thenReturn(List.of(sessionDto));
 
-        sessionService.getAllSessionByCoach(TOKEN);
+        sessionService.getAllSessionByCoach(COACH_ID);
 
         assertThat(session.getStatus()).isEqualTo(SessionStatus.DECLINED_AUTOMATICALLY);
     }
@@ -259,7 +258,7 @@ class SessionServiceTest {
         when(sessionRepository.findAllByCoach(coach)).thenReturn(List.of(session));
         when(sessionMapper.toListOfDtos(List.of(session))).thenReturn(List.of(sessionDto));
         //GIVEN
-        sessionService.getAllSessionByCoach(TOKEN);
+        sessionService.getAllSessionByCoach(COACH_ID);
         //THEN
         assertThat(session.getStatus()).isEqualTo(SessionStatus.WAITING_FEEDBACK);
     }
@@ -272,7 +271,7 @@ class SessionServiceTest {
         when(sessionRepository.findAllByCoach(coach)).thenReturn(List.of(session));
         when(sessionMapper.toListOfDtos(List.of(session))).thenReturn(List.of(sessionDto));
 
-        sessionService.getAllSessionByCoach(TOKEN);
+        sessionService.getAllSessionByCoach(COACH_ID);
 
         assertThat(session.getStatus()).isEqualTo(SessionStatus.REQUESTED);
     }
@@ -287,7 +286,7 @@ class SessionServiceTest {
         when(sessionMapper.toListOfDtos(List.of(session))).thenReturn(List.of(sessionDto));
 
         //WHEN
-        sessionService.getAllSessionByCoachee(TOKEN);
+        sessionService.getAllSessionByCoachee(COACHEE_ID);
 
         assertThat(session.getStatus()).isEqualTo(SessionStatus.DECLINED_AUTOMATICALLY);
     }
@@ -300,7 +299,7 @@ class SessionServiceTest {
         //GIVEN
 
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> sessionService.updateSessionStatus(5, SessionStatus.ACCEPTED));
+                .isThrownBy(() -> sessionService.updateSessionStatus(COACH_ID, 5, SessionStatus.ACCEPTED));
     }
 
     @Test
@@ -308,9 +307,11 @@ class SessionServiceTest {
         //WHEN
         Session mockSession = mock(Session.class);
         when(sessionRepository.findById(5)).thenReturn(Optional.of(mockSession));
+        when(mockSession.getCoach()).thenReturn(coach);
+        when(userService.findUserById(COACH_ID)).thenReturn(coach);
         doNothing().when(mockSession).setStatus(SessionStatus.ACCEPTED);
         //GIVEN
-        sessionService.updateSessionStatus(5, SessionStatus.ACCEPTED);
+        sessionService.updateSessionStatus(COACH_ID, 5, SessionStatus.ACCEPTED);
 
         verify(mockSession, times(1)).setStatus(SessionStatus.ACCEPTED);
     }
@@ -320,7 +321,7 @@ class SessionServiceTest {
         when(userService.findUserById(anyInt())).thenReturn(coach);
         when(sessionRepository.findById(5)).thenReturn(Optional.of(session));
 
-        assertThat(sessionService.userHasAuthorityToChangeState(TOKEN,5,SessionStatus.ACCEPTED)).isTrue();
+        assertThat(sessionService.userHasAuthorityToChangeState(COACH_ID,5,SessionStatus.ACCEPTED)).isTrue();
     }
 
     @Test
@@ -328,7 +329,7 @@ class SessionServiceTest {
         when(userService.findUserById(anyInt())).thenReturn(coach);
         when(sessionRepository.findById(5)).thenReturn(Optional.of(session));
 
-        assertThat(sessionService.userHasAuthorityToChangeState(TOKEN,5,SessionStatus.REQUEST_CANCELLED_BY_COACHEE)).isFalse();
+        assertThat(sessionService.userHasAuthorityToChangeState(COACH_ID,5,SessionStatus.REQUEST_CANCELLED_BY_COACHEE)).isFalse();
     }
 
     @Test
@@ -336,7 +337,7 @@ class SessionServiceTest {
         when(userService.findUserById(anyInt())).thenReturn(coach2);
         when(sessionRepository.findById(5)).thenReturn(Optional.of(session));
 
-        assertThat(sessionService.userHasAuthorityToChangeState(TOKEN,5,SessionStatus.ACCEPTED)).isFalse();
+        assertThat(sessionService.userHasAuthorityToChangeState(COACH_ID,5,SessionStatus.ACCEPTED)).isFalse();
     }
 
     @Test
@@ -344,7 +345,7 @@ class SessionServiceTest {
         when(userService.findUserById(anyInt())).thenReturn(coachee);
         when(sessionRepository.findById(5)).thenReturn(Optional.of(session));
 
-        assertThat(sessionService.userHasAuthorityToChangeState(TOKEN,5,SessionStatus.REQUEST_CANCELLED_BY_COACHEE)).isTrue();
+        assertThat(sessionService.userHasAuthorityToChangeState(COACHEE_ID,5,SessionStatus.REQUEST_CANCELLED_BY_COACHEE)).isTrue();
     }
 
     @Test
@@ -352,7 +353,7 @@ class SessionServiceTest {
         when(userService.findUserById(anyInt())).thenReturn(coachee);
         when(sessionRepository.findById(5)).thenReturn(Optional.of(session));
 
-        assertThat(sessionService.userHasAuthorityToChangeState(TOKEN,5,SessionStatus.ACCEPTED)).isFalse();
+        assertThat(sessionService.userHasAuthorityToChangeState(COACHEE_ID,5,SessionStatus.ACCEPTED)).isFalse();
     }
 
     @Test
