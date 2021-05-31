@@ -77,11 +77,10 @@ public class UserService {
     public UserDto updateUser(UpdateUserProfileDto dto, int id, int principalId) {
         assertPrincipalCanUpdateProfile(id, principalId);
         if (dto.getRole() != null && !userIsAdmin(principalId)) {
-            throw new UnauthorizedException("Only admin can change role");
+            throw new UnauthorizedException("Only admin can change role.");
         }
         User user = findUserById(id);
-        userMapper.applyToEntity(dto, user);
-        User result = userRepository.save(user);
+        User result = userMapper.applyToEntity(dto, user);
         return userMapper.toDto(result);
     }
 
@@ -94,8 +93,8 @@ public class UserService {
     public UserDto updateCoach(UpdateCoachProfileDto dto, int id, int principalId) {
         assertPrincipalCanUpdateProfile(id, principalId);
         User user = findUserById(id);
-        userMapper.applyToEntity(dto, user);
-        return userMapper.toDto(userRepository.save(user));
+        User result = userMapper.applyToEntity(dto, user);
+        return userMapper.toDto(result);
     }
 
     public UserDto updateTopics(int coachId, List<UpdateTopicsDto> topicDtos, int requestedBy) {

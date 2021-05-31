@@ -50,16 +50,16 @@ public class UserMapper {
     }
 
 
-    public void applyToEntity(UpdateUserProfileDto dto, User user) {
+    public User applyToEntity(UpdateUserProfileDto dto, User user) {
         if(dto.getRole()!=null) user.setRole(Role.valueOf(dto.getRole().toUpperCase()));
-        user.setFirstName(dto.getFirstName())
+        return user.setFirstName(dto.getFirstName())
                 .setLastName(dto.getLastName())
                 .setProfileName(dto.getProfileName())
                 .setEmail(dto.getEmail())
                 .setImageUrl(dto.getImageUrl());
     }
 
-    public void applyToEntity(UpdateCoachProfileDto dto, User user) {
-        user.setAvailability(dto.getAvailability()).setIntroduction(dto.getIntroduction());
+    public User applyToEntity(UpdateCoachProfileDto dto, User user) {
+        return user.setAvailability(dto.getAvailability()).setIntroduction(dto.getIntroduction());
     }
 }
