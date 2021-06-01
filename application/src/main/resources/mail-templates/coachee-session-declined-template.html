@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body th:object="${session}">
+<p th:text="|Hello *{coachee.profileName},|"></p>
+<p th:text="|Your requested session with *{coach.firstName} *{coach.lastName} on *{date} has been declined.|"></p>
+<p>Try to book another session with this coach or one of our other coaches who teaches the same subject!</p>
+<br>
+<p th:text="${regards}"></p>
+<p>
+    <em th:text="${senderName}"></em> <br>
+</p>
+</body>
+</html>

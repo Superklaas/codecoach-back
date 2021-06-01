@@ -77,8 +77,19 @@ public class SessionService {
         Session session = findSessionById(id);
 
         session.setStatus(status);
+        mailCorrespondingSessionStatus(session, status);
 
         return sessionMapper.toDto(session);
+    }
+
+    private void mailCorrespondingSessionStatus(Session session, SessionStatus status) {
+        switch (status) {
+            case ACCEPTED -> emailService.mailCoacheeForAcceptedSession(session);
+            case REQUEST_DECLINED -> emailService.mailCoacheeForDeclinedSession(session);
+            case SESSION_CANCELLED_BY_COACHEE -> emailService.mailCoachForSessionCancelledByCoachee(session);
+            case SESSION_CANCELLED_BY_COACH -> emailService.mailCoacheeForSessionCancelledByCoach(session);
+            case REQUEST_CANCELLED_BY_COACHEE -> emailService.mailCoachForSessionRequestCancelled(session);
+        }
     }
 
     public boolean userHasAuthorityToChangeState(int uid, int sessionId, SessionStatus status) {

@@ -7,18 +7,22 @@
 <p th:text="|Hello *{coachee.profileName},|"></p>
 <p>Thank you for booking a session on CodeCoach.</p>
 <p>Below, you can find your session details.</p>
-<dl>
-    <dt>Coach</dt>
-    <dd th:text="|*{coach.firstName} *{coach.lastName}|"></dd>
-    <dt>Subject</dt>
-    <dd th:text="*{subject}"></dd>
-    <dt>When</dt>
-    <dd th:text="|*{date} *{startTime}|"></dd>
-    <dt>Where</dt>
-    <dd th:text="*{location}"></dd>
-    <dt>Your remarks for the coach</dt>
-    <dd th:text="*{remarks}"></dd>
-</dl>
+<table>
+    <tr>
+        <th>Coach</th>
+        <th>Subject</th>
+        <th>When</th>
+        <th>Where</th>
+        <th>Your remarks for the coach</th>
+    </tr>
+    <tr>
+        <td th:text="|*{coach.firstName} *{coach.lastName}|"></td>
+        <td th:text="*{subject}"></td>
+        <td th:text="|*{date} *{startTime}|"></td>
+        <td th:text="*{location}"></td>
+        <td th:text="*{remarks}"></td>
+    </tr>
+</table>
 <p>Have fun learning!</p>
 <br>
 <p th:text="${regards}"></p>

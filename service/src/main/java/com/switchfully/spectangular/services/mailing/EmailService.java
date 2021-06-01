@@ -48,36 +48,59 @@ public class EmailService {
     }
 
     public void mailForRegistering(User user) {
-        Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("user", user);
-        sign(templateModel);
-        Context thymeleafContext = new Context();
-        thymeleafContext.setVariables(templateModel);
+        Context thymeleafContext = prepareMessageContent("user", user);
         String htmlBody = thymeleafTemplateEngine.process("register-template.html", thymeleafContext);
 
         sendHtmlMessage(user.getEmail(), "Welcome to CodeCoach!", htmlBody);
     }
 
     public void mailCoacheeForSessionRequest(Session session) {
-        Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("session", session);
-        sign(templateModel);
-        Context thymeleafContext = new Context();
-        thymeleafContext.setVariables(templateModel);
+        Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coachee-session-request-template.html", thymeleafContext);
 
         sendHtmlMessage(session.getCoachee().getEmail(), "Your Session Request", htmlBody);
     }
 
     public void mailCoachForSessionRequest(Session session) {
-        Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("session", session);
-        sign(templateModel);
-        Context thymeleafContext = new Context();
-        thymeleafContext.setVariables(templateModel);
+        Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coach-session-request-template.html", thymeleafContext);
 
         sendHtmlMessage(session.getCoach().getEmail(), "New Session Request", htmlBody);
+    }
+
+    public void mailCoacheeForAcceptedSession(Session session) {
+        Context thymeleafContext = prepareMessageContent("session", session);
+        String htmlBody = thymeleafTemplateEngine.process("coachee-session-accepted-template.html", thymeleafContext);
+
+        sendHtmlMessage(session.getCoachee().getEmail(), "Session Request Accepted", htmlBody);
+    }
+
+    public void mailCoacheeForDeclinedSession(Session session) {
+        Context thymeleafContext = prepareMessageContent("session", session);
+        String htmlBody = thymeleafTemplateEngine.process("coachee-session-declined-template.html", thymeleafContext);
+
+        sendHtmlMessage(session.getCoachee().getEmail(), "Session Request Declined", htmlBody);
+    }
+
+    public void mailCoacheeForSessionCancelledByCoach(Session session) {
+        Context thymeleafContext = prepareMessageContent("session", session);
+        String htmlBody = thymeleafTemplateEngine.process("coachee-session-cancelled-by-coach-template.html", thymeleafContext);
+
+        sendHtmlMessage(session.getCoachee().getEmail(), "Session Cancelled", htmlBody);
+    }
+
+    public void mailCoachForSessionCancelledByCoachee(Session session) {
+        Context thymeleafContext = prepareMessageContent("session", session);
+        String htmlBody = thymeleafTemplateEngine.process("coach-session-cancelled-by-coachee-template.html", thymeleafContext);
+
+        sendHtmlMessage(session.getCoach().getEmail(), "Session Cancelled", htmlBody);
+    }
+
+    public void mailCoachForSessionRequestCancelled(Session session) {
+        Context thymeleafContext = prepareMessageContent("session", session);
+        String htmlBody = thymeleafTemplateEngine.process("coach-session-request-cancelled-template.html", thymeleafContext);
+
+        sendHtmlMessage(session.getCoach().getEmail(), "Session Request Cancelled", htmlBody);
     }
 
     private void sendHtmlMessage(String to, String subject, String htmlBody){
@@ -92,6 +115,15 @@ public class EmailService {
         } catch(MessagingException ex) {
             throw new UnableToSendEmailException();
         }
+    }
+
+    private Context prepareMessageContent(String key, Object object) {
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put(key, object);
+        sign(templateModel);
+        Context thymeleafContext = new Context();
+        thymeleafContext.setVariables(templateModel);
+        return thymeleafContext;
     }
 
     private void sign(Map<String, Object> templateModel) {

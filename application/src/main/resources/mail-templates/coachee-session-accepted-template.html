@@ -4,9 +4,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body th:object="${session}">
-<p th:text="|Hello *{coach.profileName},|"></p>
-<p>You have received a new session request.</p>
-<p>Below, you can find the details of the request.</p>
+<p th:text="|Hello *{coachee.profileName},|"></p>
+<p>One of your booked sessions has been accepted.</p>
+<p>Below, you can find your session details.</p>
 <table>
     <tr>
         <th>Coach</th>
@@ -16,14 +16,14 @@
         <th>Your remarks for the coach</th>
     </tr>
     <tr>
-        <td th:text="|*{coachee.firstName} *{coachee.lastName}|"></td>
+        <td th:text="|*{coach.firstName} *{coach.lastName}|"></td>
         <td th:text="*{subject}"></td>
         <td th:text="|*{date} *{startTime}|"></td>
         <td th:text="*{location}"></td>
         <td th:text="*{remarks}"></td>
     </tr>
 </table>
-<p>Make sure to accept/decline this session request in your Coach Dashboard.</p>
+<p>Make sure to be on time!</p>
 <br>
 <p th:text="${regards}"></p>
 <p>
