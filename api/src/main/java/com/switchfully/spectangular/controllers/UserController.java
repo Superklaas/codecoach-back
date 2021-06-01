@@ -47,12 +47,12 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @PreAuthorize(value = "hasAuthority('BECOME_COACH')")
+    @PreAuthorize(value = "hasAuthority('COACH_REQUEST')")
     @PostMapping(path = "/{id}/coachify", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto updateToCoach(@PathVariable int id) {
-        logger.info("Received POST request to update a User to having a Coach role.");
-        return userService.updateToCoach(id);
+    public void requestToBecomeCoach(@PathVariable int id, @RequestBody CoachRequestDto coachRequestDto) {
+        logger.info("Received POST request to notify the Admin(s) of a request to become a Coach.");
+        userService.requestToBecomeCoach(id, coachRequestDto);
     }
 
     @PreAuthorize("hasAuthority('GET_ALL_COACHES')")
@@ -114,6 +114,14 @@ public class UserController {
 
         logger.info("Received PUT request to update a coach:" + uid + "data: " + updateDto.toString());
         return userService.updateCoach(updateDto, id, uid);
+    }
+
+    @PostMapping(path = "/update-password", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void updatePassword(Principal principal, @RequestBody UpdatePasswordDto updatePasswordDto){
+        int uid = Integer.parseInt(principal.getName());
+        logger.info(updatePasswordDto.getEmail(), "is trying to update his password");
+        userService.updatePassword(uid, updatePasswordDto);
     }
 
 }

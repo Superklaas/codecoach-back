@@ -150,4 +150,9 @@ public class SessionDto {
     public int hashCode() {
         return Objects.hash(subject, date, startTime, location, remarks, coachId, coacheeId);
     }
+
+    @Override
+    public String toString() {
+        return "SessionDto{" + "id=" + id + ", subject='" + subject + '\'' + ", date='" + date + '\'' + ", startTime='" + startTime + '\'' + ", location='" + location + '\'' + ", remarks='" + remarks + '\'' + ", coachId=" + coachId + ", coacheeId=" + coacheeId + ", coachProfileName='" + coachProfileName + '\'' + ", coacheeProfileName='" + coacheeProfileName + '\'' + ", status='" + status + '\'' + ", feedbackForCoach=" + feedbackForCoach + ", feedbackForCoachee=" + feedbackForCoachee + '}';
+    }
 }

@@ -176,29 +176,6 @@ class UserServiceTest {
     }
 
     @Test
-    void updateToCoach_givenId_thenReturnUserWithRoleCoach() {
-        //GIVEN
-        UserDto expectedUserDto = userDto.setRole(Role.COACH.name());
-        when(userRepository.findById(any())).thenReturn(Optional.of(user));
-        when(userMapper.toDto(any())).thenReturn(expectedUserDto);
-        //WHEN
-        UserDto actualUserDto = userService.updateToCoach(userDto.getId());
-        //THEN
-        verify(userRepository).findById(any());
-        verify(userMapper).toDto(any());
-        assertThat(actualUserDto).isEqualTo(expectedUserDto);
-    }
-
-    @Test
-    void updateToCoach_givenNonExistentId_thenThrowIllegalArgumentException() {
-        //GIVEN
-        int id = 12;
-        //WHEN & THEN
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> userService.updateToCoach(id));
-    }
-
-    @Test
     void getAllCoaches_givenCoachesInDb_thenReturnListOfCoaches() {
         //GIVEN
         user.becomeCoach();

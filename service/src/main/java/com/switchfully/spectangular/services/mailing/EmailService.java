@@ -2,6 +2,7 @@ package com.switchfully.spectangular.services.mailing;
 
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.domain.session.Session;
+import com.switchfully.spectangular.dtos.CoachRequestDto;
 import com.switchfully.spectangular.exceptions.UnableToSendEmailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -43,15 +44,30 @@ public class EmailService {
         Context thymeleafContext = new Context();
         thymeleafContext.setVariables(templateModel);
         String htmlBody = thymeleafTemplateEngine.process("reset-password-template.html", thymeleafContext);
-
         sendHtmlMessage(user.getEmail(), "Password Reset Request", htmlBody);
     }
 
     public void mailForRegistering(User user) {
         Context thymeleafContext = prepareMessageContent("user", user);
         String htmlBody = thymeleafTemplateEngine.process("register-template.html", thymeleafContext);
-
         sendHtmlMessage(user.getEmail(), "Welcome to CodeCoach!", htmlBody);
+    }
+
+    public void mailForCoachRequest(User user, CoachRequestDto dto) {
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("user", user);
+        templateModel.put("coachRequest", dto);
+        sign(templateModel);
+        Context thymeleafContext = new Context();
+        thymeleafContext.setVariables(templateModel);
+        String htmlBody = thymeleafTemplateEngine.process("admin-coach-request-template.html", thymeleafContext);
+        sendHtmlMessage(SENDER_MAIL, "New Coach Request", htmlBody);
+    }
+
+    public void mailForBecomingCoach(User user) {
+        Context thymeleafContext = prepareMessageContent("user", user);
+        String htmlBody = thymeleafTemplateEngine.process("became-coach-template.html", thymeleafContext);
+        sendHtmlMessage(user.getEmail(), "You're now a Coach!", htmlBody);
     }
 
     public void mailForSessionRequest(Session session) {
@@ -62,49 +78,42 @@ public class EmailService {
     private void mailCoacheeForSessionRequest(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coachee-session-request-template.html", thymeleafContext);
-
         sendHtmlMessage(session.getCoachee().getEmail(), "Your Session Request", htmlBody);
     }
 
     private void mailCoachForSessionRequest(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coach-session-request-template.html", thymeleafContext);
-
         sendHtmlMessage(session.getCoach().getEmail(), "New Session Request", htmlBody);
     }
 
     public void mailCoacheeForAcceptedSession(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coachee-session-accepted-template.html", thymeleafContext);
-
         sendHtmlMessage(session.getCoachee().getEmail(), "Session Request Accepted", htmlBody);
     }
 
     public void mailCoacheeForDeclinedSession(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coachee-session-declined-template.html", thymeleafContext);
-
         sendHtmlMessage(session.getCoachee().getEmail(), "Session Request Declined", htmlBody);
     }
 
     public void mailCoacheeForSessionCancelledByCoach(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coachee-session-cancelled-by-coach-template.html", thymeleafContext);
-
         sendHtmlMessage(session.getCoachee().getEmail(), "Session Cancelled", htmlBody);
     }
 
     public void mailCoachForSessionCancelledByCoachee(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coach-session-cancelled-by-coachee-template.html", thymeleafContext);
-
         sendHtmlMessage(session.getCoach().getEmail(), "Session Cancelled", htmlBody);
     }
 
     public void mailCoachForSessionRequestCancelled(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coach-session-request-cancelled-template.html", thymeleafContext);
-
         sendHtmlMessage(session.getCoach().getEmail(), "Session Request Cancelled", htmlBody);
     }
 
@@ -116,14 +125,12 @@ public class EmailService {
     private void mailCoacheeForAutomaticallyDeclinedSession(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coachee-session-automatically-declined-template.html", thymeleafContext);
-
         sendHtmlMessage(session.getCoachee().getEmail(), "Session Automatically Declined", htmlBody);
     }
 
     private void mailCoachForAutomaticallyDeclinedSession(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coach-session-automatically-declined-template.html", thymeleafContext);
-
         sendHtmlMessage(session.getCoach().getEmail(), "Session Automatically Declined", htmlBody);
     }
 
@@ -135,15 +142,25 @@ public class EmailService {
     private void mailCoacheeForAskingFeedback(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coachee-session-feedback-template.html", thymeleafContext);
-
         sendHtmlMessage(session.getCoachee().getEmail(), "Give Session Feedback", htmlBody);
     }
 
     private void mailCoachForAskingFeedback(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coach-session-feedback-template.html", thymeleafContext);
-
         sendHtmlMessage(session.getCoach().getEmail(), "Give Session Feedback", htmlBody);
+    }
+
+    public void mailCoacheeForReceivedFeedback(Session session) {
+        Context thymeleafContext = prepareMessageContent("session", session);
+        String htmlBody = thymeleafTemplateEngine.process("coachee-session-feedback-received-template.html", thymeleafContext);
+        sendHtmlMessage(session.getCoachee().getEmail(), "Session Feedback Received", htmlBody);
+    }
+
+    public void mailCoachForReceivedFeedback(Session session) {
+        Context thymeleafContext = prepareMessageContent("session", session);
+        String htmlBody = thymeleafTemplateEngine.process("coach-session-feedback-received-template.html", thymeleafContext);
+        sendHtmlMessage(session.getCoach().getEmail(), "Session Feedback Received", htmlBody);
     }
 
     private void sendHtmlMessage(String to, String subject, String htmlBody){

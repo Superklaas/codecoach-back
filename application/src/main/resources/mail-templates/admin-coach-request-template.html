@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body th:object="${user}">
+<p>New coach request from:</p>
+<p th:text="|Id: *{id}"></p>
+<p th:text="|First name: *{firstName}"></p>
+<p th:text="|Last name: *{lastName}"></p>
+<p th:text="|Profile name: *{profileName}"></p>
+<p th:text="|Email: *{email}"></p>
+<br>
+<div th:object="${coachRequest}">
+    <h6>Motivation</h6>
+    <p th:text="*{motivation}"></p>
+    <h6>Topics</h6>
+    <p th:text="|*{topic1} *{topic2}|"></p>
+</div>
+<p>To accept request, go to Admin Dashboard and edit this user accordingly.</p>
+</body>
+</html>

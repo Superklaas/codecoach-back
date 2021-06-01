@@ -26,7 +26,7 @@ import java.util.*;
 @Transactional
 public class UserService {
 
-    public static final int RESET_TOKEN_EXPIRATION_DELAY = 30*60*1000; // 30 minutes in milliseconds
+    public static final int RESET_TOKEN_EXPIRATION_DELAY = 30 * 60 * 1000; // 30 minutes in milliseconds
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final EmailService emailService;
@@ -81,19 +81,22 @@ public class UserService {
             throw new UnauthorizedException("Only admin can change role.");
         }
         User user = findUserById(id);
+        boolean sendMail = isUserBecomingCoach(user, dto);
         User result = userMapper.applyToEntity(dto, user);
+        if (sendMail) emailService.mailForBecomingCoach(result);
         return userMapper.toDto(result);
     }
+
 
     public int updateXp(User user, int xp){
         user.setXp(user.getXp()+xp);
         return user.getXp();
     }
 
-    public UserDto updateToCoach(int id) {
+
+    public void requestToBecomeCoach(int id, CoachRequestDto dto) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found."));
-        user.becomeCoach();
-        return userMapper.toDto(user);
+        emailService.mailForCoachRequest(user, dto);
     }
 
     public UserDto updateCoach(UpdateCoachProfileDto dto, int id, int principalId) {
@@ -136,11 +139,21 @@ public class UserService {
         user.setResetToken(null);
     }
 
+    public void updatePassword(int uid, UpdatePasswordDto updatePasswordDto) {
+        UserValidator.assertValidPassword(updatePasswordDto.getNewPassword());
+        User user = this.findUserByEmail(updatePasswordDto.getEmail());
+        assertSameUserOrAdmin(user.getId() ,uid);
+        if (!passwordEncoder.matches( updatePasswordDto.getOldPassword(), user.getEncryptedPassword())){
+            throw new UnauthorizedException("Old password does not match");
+        }
+        user.setEncryptedPassword(passwordEncoder.encode(updatePasswordDto.getNewPassword()));
+    }
+
     private void assertSameUserOrAdmin(int userResourceId, int requestedBy) {
         if (requestedBy != userResourceId) {
             User requester = userRepository.findById(requestedBy).orElseThrow();
             if (!requester.getRole().equals(Role.ADMIN)) {
-                throw new UnauthorizedException("You are not authorized to set topics of this coach");
+                throw new UnauthorizedException("You are not authorized to make this change");
             }
         }
     }
@@ -159,6 +172,10 @@ public class UserService {
 
     private boolean userIsAdmin(int principalId) {
         return this.findUserById(principalId).getRole() == Role.ADMIN;
+    }
+
+    private boolean isUserBecomingCoach(User user, UpdateUserProfileDto dto) {
+        return user.getRole().equals(Role.COACHEE) && dto.getRole().equals(Role.COACH.name());
     }
 
     private void expireResetToken(User user) {
