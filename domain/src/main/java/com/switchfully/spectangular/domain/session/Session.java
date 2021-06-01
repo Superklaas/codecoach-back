@@ -200,16 +200,19 @@ public class Session {
         }
     }
 
-    public void autoUpdateSession(){
+    public boolean autoUpdateSession(){
         if (this.getDateTime().isAfter(LocalDateTime.now())){
-            return;
+            return false;
         }
         if (this.status == SessionStatus.REQUESTED){
             setStatus(SessionStatus.DECLINED_AUTOMATICALLY);
+            return true;
         }
         if (this.status == SessionStatus.ACCEPTED){
             setStatus(SessionStatus.WAITING_FEEDBACK);
+            return true;
         }
+        return false;
     }
 
     private void validateDate(LocalDate date, LocalTime time){

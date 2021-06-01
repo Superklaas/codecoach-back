@@ -54,14 +54,19 @@ public class EmailService {
         sendHtmlMessage(user.getEmail(), "Welcome to CodeCoach!", htmlBody);
     }
 
-    public void mailCoacheeForSessionRequest(Session session) {
+    public void mailForSessionRequest(Session session) {
+        mailCoacheeForSessionRequest(session);
+        mailCoachForSessionRequest(session);
+    }
+
+    private void mailCoacheeForSessionRequest(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coachee-session-request-template.html", thymeleafContext);
 
         sendHtmlMessage(session.getCoachee().getEmail(), "Your Session Request", htmlBody);
     }
 
-    public void mailCoachForSessionRequest(Session session) {
+    private void mailCoachForSessionRequest(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coach-session-request-template.html", thymeleafContext);
 
@@ -103,6 +108,44 @@ public class EmailService {
         sendHtmlMessage(session.getCoach().getEmail(), "Session Request Cancelled", htmlBody);
     }
 
+    public void mailForAutomaticallyDeclinedSession(Session session) {
+        mailCoacheeForAutomaticallyDeclinedSession(session);
+        mailCoachForAutomaticallyDeclinedSession(session);
+    }
+
+    private void mailCoacheeForAutomaticallyDeclinedSession(Session session) {
+        Context thymeleafContext = prepareMessageContent("session", session);
+        String htmlBody = thymeleafTemplateEngine.process("coachee-session-automatically-declined-template.html", thymeleafContext);
+
+        sendHtmlMessage(session.getCoachee().getEmail(), "Session Automatically Declined", htmlBody);
+    }
+
+    private void mailCoachForAutomaticallyDeclinedSession(Session session) {
+        Context thymeleafContext = prepareMessageContent("session", session);
+        String htmlBody = thymeleafTemplateEngine.process("coach-session-automatically-declined-template.html", thymeleafContext);
+
+        sendHtmlMessage(session.getCoach().getEmail(), "Session Automatically Declined", htmlBody);
+    }
+
+    public void mailForAskingFeedback(Session session) {
+        mailCoacheeForAskingFeedback(session);
+        mailCoachForAskingFeedback(session);
+    }
+
+    private void mailCoacheeForAskingFeedback(Session session) {
+        Context thymeleafContext = prepareMessageContent("session", session);
+        String htmlBody = thymeleafTemplateEngine.process("coachee-session-feedback-template.html", thymeleafContext);
+
+        sendHtmlMessage(session.getCoachee().getEmail(), "Give Session Feedback", htmlBody);
+    }
+
+    private void mailCoachForAskingFeedback(Session session) {
+        Context thymeleafContext = prepareMessageContent("session", session);
+        String htmlBody = thymeleafTemplateEngine.process("coach-session-feedback-template.html", thymeleafContext);
+
+        sendHtmlMessage(session.getCoach().getEmail(), "Give Session Feedback", htmlBody);
+    }
+
     private void sendHtmlMessage(String to, String subject, String htmlBody){
         MimeMessage message = mailSender.createMimeMessage();
         try {
@@ -130,5 +173,4 @@ public class EmailService {
         templateModel.put("regards", REGARDS);
         templateModel.put("senderName", SENDER_NAME);
     }
-
 }

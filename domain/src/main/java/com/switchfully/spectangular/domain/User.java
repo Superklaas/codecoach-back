@@ -54,6 +54,8 @@ public class User {
     @Column(name = "reset_token")
     private String resetToken;
 
+    @Column(name = "xp")
+    private int xp;
 
     public User() {
     }
@@ -177,6 +179,15 @@ public class User {
             throw new IllegalArgumentException("Role cannot be null");
         }
         this.role = role;
+        return this;
+    }
+
+    public int getXp() {
+        return xp;
+    }
+
+    public User setXp(int xp) {
+        this.xp = xp;
         return this;
     }
 

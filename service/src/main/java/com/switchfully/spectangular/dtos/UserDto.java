@@ -22,6 +22,7 @@ public class UserDto {
     private String introduction;
     private String imageUrl;
     private List<TopicDto> topicList;
+    private int xp;
 
     public UserDto() {
     }
@@ -113,6 +114,15 @@ public class UserDto {
 
     public UserDto setTopicList(List<TopicDto> topicList) {
         this.topicList = topicList;
+        return this;
+    }
+
+    public int getXp() {
+        return xp;
+    }
+
+    public UserDto setXp(int xp) {
+        this.xp = xp;
         return this;
     }
 
