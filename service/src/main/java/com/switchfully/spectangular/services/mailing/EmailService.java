@@ -2,6 +2,7 @@ package com.switchfully.spectangular.services.mailing;
 
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.domain.session.Session;
+import com.switchfully.spectangular.dtos.CoachRequestDto;
 import com.switchfully.spectangular.exceptions.UnableToSendEmailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -50,6 +51,17 @@ public class EmailService {
         Context thymeleafContext = prepareMessageContent("user", user);
         String htmlBody = thymeleafTemplateEngine.process("register-template.html", thymeleafContext);
         sendHtmlMessage(user.getEmail(), "Welcome to CodeCoach!", htmlBody);
+    }
+
+    public void mailForCoachRequest(User user, CoachRequestDto dto) {
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("user", user);
+        templateModel.put("coachRequest", dto);
+        sign(templateModel);
+        Context thymeleafContext = new Context();
+        thymeleafContext.setVariables(templateModel);
+        String htmlBody = thymeleafTemplateEngine.process("admin-coach-request-template.html", thymeleafContext);
+        sendHtmlMessage(SENDER_MAIL, "New Coach Request", htmlBody);
     }
 
     public void mailForBecomingCoach(User user) {

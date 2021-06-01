@@ -26,7 +26,7 @@ import java.util.*;
 @Transactional
 public class UserService {
 
-    public static final int RESET_TOKEN_EXPIRATION_DELAY = 30*60*1000; // 30 minutes in milliseconds
+    public static final int RESET_TOKEN_EXPIRATION_DELAY = 30 * 60 * 1000; // 30 minutes in milliseconds
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final EmailService emailService;
@@ -81,15 +81,15 @@ public class UserService {
             throw new UnauthorizedException("Only admin can change role.");
         }
         User user = findUserById(id);
+        boolean sendMail = isUserBecomingCoach(user, dto);
         User result = userMapper.applyToEntity(dto, user);
+        if (sendMail) emailService.mailForBecomingCoach(result);
         return userMapper.toDto(result);
     }
 
-    public UserDto updateToCoach(int id) {
+    public void requestToBecomeCoach(int id, CoachRequestDto dto) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found."));
-        user.becomeCoach();
-        emailService.mailForBecomingCoach(user);
-        return userMapper.toDto(user);
+        emailService.mailForCoachRequest(user, dto);
     }
 
     public UserDto updateCoach(UpdateCoachProfileDto dto, int id, int principalId) {
@@ -152,6 +152,10 @@ public class UserService {
 
     private boolean userIsAdmin(int principalId) {
         return this.findUserById(principalId).getRole() == Role.ADMIN;
+    }
+
+    private boolean isUserBecomingCoach(User user, UpdateUserProfileDto dto) {
+        return user.getRole().equals(Role.COACHEE) && dto.getRole().equals(Role.COACH.name());
     }
 
     private void expireResetToken(User user) {

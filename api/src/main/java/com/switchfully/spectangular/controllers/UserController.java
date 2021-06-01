@@ -47,12 +47,12 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @PreAuthorize(value = "hasAuthority('BECOME_COACH')")
+    @PreAuthorize(value = "hasAuthority('COACH_REQUEST')")
     @PostMapping(path = "/{id}/coachify", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto updateToCoach(@PathVariable int id) {
-        logger.info("Received POST request to update a User to having a Coach role.");
-        return userService.updateToCoach(id);
+    public void requestToBecomeCoach(@PathVariable int id, @RequestBody CoachRequestDto coachRequestDto) {
+        logger.info("Received POST request to notify the Admin(s) of a request to become a Coach.");
+        userService.requestToBecomeCoach(id, coachRequestDto);
     }
 
     @PreAuthorize("hasAuthority('GET_ALL_COACHES')")
