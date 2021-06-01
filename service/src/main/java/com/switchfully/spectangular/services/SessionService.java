@@ -151,8 +151,11 @@ public class SessionService {
         if (!session.getCoachee().getId().equals(userId)) {
             throw new UnauthorizedException("You are not coachee for this session, so you cannot give such feedback");
         }
-
+        SessionStatus prechangeStatus = session.getStatus();
         session.setFeedbackForCoach(feedbackMapper.toEntity(addFeedbackDto));
+        if (canXpBeAwarded(session, prechangeStatus)) {
+            userService.updateXp(session.getCoach(), session.getXp());
+        }
         return sessionMapper.toDto(session);
     }
 
@@ -164,11 +167,10 @@ public class SessionService {
             throw new UnauthorizedException("You are not coach for this session, so you cannot give such feedback");
         }
         SessionStatus prechangeStatus = session.getStatus();
+        session.setFeedbackForCoachee(feedbackMapper.toEntity(addFeedbackDto));
         if (canXpBeAwarded(session, prechangeStatus)) {
             userService.updateXp(session.getCoach(), session.getXp());
         }
-        session.setFeedbackForCoachee(feedbackMapper.toEntity(addFeedbackDto));
-
         return sessionMapper.toDto(session);
     }
 
@@ -185,7 +187,7 @@ public class SessionService {
                 session.getFeedbackForCoachee() != null &&
                 session.getFeedbackForCoachee().getPreparedness() != null &&
                 session.getFeedbackForCoachee().getWillingness() != null &&
-                status!=SessionStatus.FEEDBACK_RECEIVED) {
+                status!=SessionStatus.FEEDBACK_RECEIVED){
                 return true;
         }
         return false;

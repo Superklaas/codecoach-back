@@ -8,7 +8,6 @@ public class UpdateUserProfileDto {
     String profileName;
     String imageUrl;
     String role;
-    int xp;
 
 
     public String getEmail() {

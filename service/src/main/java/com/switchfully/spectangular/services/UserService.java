@@ -100,6 +100,9 @@ public class UserService {
         assertPrincipalCanUpdateProfile(id, principalId);
         User user = findUserById(id);
         User result = userMapper.applyToEntity(dto, user);
+        if(userIsAdmin(principalId)){
+            result.setXp(dto.getXp());
+        }
         return userMapper.toDto(result);
     }
 
