@@ -14,6 +14,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 
+import java.util.*;
+
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -66,14 +68,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         corsConfig.addAllowedOrigin("http://localhost:4200");
         corsConfig.addAllowedOrigin("https://codecoach.netlify.app");
         corsConfig.addAllowedOrigin("https://codecoach-staging.netlify.app");
-        corsConfig.addAllowedHeader("*");
         corsConfig.addAllowedMethod("GET");
         corsConfig.addAllowedMethod("POST");
         corsConfig.addAllowedMethod("PUT");
         corsConfig.addAllowedMethod("PATCH");
         corsConfig.addAllowedMethod("DELETE");
-
-
+        corsConfig.addAllowedHeader("*");
+        corsConfig.addExposedHeader("WWW-Authenticate");
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfig);

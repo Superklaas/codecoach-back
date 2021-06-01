@@ -2,6 +2,7 @@ package com.switchfully.spectangular.security;
 
 import com.switchfully.spectangular.domain.Feature;
 import com.switchfully.spectangular.domain.Role;
+import com.switchfully.spectangular.exceptions.UnauthorizedException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -9,11 +10,14 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.client.HttpClientErrorException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -36,7 +40,15 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        var authentication = getAuthentication(request);
+        UsernamePasswordAuthenticationToken authentication;
+
+        try {
+             authentication = getAuthentication(request);
+        } catch (HttpClientErrorException e) {
+            response.setStatus(401);
+            response.setHeader("WWW-Authenticate", "JWT Invalid");
+            return;
+        }
 
         if (authentication == null) {
             filterChain.doFilter(request, response);
@@ -83,14 +95,19 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 }
             } catch (ExpiredJwtException exception) {
                 log.warn("Request to parse expired JWT : {} failed : {}", token, exception.getMessage());
+                throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "JWT Token faulty");
             } catch (UnsupportedJwtException exception) {
                 log.warn("Request to parse unsupported JWT : {} failed : {}", token, exception.getMessage());
+                throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "JWT Token faulty");
             } catch (MalformedJwtException exception) {
                 log.warn("Request to parse invalid JWT : {} failed : {}", token, exception.getMessage());
+                throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "JWT Token faulty");
             } catch (SignatureException exception) {
                 log.warn("Request to parse JWT with invalid signature : {} failed : {}", token, exception.getMessage());
+                throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "JWT Token faulty");
             } catch (IllegalArgumentException exception) {
                 log.warn("Request to parse empty or null JWT : {} failed : {}", token, exception.getMessage());
+                throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "JWT Token faulty");
             }
         }
 
