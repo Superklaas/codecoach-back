@@ -1,6 +1,5 @@
 package com.switchfully.spectangular.services;
 
-import com.switchfully.spectangular.JSONObjectParser;
 import com.switchfully.spectangular.domain.Feature;
 import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.User;
@@ -15,11 +14,12 @@ import com.switchfully.spectangular.mappers.FeedbackMapper;
 import com.switchfully.spectangular.mappers.SessionMapper;
 import com.switchfully.spectangular.repository.SessionRepository;
 import com.switchfully.spectangular.services.mailing.EmailService;
-import org.json.JSONObject;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -58,14 +58,14 @@ public class SessionService {
         }
 
         List<Session> coachSessions = sessionRepository.findAllByCoach(user);
-        updateStatusSessionList(coachSessions);
+        autoUpdateStatusSessionList(coachSessions);
         return sessionMapper.toListOfDtos(coachSessions);
     }
 
     public List<SessionDto> getAllSessionByCoachee(int uid) {
 
         List<Session> coacheeSessions = sessionRepository.findAllByCoachee(userService.findUserById(uid));
-        updateStatusSessionList(coacheeSessions);
+        autoUpdateStatusSessionList(coacheeSessions);
         return sessionMapper.toListOfDtos(coacheeSessions);
     }
 
@@ -104,13 +104,8 @@ public class SessionService {
         return false;
     }
 
-    private void updateStatusSessionList(List<Session> sessionList) {
+    private void autoUpdateStatusSessionList(List<Session> sessionList) {
         sessionList.forEach(Session::autoUpdateSession);
-    }
-
-    private int getIdFromJwtToken(String token) {
-        JSONObject tokenObject = JSONObjectParser.JwtTokenToJSONObject(token);
-        return Integer.parseInt(tokenObject.get("sub").toString());
     }
 
     private void validateCreateSession(CreateSessionDto createSessionDto, int uid) {
@@ -163,7 +158,12 @@ public class SessionService {
 
     public  List<SessionDto> getAll(){
         List<Session> sessions = sessionRepository.findAll();
-        updateStatusSessionList(sessions);
+        autoUpdateStatusSessionList(sessions);
         return sessionMapper.toListOfDtos(sessions);
+    }
+
+    public void autoUpdateAllSession(){
+        Set<SessionStatus> autoUpdatableStatuses = Arrays.asList(SessionStatus.values()).stream().filter(status -> !status.isFinished() ).collect(Collectors.toSet());
+        this.autoUpdateStatusSessionList(sessionRepository.findByStatusIn(autoUpdatableStatuses));
     }
 }
