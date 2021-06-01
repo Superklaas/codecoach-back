@@ -244,4 +244,8 @@ public class Session {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Session{" + "id=" + id + ", subject='" + subject + '\'' + ", date=" + date + ", startTime=" + startTime + ", location='" + location + '\'' + ", remarks='" + remarks + '\'' + ", status=" + status + ", coach=" + coach + ", coachee=" + coachee + ", feedbackForCoach=" + feedbackForCoach + ", feedbackForCoachee=" + feedbackForCoachee + '}';
+    }
 }
