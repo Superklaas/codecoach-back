@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body th:object="${user}">
+<p th:text="|Congratulations *{profileName},|"></p>
+<p>You are now a CodeCoach coach!</p>
+<p>This means you now have a new responsibility, but also a brand new Coach Dashboard.</p>
+<p>Through this you can manage the coaching sessions other users will request, as well as editing your Coach profile.</p>
+<p>Have fun coaching!</p>
+<br>
+<p th:text="${regards}"></p>
+<p>
+    <em th:text="${senderName}"></em> <br>
+</p>
+</body>
+</html>
