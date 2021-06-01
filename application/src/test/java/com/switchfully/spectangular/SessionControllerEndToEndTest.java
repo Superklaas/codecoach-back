@@ -35,8 +35,6 @@ public class SessionControllerEndToEndTest {
                 "\"coacheeId\": 1000," +
                 "\"remarks\":\"These are remarks.\"}";
 
-        System.out.println(requestBody);
-
         Response AuthorizepostResponse = given()
                 .baseUri("http://localhost")
                 .port(port)

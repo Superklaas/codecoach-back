@@ -14,6 +14,12 @@ import java.io.IOException;
 public class ControllerExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(ControllerExceptionHandler.class);
 
+    @ExceptionHandler(UnableToSendEmailException.class)
+    protected void unableToSendEmailExceptionHandler(UnableToSendEmailException ex, HttpServletResponse response) throws IOException {
+        logger.error(ex.getMessage());
+        response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+    }
+
     @ExceptionHandler(BadCredentialsException.class)
     protected void badCredentialsExceptionHandler(BadCredentialsException ex, HttpServletResponse response) throws IOException {
         logger.error(ex.getMessage());
