@@ -23,7 +23,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     protected void badCredentialsExceptionHandler(BadCredentialsException ex, HttpServletResponse response) throws IOException {
         logger.error(ex.getMessage());
-        response.sendError(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        response.sendError(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
     }
 
     @ExceptionHandler(InvalidEmailException.class)
@@ -41,7 +41,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(UnauthorizedException.class)
     protected void unauthorizedUser(UnauthorizedException ex, HttpServletResponse response) throws IOException {
         logger.error(ex.getMessage());
-        response.sendError(HttpStatus.BAD_REQUEST.value(),ex.getMessage());
+        response.sendError(HttpStatus.FORBIDDEN.value(),ex.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
