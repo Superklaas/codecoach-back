@@ -20,7 +20,6 @@ public class SessionControllerEndToEndTest {
 
     @LocalServerPort
     private int port;
-/*
 
     @Test
     @Sql("/sql/testSetup.sql")
@@ -67,7 +66,6 @@ public class SessionControllerEndToEndTest {
                 .extract()
                 .as(SessionDto.class);
     }
-*/
 
     @Test
     @Sql("/sql/testSetup.sql")
