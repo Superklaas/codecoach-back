@@ -42,7 +42,8 @@ public class UserMapper {
                 .setAvailability(user.getAvailability())
                 .setIntroduction(user.getIntroduction())
                 .setImageUrl(user.getImageUrl())
-                .setTopicList(topicMapper.toDto(user.getTopicList()));
+                .setTopicList(topicMapper.toDto(user.getTopicList()))
+                .setXp(user.getXp());
     }
 
     public List<UserDto> toListOfDtos(List<User> users) {
@@ -51,7 +52,10 @@ public class UserMapper {
 
 
     public User applyToEntity(UpdateUserProfileDto dto, User user) {
-        if(dto.getRole()!=null) user.setRole(Role.valueOf(dto.getRole().toUpperCase()));
+        if(dto.getRole()!=null) {
+            user.setRole(Role.valueOf(dto.getRole().toUpperCase()))
+            .setXp(user.getXp());
+        }
         return user.setFirstName(dto.getFirstName())
                 .setLastName(dto.getLastName())
                 .setProfileName(dto.getProfileName())
