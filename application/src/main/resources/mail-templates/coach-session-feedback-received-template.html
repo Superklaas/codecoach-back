@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body th:object="${session}">
+<p th:text="|Hello *{coach.profileName},|"></p>
+<p th:text="|Coachee *{coachee.firstName} *{coachee.lastName} has provided feedback for your session on *{date} about *{subject}.|"></p>
+<p>If you haven't already, you can also provide your feedback to your coachee through the 'Coaching Sessions' section in your Coach Dashboard!</p>
+<br>
+<p th:text="${regards}"></p>
+<p>
+    <em th:text="${senderName}"></em> <br>
+</p>
+</body>
+</html>

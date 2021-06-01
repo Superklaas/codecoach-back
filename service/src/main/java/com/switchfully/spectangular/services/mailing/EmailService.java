@@ -146,6 +146,20 @@ public class EmailService {
         sendHtmlMessage(session.getCoach().getEmail(), "Give Session Feedback", htmlBody);
     }
 
+    public void mailCoacheeForReceivedFeedback(Session session) {
+        Context thymeleafContext = prepareMessageContent("session", session);
+        String htmlBody = thymeleafTemplateEngine.process("coachee-session-feedback-received-template.html", thymeleafContext);
+
+        sendHtmlMessage(session.getCoachee().getEmail(), "Session Feedback Received", htmlBody);
+    }
+
+    public void mailCoachForReceivedFeedback(Session session) {
+        Context thymeleafContext = prepareMessageContent("session", session);
+        String htmlBody = thymeleafTemplateEngine.process("coach-session-feedback-received-template.html", thymeleafContext);
+
+        sendHtmlMessage(session.getCoach().getEmail(), "Session Feedback Received", htmlBody);
+    }
+
     private void sendHtmlMessage(String to, String subject, String htmlBody){
         MimeMessage message = mailSender.createMimeMessage();
         try {
