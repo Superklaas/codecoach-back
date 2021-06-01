@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body th:object="${session}">
+<p th:text="|Hello *{coach.profileName},|"></p>
+<p th:text="|Your requested session with *{coachee.firstName} *{coachee.lastName} on *{date} has been automatically declined.|"></p>
+<p>This means you didn't accept this request in time.</p>
+<p>Try to keep up with recent session requests through the 'Coaching Sessions' section in your Coach Dashboard!</p>
+<br>
+<p th:text="${regards}"></p>
+<p>
+    <em th:text="${senderName}"></em> <br>
+</p>
+</body>
+</html>

@@ -45,8 +45,7 @@ public class SessionService {
         User coachee = userService.findUserById(createSessionDto.getCoacheeId());
 
         Session session = sessionRepository.save(sessionMapper.toEntity(createSessionDto, coach, coachee));
-        emailService.mailCoacheeForSessionRequest(session);
-        emailService.mailCoachForSessionRequest(session);
+        emailService.mailForSessionRequest(session);
         return sessionMapper.toDto(session);
     }
 
@@ -105,7 +104,15 @@ public class SessionService {
     }
 
     private void updateStatusSessionList(List<Session> sessionList) {
-        sessionList.forEach(Session::autoUpdateSession);
+        sessionList.stream()
+                .filter(Session::autoUpdateSession)
+                .forEach(session -> {
+                    if (session.getStatus().equals(SessionStatus.DECLINED_AUTOMATICALLY)) {
+                        emailService.mailForAutomaticallyDeclinedSession(session);
+                    } else if (session.getStatus().equals(SessionStatus.WAITING_FEEDBACK)) {
+                        emailService.mailForAskingFeedback(session);
+                    }
+                });
     }
 
     private int getIdFromJwtToken(String token) {
