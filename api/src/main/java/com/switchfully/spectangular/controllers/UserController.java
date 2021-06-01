@@ -116,5 +116,13 @@ public class UserController {
         return userService.updateCoach(updateDto, id, uid);
     }
 
+    @PostMapping(path = "/update-password", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void updatePassword(Principal principal, @RequestBody UpdatePasswordDto updatePasswordDto){
+        int uid = Integer.parseInt(principal.getName());
+        logger.info(updatePasswordDto.getEmail(), "is trying to update his password");
+        userService.updatePassword(uid, updatePasswordDto);
+    }
+
 }
 

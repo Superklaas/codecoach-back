@@ -128,11 +128,21 @@ public class UserService {
         user.setResetToken(null);
     }
 
+    public void updatePassword(int uid, UpdatePasswordDto updatePasswordDto) {
+        UserValidator.assertValidPassword(updatePasswordDto.getNewPassword());
+        User user = this.findUserByEmail(updatePasswordDto.getEmail());
+        assertSameUserOrAdmin(user.getId() ,uid);
+        if (!passwordEncoder.matches( updatePasswordDto.getOldPassword(), user.getEncryptedPassword())){
+            throw new UnauthorizedException("Old password does not match");
+        }
+        user.setEncryptedPassword(passwordEncoder.encode(updatePasswordDto.getNewPassword()));
+    }
+
     private void assertSameUserOrAdmin(int userResourceId, int requestedBy) {
         if (requestedBy != userResourceId) {
             User requester = userRepository.findById(requestedBy).orElseThrow();
             if (!requester.getRole().equals(Role.ADMIN)) {
-                throw new UnauthorizedException("You are not authorized to set topics of this coach");
+                throw new UnauthorizedException("You are not authorized to make this change");
             }
         }
     }
