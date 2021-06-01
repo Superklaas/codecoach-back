@@ -45,8 +45,8 @@ public class SessionService {
         User coachee = userService.findUserById(createSessionDto.getCoacheeId());
 
         Session session = sessionRepository.save(sessionMapper.toEntity(createSessionDto, coach, coachee));
-//        emailService.mailCoacheeForSessionRequest(session);
-//        emailService.mailCoachForSessionRequest(session);
+        emailService.mailCoacheeForSessionRequest(session);
+        emailService.mailCoachForSessionRequest(session);
         return sessionMapper.toDto(session);
     }
 
