@@ -44,6 +44,7 @@ public class UserMapper {
                 .setImageUrl(user.getImageUrl())
                 .setTopicList(topicMapper.toDto(user.getTopicList()))
                 .setXp(user.getXp());
+
     }
 
     public List<UserDto> toListOfDtos(List<User> users) {

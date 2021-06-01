@@ -87,6 +87,13 @@ public class UserService {
         return userMapper.toDto(result);
     }
 
+
+    public int updateXp(User user, int xp){
+        user.setXp(user.getXp()+xp);
+        return user.getXp();
+    }
+
+
     public void requestToBecomeCoach(int id, CoachRequestDto dto) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found."));
         emailService.mailForCoachRequest(user, dto);
@@ -101,6 +108,9 @@ public class UserService {
         assertPrincipalCanUpdateProfile(id, principalId);
         User user = findUserById(id);
         User result = userMapper.applyToEntity(dto, user);
+        if(userIsAdmin(principalId)){
+            result.setXp(dto.getXp());
+        }
         return userMapper.toDto(result);
     }
 
