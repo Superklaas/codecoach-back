@@ -194,7 +194,7 @@ public class Session {
         return this;
     }
 
-    private void checkIfAllFeedbackReceived() {
+    public void checkIfAllFeedbackReceived() {
         if (feedbackForCoach != null && feedbackForCoach.getUsefulness() != null && feedbackForCoachee != null && feedbackForCoachee.getPreparedness() != null) {
             status = SessionStatus.FEEDBACK_RECEIVED;
         }
@@ -239,6 +239,12 @@ public class Session {
         if (!getStatus().equals(SessionStatus.WAITING_FEEDBACK)) {
             throw new IllegalStateException("Cannot give feedback when the session is not waiting for feedback");
         }
+    }
+    public int getXp(){
+        if(feedbackForCoach==null){
+            throw new IllegalArgumentException("There is no such feedback");
+        }
+        return feedbackForCoach.getExplanation()+feedbackForCoach.getUsefulness();
     }
 
 }

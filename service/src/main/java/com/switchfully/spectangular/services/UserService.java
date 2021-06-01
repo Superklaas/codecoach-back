@@ -85,6 +85,11 @@ public class UserService {
         return userMapper.toDto(result);
     }
 
+    public int updateXp(User user, int xp){
+        user.setXp(user.getXp()+xp);
+        return user.getXp();
+    }
+
     public UserDto updateToCoach(int id) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found."));
         user.becomeCoach();
