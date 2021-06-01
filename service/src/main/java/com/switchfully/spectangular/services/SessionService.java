@@ -146,13 +146,14 @@ public class SessionService {
 
     public SessionDto addFeedbackForCoach(int sessionId, int userId, AddFeedbackForCoachDto addFeedbackDto) {
         Session session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new IllegalArgumentException("session not found with id: " + sessionId));
+                .orElseThrow(() -> new IllegalArgumentException("Session not found with id: " + sessionId));
 
         if (!session.getCoachee().getId().equals(userId)) {
-            throw new UnauthorizedException("You are not coachee for this session, so you cannot give such feedback");
+            throw new UnauthorizedException("You are not coachee for this session, so you cannot give such feedback.");
         }
 
         session.setFeedbackForCoach(feedbackMapper.toEntity(addFeedbackDto));
+        emailService.mailCoachForReceivedFeedback(session);
         return sessionMapper.toDto(session);
     }
 
@@ -165,6 +166,7 @@ public class SessionService {
         }
 
         session.setFeedbackForCoachee(feedbackMapper.toEntity(addFeedbackDto));
+        emailService.mailCoacheeForReceivedFeedback(session);
         return sessionMapper.toDto(session);
     }
 
