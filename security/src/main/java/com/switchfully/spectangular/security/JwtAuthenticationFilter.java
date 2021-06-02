@@ -3,6 +3,7 @@ package com.switchfully.spectangular.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.services.UserService;
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -59,21 +60,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throw new UsernameNotFoundException("Email not found in system");
         }
 
-        var token = Jwts.builder()
-                .signWith(Keys.hmacShaKeyFor(SecurityConstants.JWT_SECRET.getBytes()), SignatureAlgorithm.HS512)
-                .setHeaderParam("typ", SecurityConstants.TOKEN_TYPE)
-                .setIssuer(SecurityConstants.TOKEN_ISSUER)
-                .setAudience(SecurityConstants.TOKEN_AUDIENCE)
-                .setSubject(user.getId().toString())
-                .setExpiration(new Date(new Date().getTime() + 3600000*12)) // 1 hour
-                .claim("role", user.getRole().toString())
-                .claim("profileName", user.getProfileName())
-                .claim("email", user.getEmail())
-                .compact();
-
-        response.addHeader(SecurityConstants.TOKEN_HEADER, SecurityConstants.TOKEN_PREFIX + token);
-        response.addHeader("Access-Control-Expose-Headers", "Authorization");
-
+        var token = JwtUtils.buildFromUser(user);
+        JwtUtils.applyToResponse(token, response);
     }
 
     @Override

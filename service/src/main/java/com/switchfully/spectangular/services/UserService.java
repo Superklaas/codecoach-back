@@ -99,6 +99,11 @@ public class UserService {
         emailService.mailForCoachRequest(user, dto);
     }
 
+    public void requestToEditTopics(int id, List<UpdateTopicsDto> dtos) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found."));
+        emailService.mailForEditingTopicsRequest(user, dtos);
+    }
+
     public UserDto updateCoach(UpdateCoachProfileDto dto, int id, int principalId) {
         assertPrincipalCanUpdateProfile(id, principalId);
         User user = findUserById(id);
@@ -117,7 +122,7 @@ public class UserService {
         assertSameUserOrAdmin(coachId, requestedBy);
         User coach = userRepository.findById(coachId).orElseThrow();
         if (!coach.getRole().equals(Role.COACH) && !findUserById(requestedBy).getRole().equals(Role.ADMIN)) {
-            throw new IllegalStateException("Cannot set topics for a non-coach user");
+            throw new IllegalStateException("Cannot set topics for a non-coach user.");
         }
         topics.forEach(topicRepository::save);
         coach.setTopicList(topics);
@@ -153,7 +158,7 @@ public class UserService {
         if (requestedBy != userResourceId) {
             User requester = userRepository.findById(requestedBy).orElseThrow();
             if (!requester.getRole().equals(Role.ADMIN)) {
-                throw new UnauthorizedException("You are not authorized to make this change");
+                throw new UnauthorizedException("You are not authorized to make this change.");
             }
         }
     }
@@ -175,7 +180,7 @@ public class UserService {
     }
 
     private boolean isUserBecomingCoach(User user, UpdateUserProfileDto dto) {
-        return user.getRole().equals(Role.COACHEE) && dto.getRole().equals(Role.COACH.name());
+        return dto.getRole() != null && !user.getRole().equals(Role.COACH) && dto.getRole().equals(Role.COACH.name());
     }
 
     private void expireResetToken(User user) {
