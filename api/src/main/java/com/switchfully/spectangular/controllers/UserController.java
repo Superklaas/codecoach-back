@@ -71,7 +71,6 @@ public class UserController {
         return userService.getAllCoaches();
     }
 
-
     @PreAuthorize("hasAuthority('UPDATE_PROFILE')")
     @PutMapping(path = "/{userId}", produces = "application/json", consumes = "application/json" )
     @ResponseStatus(HttpStatus.OK)
@@ -124,11 +123,11 @@ public class UserController {
         return userService.updateCoach(updateDto, id, uid);
     }
 
-    @PostMapping(path = "/update-password", produces = "application/json")
+    @PostMapping(path = "/update-password", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public void updatePassword(Principal principal, @RequestBody UpdatePasswordDto updatePasswordDto){
         int uid = Integer.parseInt(principal.getName());
-        logger.info(updatePasswordDto.getEmail(), "is trying to update his password");
+        logger.info(uid + "is trying to update password of user:" + updatePasswordDto.getId());
         userService.updatePassword(uid, updatePasswordDto);
     }
 

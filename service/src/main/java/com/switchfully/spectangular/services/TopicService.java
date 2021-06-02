@@ -7,6 +7,7 @@ import com.switchfully.spectangular.dtos.UserDto;
 import com.switchfully.spectangular.mappers.TopicMapper;
 import com.switchfully.spectangular.repository.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -27,6 +28,10 @@ public class TopicService {
 
     public List<TopicDto> getAllTopics() {
         return topicMapper.toDto(topicRepository.findAll());
+    }
+
+    public List<TopicDto> getAllUsedTopics() {
+        return topicMapper.toDto(topicRepository.findAllUsedTopics());
     }
 
 
