@@ -2,6 +2,8 @@ package com.switchfully.spectangular.services.mailing;
 
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.domain.session.Session;
+import com.switchfully.spectangular.dtos.CoachRequestDto;
+import com.switchfully.spectangular.dtos.UpdateTopicsDto;
 import com.switchfully.spectangular.exceptions.UnableToSendEmailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,6 +16,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -52,10 +55,32 @@ public class EmailService {
         sendHtmlMessage(user.getEmail(), "Welcome to CodeCoach!", htmlBody);
     }
 
+    public void mailForCoachRequest(User user, CoachRequestDto dto) {
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("user", user);
+        templateModel.put("coachRequest", dto);
+        sign(templateModel);
+        Context thymeleafContext = new Context();
+        thymeleafContext.setVariables(templateModel);
+        String htmlBody = thymeleafTemplateEngine.process("admin-coach-request-template.html", thymeleafContext);
+        sendHtmlMessage(SENDER_MAIL, "New Coach Request", htmlBody);
+    }
+
     public void mailForBecomingCoach(User user) {
         Context thymeleafContext = prepareMessageContent("user", user);
         String htmlBody = thymeleafTemplateEngine.process("became-coach-template.html", thymeleafContext);
         sendHtmlMessage(user.getEmail(), "You're now a Coach!", htmlBody);
+    }
+
+    public void mailForEditingTopicsRequest(User user, List<UpdateTopicsDto> dtos) {
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("user", user);
+        templateModel.put("topicsRequest", dtos);
+        sign(templateModel);
+        Context thymeleafContext = new Context();
+        thymeleafContext.setVariables(templateModel);
+        String htmlBody = thymeleafTemplateEngine.process("admin-topics-request-template.html", thymeleafContext);
+        sendHtmlMessage(SENDER_MAIL, "New Topics Request", htmlBody);
     }
 
     public void mailForSessionRequest(Session session) {

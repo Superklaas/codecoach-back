@@ -26,7 +26,7 @@ import java.util.*;
 @Transactional
 public class UserService {
 
-    public static final int RESET_TOKEN_EXPIRATION_DELAY = 30*60*1000; // 30 minutes in milliseconds
+    public static final int RESET_TOKEN_EXPIRATION_DELAY = 30 * 60 * 1000; // 30 minutes in milliseconds
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final EmailService emailService;
@@ -81,21 +81,36 @@ public class UserService {
             throw new UnauthorizedException("Only admin can change role.");
         }
         User user = findUserById(id);
+        boolean sendMail = isUserBecomingCoach(user, dto);
         User result = userMapper.applyToEntity(dto, user);
+        if (sendMail) emailService.mailForBecomingCoach(result);
         return userMapper.toDto(result);
     }
 
-    public UserDto updateToCoach(int id) {
+
+    public int updateXp(User user, int xp){
+        user.setXp(user.getXp()+xp);
+        return user.getXp();
+    }
+
+
+    public void requestToBecomeCoach(int id, CoachRequestDto dto) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found."));
-        user.becomeCoach();
-        emailService.mailForBecomingCoach(user);
-        return userMapper.toDto(user);
+        emailService.mailForCoachRequest(user, dto);
+    }
+
+    public void requestToEditTopics(int id, List<UpdateTopicsDto> dtos) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found."));
+        emailService.mailForEditingTopicsRequest(user, dtos);
     }
 
     public UserDto updateCoach(UpdateCoachProfileDto dto, int id, int principalId) {
         assertPrincipalCanUpdateProfile(id, principalId);
         User user = findUserById(id);
         User result = userMapper.applyToEntity(dto, user);
+        if(userIsAdmin(principalId)){
+            result.setXp(dto.getXp());
+        }
         return userMapper.toDto(result);
     }
 
@@ -107,7 +122,7 @@ public class UserService {
         assertSameUserOrAdmin(coachId, requestedBy);
         User coach = userRepository.findById(coachId).orElseThrow();
         if (!coach.getRole().equals(Role.COACH) && !findUserById(requestedBy).getRole().equals(Role.ADMIN)) {
-            throw new IllegalStateException("Cannot set topics for a non-coach user");
+            throw new IllegalStateException("Cannot set topics for a non-coach user.");
         }
         topics.forEach(topicRepository::save);
         coach.setTopicList(topics);
@@ -164,7 +179,7 @@ public class UserService {
         if (requestedBy != userResourceId) {
             User requester = userRepository.findById(requestedBy).orElseThrow();
             if (!requester.getRole().equals(Role.ADMIN)) {
-                throw new UnauthorizedException("You are not authorized to make this change");
+                throw new UnauthorizedException("You are not authorized to make this change.");
             }
         }
     }
@@ -183,6 +198,10 @@ public class UserService {
 
     private boolean userIsAdmin(int principalId) {
         return this.findUserById(principalId).getRole() == Role.ADMIN;
+    }
+
+    private boolean isUserBecomingCoach(User user, UpdateUserProfileDto dto) {
+        return dto.getRole() != null && !user.getRole().equals(Role.COACH) && dto.getRole().equals(Role.COACH.name());
     }
 
     private void expireResetToken(User user) {

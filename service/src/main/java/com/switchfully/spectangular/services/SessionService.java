@@ -146,8 +146,12 @@ public class SessionService {
         if (!session.getCoachee().getId().equals(userId)) {
             throw new UnauthorizedException("You are not coachee for this session, so you cannot give such feedback.");
         }
-
+        SessionStatus prechangeStatus = session.getStatus();
         session.setFeedbackForCoach(feedbackMapper.toEntity(addFeedbackDto));
+
+        if (canXpBeAwarded(session, prechangeStatus)) {
+            userService.updateXp(session.getCoach(), session.getXp());
+        }
         emailService.mailCoachForReceivedFeedback(session);
         return sessionMapper.toDto(session);
     }
@@ -159,8 +163,12 @@ public class SessionService {
         if (!session.getCoach().getId().equals(userId)) {
             throw new UnauthorizedException("You are not coach for this session, so you cannot give such feedback");
         }
-
+        SessionStatus prechangeStatus = session.getStatus();
         session.setFeedbackForCoachee(feedbackMapper.toEntity(addFeedbackDto));
+
+        if (canXpBeAwarded(session, prechangeStatus)) {
+            userService.updateXp(session.getCoach(), session.getXp());
+        }
         emailService.mailCoacheeForReceivedFeedback(session);
         return sessionMapper.toDto(session);
     }
@@ -169,6 +177,20 @@ public class SessionService {
         List<Session> sessions = sessionRepository.findAll();
         autoUpdateStatusSessionList(sessions);
         return sessionMapper.toListOfDtos(sessions);
+    }
+
+
+    public boolean canXpBeAwarded(Session session, SessionStatus status) {
+        if (session.getFeedbackForCoach() != null &&
+                session.getFeedbackForCoach().getUsefulness() != null &&
+                session.getFeedbackForCoach().getExplanation() != null &&
+                session.getFeedbackForCoachee() != null &&
+                session.getFeedbackForCoachee().getPreparedness() != null &&
+                session.getFeedbackForCoachee().getWillingness() != null &&
+                status != SessionStatus.FEEDBACK_RECEIVED) {
+            return true;
+        }
+        return false;
     }
 
     public void autoUpdateAllSession(){

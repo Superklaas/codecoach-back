@@ -47,12 +47,20 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @PreAuthorize(value = "hasAuthority('BECOME_COACH')")
+    @PreAuthorize(value = "hasAuthority('TOPICS_REQUEST')")
+    @PostMapping(path = "/{id}/edit-topics", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void requestToEditTopics(@PathVariable int id, @RequestBody List<UpdateTopicsDto> updateTopicsDtos ) {
+        logger.info("Received POST request to notify the Admin(s) of a request to edit a Coach's topics.");
+        userService.requestToEditTopics(id, updateTopicsDtos);
+    }
+
+    @PreAuthorize(value = "hasAuthority('COACH_REQUEST')")
     @PostMapping(path = "/{id}/coachify", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto updateToCoach(@PathVariable int id) {
-        logger.info("Received POST request to update a User to having a Coach role.");
-        return userService.updateToCoach(id);
+    public void requestToBecomeCoach(@PathVariable int id, @RequestBody CoachRequestDto coachRequestDto) {
+        logger.info("Received POST request to notify the Admin(s) of a request to become a Coach.");
+        userService.requestToBecomeCoach(id, coachRequestDto);
     }
 
     @PreAuthorize("hasAuthority('GET_ALL_COACHES')")
@@ -64,13 +72,13 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('UPDATE_PROFILE')")
-    @PutMapping(path = "/{id}" , produces = "application/json", consumes = "application/json" )
+    @PutMapping(path = "/{userId}", produces = "application/json", consumes = "application/json" )
     @ResponseStatus(HttpStatus.OK)
-    public UserDto updateProfile(@PathVariable int id, @RequestBody UpdateUserProfileDto updateDto, Principal principal) {
+    public UserDto updateProfile(@PathVariable int userId, @RequestBody UpdateUserProfileDto updateDto, Principal principal) {
         int uid = Integer.parseInt(principal.getName());
 
         logger.info("Received PUT request to update a user:" + uid + "data: " + updateDto.toString());
-        return userService.updateUser(updateDto, id, uid);
+        return userService.updateUser(updateDto, userId, uid);
     }
 
     @PostMapping(path = "/forgot-password", produces = "application/json")

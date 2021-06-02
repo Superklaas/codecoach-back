@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body th:object="${user}">
+<p>New topics request from:</p>
+<p th:text="|Id: *{id}"></p>
+<p th:text="|First name: *{firstName}"></p>
+<p th:text="|Last name: *{lastName}"></p>
+<p th:text="|Profile name: *{profileName}"></p>
+<p th:text="|Email: *{email}"></p>
+<br>
+<div th:each="topic : ${topicsRequest}" th:object="${topic}">
+    <h4>New Topic</h4>
+    <p th:text="*{name}"></p>
+</div>
+<p>To accept request, go to Admin Dashboard and edit this user accordingly.</p>
+</body>
+</html>
