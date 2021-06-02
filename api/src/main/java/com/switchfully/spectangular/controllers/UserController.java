@@ -71,15 +71,14 @@ public class UserController {
         return userService.getAllCoaches();
     }
 
-
     @PreAuthorize("hasAuthority('UPDATE_PROFILE')")
-    @PutMapping(path = "/{id}" , produces = "application/json", consumes = "application/json" )
+    @PutMapping(path = "/{userId}", produces = "application/json", consumes = "application/json" )
     @ResponseStatus(HttpStatus.OK)
-    public UserDto updateProfile(@PathVariable int id, @RequestBody UpdateUserProfileDto updateDto, Principal principal) {
+    public UserDto updateProfile(@PathVariable int userId, @RequestBody UpdateUserProfileDto updateDto, Principal principal) {
         int uid = Integer.parseInt(principal.getName());
 
         logger.info("Received PUT request to update a user:" + uid + "data: " + updateDto.toString());
-        return userService.updateUser(updateDto, id, uid);
+        return userService.updateUser(updateDto, userId, uid);
     }
 
     @PostMapping(path = "/forgot-password", produces = "application/json")
@@ -124,11 +123,11 @@ public class UserController {
         return userService.updateCoach(updateDto, id, uid);
     }
 
-    @PostMapping(path = "/update-password", produces = "application/json")
+    @PostMapping(path = "/update-password", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public void updatePassword(Principal principal, @RequestBody UpdatePasswordDto updatePasswordDto){
         int uid = Integer.parseInt(principal.getName());
-        logger.info(updatePasswordDto.getEmail(), "is trying to update his password");
+        logger.info(uid + "is trying to update password of user:" + updatePasswordDto.getId());
         userService.updatePassword(uid, updatePasswordDto);
     }
 

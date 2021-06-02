@@ -33,5 +33,12 @@ public class TopicController {
         return topicService.getAllTopics();
     }
 
+    @PreAuthorize(value = "hasAuthority('GET_ALL_TOPICS')")
+    @GetMapping(path="/used" , produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public List<TopicDto> getAllUsedTopics() {
+        logger.info("Received GET request to get all topics.");
+        return topicService.getAllUsedTopics();
+    }
 
 }

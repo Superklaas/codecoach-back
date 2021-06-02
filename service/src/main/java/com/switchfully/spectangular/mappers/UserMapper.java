@@ -54,8 +54,7 @@ public class UserMapper {
 
     public User applyToEntity(UpdateUserProfileDto dto, User user) {
         if(dto.getRole()!=null) {
-            user.setRole(Role.valueOf(dto.getRole().toUpperCase()))
-            .setXp(user.getXp());
+            user.setRole(Role.valueOf(dto.getRole().toUpperCase()));
         }
         return user.setFirstName(dto.getFirstName())
                 .setLastName(dto.getLastName())

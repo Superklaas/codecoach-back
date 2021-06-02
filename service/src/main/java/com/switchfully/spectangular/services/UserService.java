@@ -146,12 +146,33 @@ public class UserService {
 
     public void updatePassword(int uid, UpdatePasswordDto updatePasswordDto) {
         UserValidator.assertValidPassword(updatePasswordDto.getNewPassword());
-        User user = this.findUserByEmail(updatePasswordDto.getEmail());
-        assertSameUserOrAdmin(user.getId() ,uid);
+        User user = this.findUserById(uid);
+
+        if (user.getRole() == Role.ADMIN && updatePasswordDto.getOldPassword() == null){
+            this.adminUpdatesPassword(updatePasswordDto);
+        }else {
+            this.userUpdatesPassword(uid, updatePasswordDto);
+        }
+    }
+
+    private void userUpdatesPassword(int uid, UpdatePasswordDto updatePasswordDto) {
+        User user = this.findUserById(updatePasswordDto.getId());
+        assertSameUser(user.getId() ,uid);
         if (!passwordEncoder.matches( updatePasswordDto.getOldPassword(), user.getEncryptedPassword())){
             throw new UnauthorizedException("Old password does not match");
         }
         user.setEncryptedPassword(passwordEncoder.encode(updatePasswordDto.getNewPassword()));
+    }
+
+    private void adminUpdatesPassword(UpdatePasswordDto updatePasswordDto) {
+        User user = this.findUserById(updatePasswordDto.getId());
+        user.setEncryptedPassword(passwordEncoder.encode(updatePasswordDto.getNewPassword()));
+    }
+
+    private void assertSameUser(int userResourceId, int requestedBy){
+        if (requestedBy != userResourceId){
+            throw new UnauthorizedException("You are not authorized to make this change");
+        }
     }
 
     private void assertSameUserOrAdmin(int userResourceId, int requestedBy) {
@@ -180,7 +201,7 @@ public class UserService {
     }
 
     private boolean isUserBecomingCoach(User user, UpdateUserProfileDto dto) {
-        return user.getRole().equals(Role.COACHEE) && dto.getRole().equals(Role.COACH.name());
+        return dto.getRole() != null && !user.getRole().equals(Role.COACH) && dto.getRole().equals(Role.COACH.name());
     }
 
     private void expireResetToken(User user) {

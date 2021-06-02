@@ -2,11 +2,10 @@ package com.switchfully.spectangular.security;
 
 import com.switchfully.spectangular.domain.Feature;
 import com.switchfully.spectangular.domain.Role;
+import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.exceptions.UnauthorizedException;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import com.switchfully.spectangular.services.UserService;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +32,11 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private static final Logger log = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
+    private final UserService userService;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserService userService) {
         super(authenticationManager);
+        this.userService = userService;
     }
 
     @Override
@@ -43,7 +44,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         UsernamePasswordAuthenticationToken authentication;
 
         try {
-             authentication = getAuthentication(request);
+             authentication = getAuthentication(request, response);
         } catch (HttpClientErrorException e) {
             response.setStatus(401);
             response.setHeader("WWW-Authenticate", "JWT Invalid");
@@ -59,7 +60,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         filterChain.doFilter(request, response);
     }
 
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
+    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request, HttpServletResponse response) {
         var token = request.getHeader(SecurityConstants.TOKEN_HEADER);
 
         if (!isEmpty(token) && token.startsWith(SecurityConstants.TOKEN_PREFIX)) {
@@ -74,21 +75,17 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                         .getBody()
                         .getSubject();
 
-
-                // TODO: get user from database and verify the token is up to date
-                // If not, add a new replacement token for the frontend
-
-                String roleInToken = parsedToken.getBody().get("role", String.class);
-                if (roleInToken == null) {
-                    throw new MalformedJwtException("Token should contain a role claim");
+                User user;
+                try {
+                    user = userService.findUserById(Integer.parseInt(id));
+                } catch (Exception e) {
+                    throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "Subject does not exist");
                 }
 
-                Role parsedRole = Role.valueOf(roleInToken);
-                if (parsedRole == null) {
-                    throw new MalformedJwtException("Role claim in token does not match a known role");
-                }
+                JwtUtils.updateIfChanged(parsedToken, user, response);
 
-                var authorities = Feature.getForRole(parsedRole)
+
+                var authorities = Feature.getForRole(user.getRole())
                         .stream()
                         .map(Feature::toString)
                         .map(SimpleGrantedAuthority::new)

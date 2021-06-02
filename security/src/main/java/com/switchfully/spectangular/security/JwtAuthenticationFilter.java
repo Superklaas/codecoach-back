@@ -60,7 +60,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throw new UsernameNotFoundException("Email not found in system");
         }
 
-        var token = JwtUtils.buildFromUser(user);
+        var token = JwtUtils.buildFromUser(user, new Date(new Date().getTime() + 3600000*12));
         JwtUtils.applyToResponse(token, response);
     }
 

@@ -4,15 +4,15 @@ import java.util.Objects;
 
 public class UpdatePasswordDto {
 
-    private String email;
+    private int id;
     private String oldPassword;
     private String newPassword;
 
     public UpdatePasswordDto() {
     }
 
-    public String getEmail() {
-        return email;
+    public int getId() {
+        return id;
     }
 
     public String getOldPassword() {
@@ -23,8 +23,8 @@ public class UpdatePasswordDto {
         return newPassword;
     }
 
-    public UpdatePasswordDto setEmail(String email) {
-        this.email = email;
+    public UpdatePasswordDto setId(int id) {
+        this.id = id;
         return this;
     }
 
