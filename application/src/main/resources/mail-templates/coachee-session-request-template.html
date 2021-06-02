@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
+<head th:replace="fragments/fragments.html :: head"></head>
 <body th:object="${session}">
+<header th:replace="fragments/fragments.html :: header"></header>
+
 <p th:text="|Hello *{coachee.profileName},|"></p>
 <p>Thank you for booking a session on CodeCoach.</p>
 <p>Below, you can find your session details.</p>
@@ -29,5 +29,7 @@
 <p>
     <em th:text="${senderName}"></em> <br>
 </p>
+
+<footer th:replace="fragments/fragments.html :: footer"></footer>
 </body>
 </html>

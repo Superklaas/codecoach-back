@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
+<head th:replace="fragments/fragments.html :: head"></head>
 <body th:object="${user}">
+<header th:replace="fragments/fragments.html :: header"></header>
+
 <p>New topics request from:</p>
 <p th:text="|Id: *{id}"></p>
 <p th:text="|First name: *{firstName}"></p>
@@ -16,5 +16,7 @@
     <p th:text="*{name}"></p>
 </div>
 <p>To accept request, go to Admin Dashboard and edit this user accordingly.</p>
+
+<footer th:replace="fragments/fragments.html :: footer"></footer>
 </body>
 </html>

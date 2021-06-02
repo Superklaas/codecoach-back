@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
+<head th:replace="fragments/fragments.html :: head"></head>
 <body th:object="${user}">
+<header th:replace="fragments/fragments.html :: header"></header>
+
 <p th:text="|Congratulations *{profileName},|"></p>
 <p>You are now a CodeCoach coach!</p>
 <p>This means you now have a new responsibility, but also a brand new Coach Dashboard.</p>
@@ -14,5 +14,7 @@
 <p>
     <em th:text="${senderName}"></em> <br>
 </p>
+
+<footer th:replace="fragments/fragments.html :: footer"></footer>
 </body>
 </html>

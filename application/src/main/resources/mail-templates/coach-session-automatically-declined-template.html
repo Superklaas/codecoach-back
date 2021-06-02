@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
+<head th:replace="fragments/fragments.html :: head"></head>
 <body th:object="${session}">
+<header th:replace="fragments/fragments.html :: header"></header>
+
 <p th:text="|Hello *{coach.profileName},|"></p>
 <p th:text="|Your requested session with *{coachee.firstName} *{coachee.lastName} on *{date} has been automatically declined.|"></p>
 <p>This means you didn't accept this request in time.</p>
@@ -13,5 +13,7 @@
 <p>
     <em th:text="${senderName}"></em> <br>
 </p>
+
+<footer th:replace="fragments/fragments.html :: footer"></footer>
 </body>
 </html>

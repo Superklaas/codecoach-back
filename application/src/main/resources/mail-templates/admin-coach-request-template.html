@@ -1,22 +1,118 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
+<head th:replace="fragments/fragments.html :: head"></head>
+
 <body th:object="${user}">
-<p>New coach request from:</p>
-<p th:text="|Id: *{id}"></p>
-<p th:text="|First name: *{firstName}"></p>
-<p th:text="|Last name: *{lastName}"></p>
-<p th:text="|Profile name: *{profileName}"></p>
-<p th:text="|Email: *{email}"></p>
-<br>
-<div th:object="${coachRequest}">
-    <h4>Motivation</h4>
-    <p th:text="*{motivation}"></p>
-    <h4>Topics</h4>
-    <p th:text="|*{topic1} *{topic2}|"></p>
-</div>
-<p>To accept request, go to Admin Dashboard and edit this user accordingly.</p>
+<header th:replace="fragments/fragments.html :: header"></header>
+
+<tr>
+    <td align="center">
+        <table class="col-600" width="100%" border="0" align="center" cellpadding="0" cellspacing="0"
+               style="margin-left:20px; margin-right:20px;">
+            <tbody>
+            <tr>
+                <td align="center">
+                    <table class="col-600" width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+                        <tbody>
+                        <tr><td height="50"></td></tr>
+                        <tr>
+                            <td align="right">
+                                <table width="287" border="0" align="left" cellpadding="0" cellspacing="0" class="col2"
+                                       style="">
+                                    <tbody>
+                                    <tr>
+                                        <td align="center">
+                                            <table class="insider" width="600" border="0" align="center" cellpadding="0"
+                                                   cellspacing="0">
+                                                <tbody>
+                                                <tr align="left">
+                                                    <td th:text="|Received new Coach Request from *{firstName} *{lastName}|"
+                                                        style="font-family: 'Raleway', sans-serif; font-size:23px; color:#009688; line-height:30px; font-weight: bold;">
+                                                    </td>
+                                                </tr>
+                                                <tr><td height="5"></td></tr>
+                                                <tr>
+                                                    <td th:text="|Id: *{id}|"
+                                                        style="font-family: 'Lato', sans-serif; font-size:14px; color:#7f8c8d; line-height:24px; font-weight: 300;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td th:text="|Email: *{email}|"
+                                                        style="font-family: 'Lato', sans-serif; font-size:14px; color:#7f8c8d; line-height:24px; font-weight: 300;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td th:text="|Profile Name: *{profileName}|"
+                                                        style="font-family: 'Lato', sans-serif; font-size:14px; color:#7f8c8d; line-height:24px; font-weight: 300;">
+                                                    </td>
+                                                </tr>
+                                                <tr><td height="5"></td></tr>
+                                                <tr>
+                                                    <td style="font-family: 'Raleway', sans-serif; font-size:20px; color:#009688; line-height:24px; font-weight: 300;">
+                                                        Request Details
+                                                    </td>
+                                                </tr>
+                                                <tr><td height="5"></td></tr>
+                                                <tr>
+                                                    <td style="font-family: 'Lato', sans-serif; font-size:14px; color:#7f8c8d; line-height:24px; font-weight: 300;">
+                                                        Motivation:
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td th:text="${coachRequest.motivation}"
+                                                        style="font-family: 'Lato', sans-serif; font-size:14px; color:#7f8c8d; line-height:24px; font-weight: 300;">
+                                                    </td>
+                                                </tr>
+                                                <tr><td height="5"></td></tr>
+                                                <tr>
+                                                    <td style="font-family: 'Lato', sans-serif; font-size:14px; color:#7f8c8d; line-height:24px; font-weight: 300;">
+                                                        Topics:
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td th:text="${coachRequest.topic1}"
+                                                        style="font-family: 'Lato', sans-serif; font-size:14px; color:#7f8c8d; line-height:24px; font-weight: 300;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td th:text="${coachRequest.topic2}"
+                                                        style="font-family: 'Lato', sans-serif; font-size:14px; color:#7f8c8d; line-height:24px; font-weight: 300;">
+                                                    </td>
+                                                </tr>
+                                                <tr><td height="5"></td></tr>
+                                                <tr>
+                                                    <td style="font-family: 'Lato', sans-serif; font-size:14px; color:#7f8c8d; line-height:24px; font-weight: 300;">
+                                                        To accept request, go to Admin Dashboard and edit this user accordingly.
+                                                    </td>
+                                                </tr>
+                                                <tr><td height="25"></td></tr>
+                                                <tr>
+                                                    <td th:text="${regards}"
+                                                        style="font-family: 'Raleway', sans-serif; font-size:14px; color:#7f8c8d; line-height:24px; font-weight: 200;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td th:text="${senderName}"
+                                                        style="font-family: 'Raleway', sans-serif; font-size:16px; color:#009688; line-height:24px; font-weight: 200; text-transform: uppercase">
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+
+<footer th:replace="fragments/fragments.html :: footer"></footer>
 </body>
 </html>

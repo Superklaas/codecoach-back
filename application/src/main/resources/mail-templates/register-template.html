@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
+<head th:replace="fragments/fragments.html :: head"></head>
 <body th:object="${user}">
+<header th:replace="fragments/fragments.html :: header"></header>
+
 <p th:text="|Welcome *{profileName},|"></p>
 <p>Thank you for joining our wonderful community.</p>
 <p>Don't hesitate to book a session with one of our coaches and start learning!</p>
@@ -12,5 +12,7 @@
 <p>
     <em th:text="${senderName}"></em> <br>
 </p>
+
+<footer th:replace="fragments/fragments.html :: footer"></footer>
 </body>
 </html>
