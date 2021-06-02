@@ -74,6 +74,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                         .getBody()
                         .getSubject();
 
+
+                // TODO: get user from database and verify the token is up to date
+                // If not, add a new replacement token for the frontend
+
                 String roleInToken = parsedToken.getBody().get("role", String.class);
                 if (roleInToken == null) {
                     throw new MalformedJwtException("Token should contain a role claim");
