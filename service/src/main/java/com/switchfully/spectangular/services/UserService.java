@@ -180,7 +180,7 @@ public class UserService {
     }
 
     private boolean isUserBecomingCoach(User user, UpdateUserProfileDto dto) {
-        return user.getRole().equals(Role.COACHEE) && dto.getRole().equals(Role.COACH.name());
+        return dto.getRole() != null && !user.getRole().equals(Role.COACH) && dto.getRole().equals(Role.COACH.name());
     }
 
     private void expireResetToken(User user) {
