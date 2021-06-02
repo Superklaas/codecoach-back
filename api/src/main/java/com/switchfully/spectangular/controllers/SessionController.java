@@ -57,6 +57,13 @@ public class SessionController {
         return sessionService.getAllSessionByCoachee(uid);
     }
 
+    @PreAuthorize(value = "hasAuthority('GET_SESSION_BY_ID')")
+    @GetMapping(path = "/{id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public SessionDto getSessionById(@PathVariable int id) {
+        return sessionService.getSessionById(id);
+    }
+
     @PreAuthorize(value = "hasAuthority('UPDATE_SESSION_STATUS')")
     @PostMapping(path = "/{id}/status", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)

@@ -22,7 +22,8 @@ public enum Feature {
     GET_ALL_USERS(ADMIN),
     GET_ALL_TOPICS(ADMIN, COACH, COACHEE),
     GET_ALL_SESSIONS(ADMIN),
-    UPDATE_TOPICS(ADMIN);
+    UPDATE_TOPICS(ADMIN),
+    GET_SESSION_BY_ID(ADMIN);
 
     private final List<Role> roleList;
 
