@@ -47,7 +47,7 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @PreAuthorize(value = "hasAuthority('COACH_REQUEST')")
+    @PreAuthorize(value = "hasAuthority('TOPICS_REQUEST')")
     @PostMapping(path = "/{id}/edit-topics", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public void requestToEditTopics(@PathVariable int id, @RequestBody List<UpdateTopicsDto> updateTopicsDtos ) {
@@ -55,7 +55,7 @@ public class UserController {
         userService.requestToEditTopics(id, updateTopicsDtos);
     }
 
-    @PreAuthorize(value = "hasAuthority('TOPICS_REQUEST')")
+    @PreAuthorize(value = "hasAuthority('COACH_REQUEST')")
     @PostMapping(path = "/{id}/coachify", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public void requestToBecomeCoach(@PathVariable int id, @RequestBody CoachRequestDto coachRequestDto) {
