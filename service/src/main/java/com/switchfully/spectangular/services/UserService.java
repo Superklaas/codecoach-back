@@ -31,19 +31,15 @@ public class UserService {
     private final UserMapper userMapper;
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
-    private final TopicMapper topicMapper;
-    private final TopicRepository topicRepository;
 
 
     @Autowired
     public UserService(UserRepository userRepository, UserMapper userMapper, EmailService emailService,
-                       PasswordEncoder passwordEncoder, TopicMapper topicMapper, TopicRepository topicRepository) {
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
-        this.topicMapper = topicMapper;
-        this.topicRepository = topicRepository;
     }
 
     public UserDto createUser(CreateUserDto dto) {
@@ -91,12 +87,10 @@ public class UserService {
         return userMapper.toDto(result);
     }
 
-
     public int updateXp(User user, int xp){
         user.setXp(user.getXp()+xp);
         return user.getXp();
     }
-
 
     public void requestToBecomeCoach(int id, CoachRequestDto dto) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found."));
@@ -116,21 +110,6 @@ public class UserService {
             result.setXp(dto.getXp());
         }
         return userMapper.toDto(result);
-    }
-
-    public UserDto updateTopics(int coachId, List<UpdateTopicsDto> topicDtos, int requestedBy) {
-        if (topicDtos.size() > User.MAX_COACH_TOPICS) {
-            throw new IllegalStateException("Too many topics");
-        }
-        List<Topic> topics = topicMapper.toEntity(topicDtos);
-        assertSameUserOrAdmin(coachId, requestedBy);
-        User coach = userRepository.findById(coachId).orElseThrow();
-        if (!coach.getRole().equals(Role.COACH) && !findUserById(requestedBy).getRole().equals(Role.ADMIN)) {
-            throw new IllegalStateException("Cannot set topics for a non-coach user.");
-        }
-        topics.forEach(topicRepository::save);
-        coach.setTopicList(topics);
-        return userMapper.toDto(coach);
     }
 
     public void sendResetToken(String email, String requestUrl) {
@@ -159,6 +138,7 @@ public class UserService {
         }
     }
 
+
     private void userUpdatesPassword(int uid, UpdatePasswordDto updatePasswordDto) {
         User user = this.findUserById(updatePasswordDto.getId());
         assertSameUser(user.getId() ,uid);
@@ -173,9 +153,41 @@ public class UserService {
         user.setEncryptedPassword(passwordEncoder.encode(updatePasswordDto.getNewPassword()));
     }
 
+    private void expireResetToken(User user) {
+        Timer timer = new Timer();
+        TimerTask timerTask = new RemoveResetTokenTimerTask(user);
+        timer.schedule(timerTask, RESET_TOKEN_EXPIRATION_DELAY);
+    }
+
+
+    private boolean userIsAdmin(int principalId) {
+        return this.findUserById(principalId).getRole() == Role.ADMIN;
+    }
+
+    private boolean isSameUser(int userResourceId, int requestedBy){
+        return requestedBy == userResourceId;
+    }
+
+    private boolean isUserBecomingCoach(User user, UpdateUserProfileDto dto) {
+        return dto.getRole() != null && !user.getRole().equals(Role.COACH) && dto.getRole().equals(Role.COACH.name());
+    }
+
+    private boolean userHasAuthorityToUpdateProfile(int principalId, int id) {
+        if (userIsAdmin(principalId)) {
+            return true;
+        }
+        return principalId == id;
+    }
+
     private void assertSameUser(int userResourceId, int requestedBy){
-        if (requestedBy != userResourceId){
+        if (!isSameUser(userResourceId, requestedBy)){
             throw new UnauthorizedException("You are not authorized to make this change");
+        }
+    }
+
+    public void assertAdmin(int requestedBy) {
+        if (!userIsAdmin(requestedBy)) {
+            throw new UnauthorizedException("You are not authorized to make this change.");
         }
     }
 
@@ -199,27 +211,5 @@ public class UserService {
             throw new UnauthorizedException("You are not authorized to make changes to this profile.");
         }
     }
-
-    private boolean userIsAdmin(int principalId) {
-        return this.findUserById(principalId).getRole() == Role.ADMIN;
-    }
-
-    private boolean isUserBecomingCoach(User user, UpdateUserProfileDto dto) {
-        return dto.getRole() != null && !user.getRole().equals(Role.COACH) && dto.getRole().equals(Role.COACH.name());
-    }
-
-    private void expireResetToken(User user) {
-        Timer timer = new Timer();
-        TimerTask timerTask = new RemoveResetTokenTimerTask(user);
-        timer.schedule(timerTask, RESET_TOKEN_EXPIRATION_DELAY);
-    }
-
-    private boolean userHasAuthorityToUpdateProfile(int principalId, int id) {
-        if (userIsAdmin(principalId)) {
-            return true;
-        }
-        return principalId == id;
-    }
-
 
 }

@@ -33,11 +33,12 @@ public class EmailService {
         this.thymeleafTemplateEngine = thymeleafTemplateEngine;
     }
 
-    @Async
+
     void sendEmail(MimeMessage email) {
         mailSender.send(email);
     }
 
+    @Async
     public void mailToResetPassword(User user, String url) {
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("user", user);
@@ -48,13 +49,13 @@ public class EmailService {
         String htmlBody = thymeleafTemplateEngine.process("reset-password-template.html", thymeleafContext);
         sendHtmlMessage(user.getEmail(), "Password Reset Request", htmlBody);
     }
-
+    @Async
     public void mailForRegistering(User user) {
         Context thymeleafContext = prepareMessageContent("user", user);
         String htmlBody = thymeleafTemplateEngine.process("register-template.html", thymeleafContext);
         sendHtmlMessage(user.getEmail(), "Welcome to CodeCoach!", htmlBody);
     }
-
+    @Async
     public void mailForCoachRequest(User user, CoachRequestDto dto) {
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("user", user);
@@ -65,13 +66,13 @@ public class EmailService {
         String htmlBody = thymeleafTemplateEngine.process("admin-coach-request-template.html", thymeleafContext);
         sendHtmlMessage(SENDER_MAIL, "New Coach Request", htmlBody);
     }
-
+    @Async
     public void mailForBecomingCoach(User user) {
         Context thymeleafContext = prepareMessageContent("user", user);
         String htmlBody = thymeleafTemplateEngine.process("became-coach-template.html", thymeleafContext);
         sendHtmlMessage(user.getEmail(), "You're now a Coach!", htmlBody);
     }
-
+    @Async
     public void mailForEditingTopicsRequest(User user, List<UpdateTopicsDto> dtos) {
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("user", user);
@@ -82,7 +83,7 @@ public class EmailService {
         String htmlBody = thymeleafTemplateEngine.process("admin-topics-request-template.html", thymeleafContext);
         sendHtmlMessage(SENDER_MAIL, "New Topics Request", htmlBody);
     }
-
+    @Async
     public void mailForSessionRequest(Session session) {
         mailCoacheeForSessionRequest(session);
         mailCoachForSessionRequest(session);
@@ -99,37 +100,37 @@ public class EmailService {
         String htmlBody = thymeleafTemplateEngine.process("coach-session-request-template.html", thymeleafContext);
         sendHtmlMessage(session.getCoach().getEmail(), "New Session Request", htmlBody);
     }
-
+    @Async
     public void mailCoacheeForAcceptedSession(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coachee-session-accepted-template.html", thymeleafContext);
         sendHtmlMessage(session.getCoachee().getEmail(), "Session Request Accepted", htmlBody);
     }
-
+    @Async
     public void mailCoacheeForDeclinedSession(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coachee-session-declined-template.html", thymeleafContext);
         sendHtmlMessage(session.getCoachee().getEmail(), "Session Request Declined", htmlBody);
     }
-
+    @Async
     public void mailCoacheeForSessionCancelledByCoach(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coachee-session-cancelled-by-coach-template.html", thymeleafContext);
         sendHtmlMessage(session.getCoachee().getEmail(), "Session Cancelled", htmlBody);
     }
-
+    @Async
     public void mailCoachForSessionCancelledByCoachee(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coach-session-cancelled-by-coachee-template.html", thymeleafContext);
         sendHtmlMessage(session.getCoach().getEmail(), "Session Cancelled", htmlBody);
     }
-
+    @Async
     public void mailCoachForSessionRequestCancelled(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coach-session-request-cancelled-template.html", thymeleafContext);
         sendHtmlMessage(session.getCoach().getEmail(), "Session Request Cancelled", htmlBody);
     }
-
+    @Async
     public void mailForAutomaticallyDeclinedSession(Session session) {
         mailCoacheeForAutomaticallyDeclinedSession(session);
         mailCoachForAutomaticallyDeclinedSession(session);
@@ -146,7 +147,7 @@ public class EmailService {
         String htmlBody = thymeleafTemplateEngine.process("coach-session-automatically-declined-template.html", thymeleafContext);
         sendHtmlMessage(session.getCoach().getEmail(), "Session Automatically Declined", htmlBody);
     }
-
+    @Async
     public void mailForAskingFeedback(Session session) {
         mailCoacheeForAskingFeedback(session);
         mailCoachForAskingFeedback(session);
@@ -163,13 +164,13 @@ public class EmailService {
         String htmlBody = thymeleafTemplateEngine.process("coach-session-feedback-template.html", thymeleafContext);
         sendHtmlMessage(session.getCoach().getEmail(), "Give Session Feedback", htmlBody);
     }
-
+    @Async
     public void mailCoacheeForReceivedFeedback(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coachee-session-feedback-received-template.html", thymeleafContext);
         sendHtmlMessage(session.getCoachee().getEmail(), "Session Feedback Received", htmlBody);
     }
-
+    @Async
     public void mailCoachForReceivedFeedback(Session session) {
         Context thymeleafContext = prepareMessageContent("session", session);
         String htmlBody = thymeleafTemplateEngine.process("coach-session-feedback-received-template.html", thymeleafContext);

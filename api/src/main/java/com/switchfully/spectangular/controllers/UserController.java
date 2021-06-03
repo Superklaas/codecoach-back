@@ -113,14 +113,6 @@ public class UserController {
         return userService.getAll();
     }
 
-    @PreAuthorize(value = "hasAuthority('UPDATE_TOPICS')")
-    @PostMapping(path = "/{id}/topics", produces = "application/json", consumes = "application/json")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserDto updateTopics(Principal principal, @PathVariable int id, @RequestBody List<UpdateTopicsDto> dtoList) {
-        logger.info("Received POST request to update topics by user:" + principal.getName() + " data: " + dtoList.toString());
-        return userService.updateTopics(id, dtoList, Integer.parseInt(principal.getName()));
-    }
-
     @PreAuthorize("hasAuthority('UPDATE_PROFILE')")
     @PutMapping(path = "/{id}/coach" , produces = "application/json", consumes = "application/json" )
     @ResponseStatus(HttpStatus.OK)
