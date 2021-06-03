@@ -3,6 +3,8 @@ package com.switchfully.spectangular.services;
 import com.switchfully.spectangular.JSONObjectParser;
 import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.User;
+import com.switchfully.spectangular.domain.session.FeedbackForCoach;
+import com.switchfully.spectangular.domain.session.FeedbackForCoachee;
 import com.switchfully.spectangular.domain.session.Session;
 import com.switchfully.spectangular.domain.session.SessionStatus;
 import com.switchfully.spectangular.dtos.*;
@@ -13,6 +15,7 @@ import com.switchfully.spectangular.repository.SessionRepository;
 import com.switchfully.spectangular.services.mailing.EmailService;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +24,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -57,8 +61,12 @@ class SessionServiceTest {
     private AddFeedbackForCoachDto addCoachFeedbackDto;
     private JSONObject testJsonObject;
     //token with id/sub = 1234567980
-    private static final String TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-    private static final String INVALID_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.falseWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+    private static final String TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" +
+            ".eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ" +
+            ".SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+    private static final String INVALID_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" +
+            ".falseWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ" +
+            ".SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
     private static final int COACH_ID = 2;
     private static final int COACHEE_ID = 1234567890;
 
@@ -240,7 +248,7 @@ class SessionServiceTest {
     }
 
     @Test
-    void getAllSessionByCoach_givenSessionWithDateInThePastAndStatusRequested_updatesStatusSessionToDeclined(){
+    void getAllSessionByCoach_givenSessionWithDateInThePastAndStatusRequested_updatesStatusSessionToDeclined() {
         session.setDate(LocalDate.now().minusDays(5));
 
         when(userService.findUserById(anyInt())).thenReturn(coach);
@@ -253,7 +261,7 @@ class SessionServiceTest {
     }
 
     @Test
-    void getAllSessionByCoach_givenSessionWithDateInThePastAndStatusAccepted_updatesStatusSessionTo_WAITIN_FEEDBACK(){
+    void getAllSessionByCoach_givenSessionWithDateInThePastAndStatusAccepted_updatesStatusSessionTo_WAITIN_FEEDBACK() {
         //WHEN
         session.setDate(LocalDate.now().minusDays(5));
         session.setStatus(SessionStatus.ACCEPTED);
@@ -267,7 +275,7 @@ class SessionServiceTest {
     }
 
     @Test
-    void getAllSessionByCoach_givenSessionWithDateInTheFutureAndStatusRequested_doesNotUpdateSession(){
+    void getAllSessionByCoach_givenSessionWithDateInTheFutureAndStatusRequested_doesNotUpdateSession() {
         session.setDate(LocalDate.now().plusDays(5));
 
         when(userService.findUserById(anyInt())).thenReturn(coach);
@@ -280,7 +288,7 @@ class SessionServiceTest {
     }
 
     @Test
-    void getAllSessionByCoachee_givenSessionWithDateInThePastAndStatusRequested_updatesStatusSessionToDeclined(){
+    void getAllSessionByCoachee_givenSessionWithDateInThePastAndStatusRequested_updatesStatusSessionToDeclined() {
 
         //GIVEN
         session.setDate(LocalDate.now().minusDays(5));
@@ -295,7 +303,7 @@ class SessionServiceTest {
     }
 
     @Test
-    void updateSessionStatus_withInvalidId_throwsIllegalArgumentException(){
+    void updateSessionStatus_withInvalidId_throwsIllegalArgumentException() {
         //WHEN
         when(sessionRepository.findById(5)).thenReturn(Optional.empty());
 
@@ -306,7 +314,7 @@ class SessionServiceTest {
     }
 
     @Test
-    void updateSessionStatus_validIdAndValidStatus_callsSetStatusForSession(){
+    void updateSessionStatus_validIdAndValidStatus_callsSetStatusForSession() {
         //WHEN
         Session mockSession = mock(Session.class);
         when(sessionRepository.findById(5)).thenReturn(Optional.of(mockSession));
@@ -320,43 +328,45 @@ class SessionServiceTest {
     }
 
     @Test
-    void userHasAuthorityToChangeState_CoachisCoachOfSessionIdAndValidStatusChange_returnTrue(){
+    void userHasAuthorityToChangeState_CoachisCoachOfSessionIdAndValidStatusChange_returnTrue() {
         when(userService.findUserById(anyInt())).thenReturn(coach);
         when(sessionRepository.findById(5)).thenReturn(Optional.of(session));
 
-        assertThat(sessionService.userHasAuthorityToChangeState(COACH_ID,5,SessionStatus.ACCEPTED)).isTrue();
+        assertThat(sessionService.userHasAuthorityToChangeState(COACH_ID, 5, SessionStatus.ACCEPTED)).isTrue();
     }
 
     @Test
-    void userHasAuthorityToChangeState_CoachisCoachOfSessionIdAndInvalidStatusChange_returnFalse(){
+    void userHasAuthorityToChangeState_CoachisCoachOfSessionIdAndInvalidStatusChange_returnFalse() {
         when(userService.findUserById(anyInt())).thenReturn(coach);
         when(sessionRepository.findById(5)).thenReturn(Optional.of(session));
 
-        assertThat(sessionService.userHasAuthorityToChangeState(COACH_ID,5,SessionStatus.REQUEST_CANCELLED_BY_COACHEE)).isFalse();
+        assertThat(sessionService.userHasAuthorityToChangeState(COACH_ID, 5,
+                SessionStatus.REQUEST_CANCELLED_BY_COACHEE)).isFalse();
     }
 
     @Test
-    void userHasAuthorityToChangeState_CoachisNotCoachOfSessionIdAndvalidStatusChange_returnFalse(){
+    void userHasAuthorityToChangeState_CoachisNotCoachOfSessionIdAndvalidStatusChange_returnFalse() {
         when(userService.findUserById(anyInt())).thenReturn(coach2);
         when(sessionRepository.findById(5)).thenReturn(Optional.of(session));
 
-        assertThat(sessionService.userHasAuthorityToChangeState(COACH_ID,5,SessionStatus.ACCEPTED)).isFalse();
+        assertThat(sessionService.userHasAuthorityToChangeState(COACH_ID, 5, SessionStatus.ACCEPTED)).isFalse();
     }
 
     @Test
-    void userHasAuthorityToChangeState_CoacheeisCoacheeOfSessionIdAndvalidStatusChange_returnTrue(){
+    void userHasAuthorityToChangeState_CoacheeisCoacheeOfSessionIdAndvalidStatusChange_returnTrue() {
         when(userService.findUserById(anyInt())).thenReturn(coachee);
         when(sessionRepository.findById(5)).thenReturn(Optional.of(session));
 
-        assertThat(sessionService.userHasAuthorityToChangeState(COACHEE_ID,5,SessionStatus.REQUEST_CANCELLED_BY_COACHEE)).isTrue();
+        assertThat(sessionService.userHasAuthorityToChangeState(COACHEE_ID, 5,
+                SessionStatus.REQUEST_CANCELLED_BY_COACHEE)).isTrue();
     }
 
     @Test
-    void userHasAuthorityToChangeState_CoacheeisCoacheeOfSessionIdAndInvalidStatusChange_returnFalse(){
+    void userHasAuthorityToChangeState_CoacheeisCoacheeOfSessionIdAndInvalidStatusChange_returnFalse() {
         when(userService.findUserById(anyInt())).thenReturn(coachee);
         when(sessionRepository.findById(5)).thenReturn(Optional.of(session));
 
-        assertThat(sessionService.userHasAuthorityToChangeState(COACHEE_ID,5,SessionStatus.ACCEPTED)).isFalse();
+        assertThat(sessionService.userHasAuthorityToChangeState(COACHEE_ID, 5, SessionStatus.ACCEPTED)).isFalse();
     }
 
     @Test
@@ -442,4 +452,109 @@ class SessionServiceTest {
     }
 
 
+    @Test
+    void addFeedbackForCoach_givenCoacheeHasNotGivenFeedback_thenNoXpAdded() throws Exception {
+        //GIVEN
+        when(sessionRepository.findById(any())).thenReturn(Optional.of(session));
+        when(sessionMapper.toDto(any())).thenReturn(sessionDto);
+        when(feedbackMapper.toEntity((AddFeedbackForCoachDto) any())).thenReturn(new FeedbackForCoach().setExplanation(addCoachFeedbackDto.getExplanation()).setUsefulness(addCoachFeedbackDto.getUsefulness()));
+        Field CoachField = User.class.getDeclaredField("id");
+        CoachField.setAccessible(true);
+        CoachField.set(coach, COACH_ID);
+        Field CoacheeField = User.class.getDeclaredField("id");
+        CoacheeField.setAccessible(true);
+        CoacheeField.set(coachee, COACHEE_ID);
+        Field sessionField = Session.class.getDeclaredField("status");
+        sessionField.setAccessible(true);
+        sessionField.set(session, SessionStatus.WAITING_FEEDBACK);
+
+        coach.setXp(0);
+
+        //WHEN
+        sessionService.addFeedbackForCoach(1, COACHEE_ID, addCoachFeedbackDto);
+
+        //THEN
+        assertThat(coach.getXp()).isEqualTo(0);
+        assertThat(session.getFeedbackForCoachee()).isNull();
+
+    }
+
+    @Test
+    void addFeedbackForCoach_givenCoacheeHasAlreadyGivenFeedback_thenXpAdded() throws Exception {
+        //GIVEN
+        when(sessionRepository.findById(any())).thenReturn(Optional.of(session));
+        when(sessionMapper.toDto(any())).thenReturn(sessionDto);
+        when(feedbackMapper.toEntity((AddFeedbackForCoachDto) any())).thenReturn(new FeedbackForCoach().setExplanation(addCoachFeedbackDto.getExplanation()).setUsefulness(addCoachFeedbackDto.getUsefulness()));
+        when(feedbackMapper.toEntity((AddFeedbackForCoacheeDto) any())).thenReturn(new FeedbackForCoachee().setPreparedness(addCoacheeFeedbackDto.getPreparedness()).setWillingness(addCoacheeFeedbackDto.getWillingness()));
+        when(userService.updateXp(coach,3)).thenCallRealMethod();
+        Field CoachField = User.class.getDeclaredField("id");
+        CoachField.setAccessible(true);
+        CoachField.set(coach, COACH_ID);
+        Field CoacheeField = User.class.getDeclaredField("id");
+        CoacheeField.setAccessible(true);
+        CoacheeField.set(coachee, COACHEE_ID);
+        Field sessionField = Session.class.getDeclaredField("status");
+        sessionField.setAccessible(true);
+        sessionField.set(session, SessionStatus.WAITING_FEEDBACK);
+
+        coach.setXp(0);
+        sessionService.addFeedbackForCoach(1, COACHEE_ID, addCoachFeedbackDto);
+        //WHEN
+        sessionService.addFeedbackForCoachee(1, COACH_ID, addCoacheeFeedbackDto);
+        //THEN
+        assertThat(coach.getXp()).isEqualTo(3);
+    }
+
+    @Test
+    void addFeedbackForCoachee_givenCoachHasNotGivenFeedback_thenNoXpAdded() throws Exception{
+        //GIVEN
+        when(sessionRepository.findById(any())).thenReturn(Optional.of(session));
+        when(sessionMapper.toDto(any())).thenReturn(sessionDto);
+        when(feedbackMapper.toEntity((AddFeedbackForCoacheeDto) any())).thenReturn(new FeedbackForCoachee().setPreparedness(addCoacheeFeedbackDto.getPreparedness()).setWillingness(addCoacheeFeedbackDto.getWillingness()));
+        Field CoachField = User.class.getDeclaredField("id");
+        CoachField.setAccessible(true);
+        CoachField.set(coach, COACH_ID);
+        Field CoacheeField = User.class.getDeclaredField("id");
+        CoacheeField.setAccessible(true);
+        CoacheeField.set(coachee, COACHEE_ID);
+        Field sessionField = Session.class.getDeclaredField("status");
+        sessionField.setAccessible(true);
+        sessionField.set(session, SessionStatus.WAITING_FEEDBACK);
+
+        coach.setXp(0);
+
+        //WHEN
+        sessionService.addFeedbackForCoachee(1, COACH_ID, addCoacheeFeedbackDto);
+
+        //THEN
+        assertThat(coach.getXp()).isEqualTo(0);
+        assertThat(session.getFeedbackForCoach()).isNull();
+    }
+
+    @Test
+    void addFeedbackForCoachee_givenCoachHasAlreadyGivenFeedback_thenXpAdded() throws Exception{
+        //GIVEN
+        when(sessionRepository.findById(any())).thenReturn(Optional.of(session));
+        when(sessionMapper.toDto(any())).thenReturn(sessionDto);
+        when(feedbackMapper.toEntity((AddFeedbackForCoachDto) any())).thenReturn(new FeedbackForCoach().setExplanation(addCoachFeedbackDto.getExplanation()).setUsefulness(addCoachFeedbackDto.getUsefulness()));
+        when(feedbackMapper.toEntity((AddFeedbackForCoacheeDto) any())).thenReturn(new FeedbackForCoachee().setPreparedness(addCoacheeFeedbackDto.getPreparedness()).setWillingness(addCoacheeFeedbackDto.getWillingness()));
+        when(userService.updateXp(coach,3)).thenCallRealMethod();
+        Field CoachField = User.class.getDeclaredField("id");
+        CoachField.setAccessible(true);
+        CoachField.set(coach, COACH_ID);
+        Field CoacheeField = User.class.getDeclaredField("id");
+        CoacheeField.setAccessible(true);
+        CoacheeField.set(coachee, COACHEE_ID);
+        Field sessionField = Session.class.getDeclaredField("status");
+        sessionField.setAccessible(true);
+        sessionField.set(session, SessionStatus.WAITING_FEEDBACK);
+
+        coach.setXp(0);
+        sessionService.addFeedbackForCoachee(1, COACH_ID, addCoacheeFeedbackDto);
+
+        //WHEN
+        sessionService.addFeedbackForCoach(1, COACHEE_ID, addCoachFeedbackDto);
+        //THEN
+        assertThat(coach.getXp()).isEqualTo(3);
+    }
 }

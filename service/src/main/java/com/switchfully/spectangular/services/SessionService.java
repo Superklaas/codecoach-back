@@ -68,6 +68,11 @@ public class SessionService {
         return sessionMapper.toListOfDtos(coacheeSessions);
     }
 
+    public SessionDto getSessionById(int id) {
+        Session session = sessionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("session not found"));
+        return sessionMapper.toDto(session);
+    }
+
     public SessionDto updateSessionStatus(int uid, int id, SessionStatus status) {
         if (!userHasAuthorityToChangeState(uid, id, status)){
             throw new UnauthorizedException("user cant change status of another user");
@@ -197,4 +202,5 @@ public class SessionService {
         Set<SessionStatus> autoUpdatableStatuses = Arrays.asList(SessionStatus.values()).stream().filter(status -> !status.isFinished() ).collect(Collectors.toSet());
         this.autoUpdateStatusSessionList(sessionRepository.findByStatusIn(autoUpdatableStatuses));
     }
+
 }
