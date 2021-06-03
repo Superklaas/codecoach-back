@@ -40,15 +40,11 @@ public class TopicService {
     }
 
     public UserDto updateTopicsofCoach(int coachId, List<UpdateTopicsDto> topicDtos, int requestedBy) {
-        if (topicDtos.size() > User.MAX_COACH_TOPICS) {
-            throw new IllegalStateException("Too many topics");
-        }
-        userService.assertAdmin(requestedBy);
-
+       assertValidUpdateTopic(topicDtos, requestedBy);
 
         User coach = userService.findUserById(coachId);
-        List<Topic> topics = topicMapper.toEntity(topicDtos);
 
+        List<Topic> topics = topicMapper.toEntity(topicDtos);
         topics.forEach(topicRepository::save);
 
         List<Topic> oldTopicList =coach.getTopicList();
@@ -56,6 +52,13 @@ public class TopicService {
         deleteTopicsIfUnused(oldTopicList);
 
         return userMapper.toDto(coach);
+    }
+
+    private void assertValidUpdateTopic(List<UpdateTopicsDto> topicDtos, int requestedBy){
+        if (topicDtos.size() > User.MAX_COACH_TOPICS) {
+            throw new IllegalStateException("Too many topics");
+        }
+        userService.assertAdmin(requestedBy);
     }
 
     private void deleteTopicsIfUnused(List<Topic> topicList){
