@@ -47,13 +47,7 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @PreAuthorize(value = "hasAuthority('TOPICS_REQUEST')")
-    @PostMapping(path = "/{id}/edit-topics", produces = "application/json")
-    @ResponseStatus(HttpStatus.OK)
-    public void requestToEditTopics(@PathVariable int id, @RequestBody List<UpdateTopicsDto> updateTopicsDtos ) {
-        logger.info("Received POST request to notify the Admin(s) of a request to edit a Coach's topics.");
-        userService.requestToEditTopics(id, updateTopicsDtos);
-    }
+
 
     @PreAuthorize(value = "hasAuthority('COACH_REQUEST')")
     @PostMapping(path = "/{id}/coachify", produces = "application/json")

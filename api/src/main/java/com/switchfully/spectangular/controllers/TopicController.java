@@ -52,6 +52,15 @@ public class TopicController {
         return topicService.updateTopicsofCoach(id, dtoList, Integer.parseInt(principal.getName()));
     }
 
+    @PreAuthorize(value = "hasAuthority('TOPICS_REQUEST')")
+    @PostMapping(path = "/{id}/edit-topics", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void requestToEditTopics(@PathVariable int id, @RequestBody List<UpdateTopicsDto> updateTopicsDtos ) {
+        System.out.println("test");
+        logger.info("Received POST request to notify the Admin(s) of a request to edit a Coach's topics.");
+        topicService.requestToEditTopics(id, updateTopicsDtos);
+    }
+
 
 
 }

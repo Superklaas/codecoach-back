@@ -97,10 +97,7 @@ public class UserService {
         emailService.mailForCoachRequest(user, dto);
     }
 
-    public void requestToEditTopics(int id, List<UpdateTopicsDto> dtos) {
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found."));
-        emailService.mailForEditingTopicsRequest(user, dtos);
-    }
+
 
     public UserDto updateCoach(UpdateCoachProfileDto dto, int id, int principalId) {
         assertPrincipalCanUpdateProfile(id, principalId);

@@ -1,5 +1,6 @@
 package com.switchfully.spectangular.services.mailing;
 
+import com.switchfully.spectangular.domain.Topic;
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.domain.session.Session;
 import com.switchfully.spectangular.dtos.CoachRequestDto;
@@ -73,10 +74,10 @@ public class EmailService {
         sendHtmlMessage(user.getEmail(), "You're now a Coach!", htmlBody);
     }
     @Async
-    public void mailForEditingTopicsRequest(User user, List<UpdateTopicsDto> dtos) {
+    public void mailForEditingTopicsRequest(User user, List<Topic> topicList) {
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("user", user);
-        templateModel.put("topicsRequest", dtos);
+        templateModel.put("topicsRequest", topicList);
         sign(templateModel);
         Context thymeleafContext = new Context();
         thymeleafContext.setVariables(templateModel);
