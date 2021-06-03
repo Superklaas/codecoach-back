@@ -49,6 +49,12 @@ public class SessionService {
         return sessionMapper.toDto(session);
     }
 
+    public  List<SessionDto> getAll(){
+        List<Session> sessions = sessionRepository.findAll();
+        autoUpdateStatusSessionList(sessions);
+        return sessionMapper.toListOfDtos(sessions);
+    }
+
     public List<SessionDto> getAllSessionByCoach(int uid) {
         User user = userService.findUserById(uid);
 
@@ -120,28 +126,9 @@ public class SessionService {
                 });
     }
 
-    private void validateCreateSession(CreateSessionDto createSessionDto, int uid) {
-
-        if (uid != createSessionDto.getCoacheeId()) {
-            throw new UnauthorizedException("User can't make session for other users");
-        }
-
-        if (!userService.findUserById(createSessionDto.getCoachId()).getRole().equals(Role.COACH)) {
-            throw new IllegalArgumentException("Coach must have role coach");
-        }
-    }
-
-    private Session findSessionById(int id) {
-        return sessionRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("session not found with id: " + id));
-    }
-
-    private boolean hacCoacheeAuthorityToChange(SessionStatus status) {
-        return status.getAuthorizedRoles().contains(Role.COACHEE);
-    }
-
-    private boolean hacCoachAuthorityToChange(SessionStatus status) {
-        return status.getAuthorizedRoles().contains(Role.COACH);
+    public void autoUpdateAllSession(){
+        Set<SessionStatus> autoUpdatableStatuses = Arrays.stream(SessionStatus.values()).filter(status -> !status.isFinished() ).collect(Collectors.toSet());
+        this.autoUpdateStatusSessionList(sessionRepository.findByStatusIn(autoUpdatableStatuses));
     }
 
     public SessionDto addFeedbackForCoach(int sessionId, int userId, AddFeedbackForCoachDto addFeedbackDto) {
@@ -178,29 +165,41 @@ public class SessionService {
         return sessionMapper.toDto(session);
     }
 
-    public  List<SessionDto> getAll(){
-        List<Session> sessions = sessionRepository.findAll();
-        autoUpdateStatusSessionList(sessions);
-        return sessionMapper.toListOfDtos(sessions);
+
+    private void validateCreateSession(CreateSessionDto createSessionDto, int uid) {
+
+        if (uid != createSessionDto.getCoacheeId()) {
+            throw new UnauthorizedException("User can't make session for other users");
+        }
+
+        if (!userService.findUserById(createSessionDto.getCoachId()).getRole().equals(Role.COACH)) {
+            throw new IllegalArgumentException("Coach must have role coach");
+        }
     }
 
+    private Session findSessionById(int id) {
+        return sessionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("session not found with id: " + id));
+    }
 
-    public boolean canXpBeAwarded(Session session, SessionStatus status) {
-        if (session.getFeedbackForCoach() != null &&
+    private boolean hacCoacheeAuthorityToChange(SessionStatus status) {
+        return status.getAuthorizedRoles().contains(Role.COACHEE);
+    }
+
+    private boolean hacCoachAuthorityToChange(SessionStatus status) {
+        return status.getAuthorizedRoles().contains(Role.COACH);
+    }
+
+    private boolean canXpBeAwarded(Session session, SessionStatus status) {
+        return session.getFeedbackForCoach() != null &&
                 session.getFeedbackForCoach().getUsefulness() != null &&
                 session.getFeedbackForCoach().getExplanation() != null &&
                 session.getFeedbackForCoachee() != null &&
                 session.getFeedbackForCoachee().getPreparedness() != null &&
                 session.getFeedbackForCoachee().getWillingness() != null &&
-                status != SessionStatus.FEEDBACK_RECEIVED) {
-            return true;
-        }
-        return false;
+                status != SessionStatus.FEEDBACK_RECEIVED;
     }
 
-    public void autoUpdateAllSession(){
-        Set<SessionStatus> autoUpdatableStatuses = Arrays.asList(SessionStatus.values()).stream().filter(status -> !status.isFinished() ).collect(Collectors.toSet());
-        this.autoUpdateStatusSessionList(sessionRepository.findByStatusIn(autoUpdatableStatuses));
-    }
+
 
 }
