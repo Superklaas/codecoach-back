@@ -75,6 +75,10 @@ public class UserService {
         return userMapper.toListOfDtos(userRepository.findUsersByRole(Role.COACH));
     }
 
+    public List<UserDto> getAllCoachees() {
+        return userMapper.toListOfDtos(userRepository.findUsersByRole(Role.COACHEE));
+    }
+
     public UserDto updateUser(UpdateUserProfileDto dto, int id, int principalId) {
         assertPrincipalCanUpdateProfile(id, principalId);
         if (dto.getRole() != null && !userIsAdmin(principalId)) {
@@ -216,5 +220,6 @@ public class UserService {
         }
         return principalId == id;
     }
+
 
 }

@@ -71,6 +71,14 @@ public class UserController {
         return userService.getAllCoaches();
     }
 
+    @PreAuthorize("hasAuthority('GET_ALL_COACHEES')")
+    @GetMapping(path = "/coachees", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDto> getAllCoachees() {
+        logger.info("Received GET request to get an overview of all the coachees.");
+        return userService.getAllCoachees();
+    }
+
     @PreAuthorize("hasAuthority('UPDATE_PROFILE')")
     @PutMapping(path = "/{userId}", produces = "application/json", consumes = "application/json" )
     @ResponseStatus(HttpStatus.OK)
