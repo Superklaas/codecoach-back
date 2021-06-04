@@ -209,4 +209,8 @@ public class UserService {
         }
     }
 
+    public User findUserByProfileName(String profileName) {
+        return userRepository.findDistinctFirstByProfileName(profileName)
+                .orElseThrow(()-> new IllegalArgumentException("user not found"));
+    }
 }

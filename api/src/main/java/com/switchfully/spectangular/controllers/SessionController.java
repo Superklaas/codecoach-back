@@ -64,6 +64,15 @@ public class SessionController {
         return sessionService.getSessionById(id);
     }
 
+    @PreAuthorize(value = "hasAuthority('UPDATE_SESSION')")
+    @PostMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public SessionDto updateSession(@PathVariable int id, @RequestBody UpdateSessionDto updateSessionDto){
+        logger.info("Received POST request to update session: " + id);
+        return sessionService.updateSession(id, updateSessionDto);
+    }
+
+
     @PreAuthorize(value = "hasAuthority('UPDATE_SESSION_STATUS')")
     @PostMapping(path = "/{id}/status", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)

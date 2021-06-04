@@ -3,6 +3,7 @@ import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.domain.session.Session;
 import com.switchfully.spectangular.dtos.CreateSessionDto;
 import com.switchfully.spectangular.dtos.SessionDto;
+import com.switchfully.spectangular.dtos.UpdateSessionDto;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -49,6 +50,16 @@ public class SessionMapper {
     }
 
     public List<SessionDto> toListOfDtos(List<Session> sessions){
-        return sessions.stream().map(session -> this.toDto(session)).collect(Collectors.toList());
+        return sessions.stream().map(this::toDto).collect(Collectors.toList());
+    }
+
+    public Session applyToEntity(Session originalSession,UpdateSessionDto updateSessionDto, User coach, User coachee) {
+        return originalSession
+                .setCoach(coach)
+                .setCoachee(coachee)
+                .setSubject(updateSessionDto.getSubject())
+                .setDate(LocalDate.parse(updateSessionDto.getDate()))
+                .setStartTime(LocalTime.parse(updateSessionDto.getStartTime()))
+                .setLocation(updateSessionDto.getLocation());
     }
 }

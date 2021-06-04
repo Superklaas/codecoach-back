@@ -5,10 +5,7 @@ import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.domain.session.Session;
 import com.switchfully.spectangular.domain.session.SessionStatus;
-import com.switchfully.spectangular.dtos.AddFeedbackForCoachDto;
-import com.switchfully.spectangular.dtos.AddFeedbackForCoacheeDto;
-import com.switchfully.spectangular.dtos.CreateSessionDto;
-import com.switchfully.spectangular.dtos.SessionDto;
+import com.switchfully.spectangular.dtos.*;
 import com.switchfully.spectangular.exceptions.UnauthorizedException;
 import com.switchfully.spectangular.mappers.FeedbackMapper;
 import com.switchfully.spectangular.mappers.SessionMapper;
@@ -77,6 +74,14 @@ public class SessionService {
     public SessionDto getSessionById(int id) {
         Session session = sessionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("session not found"));
         return sessionMapper.toDto(session);
+    }
+
+    public SessionDto updateSession(int id, UpdateSessionDto updateSessionDto) {
+        User coach = userService.findUserByProfileName(updateSessionDto.getCoachProfileName());
+        User coachee = userService.findUserByProfileName(updateSessionDto.getCoacheeProfileName());
+        Session originalSession = findSessionById(id);
+        Session updatedSession = sessionMapper.applyToEntity(originalSession, updateSessionDto, coach, coachee);
+        return sessionMapper.toDto(updatedSession);
     }
 
     public SessionDto updateSessionStatus(int uid, int id, SessionStatus status) {
@@ -199,7 +204,5 @@ public class SessionService {
                 session.getFeedbackForCoachee().getWillingness() != null &&
                 status != SessionStatus.FEEDBACK_RECEIVED;
     }
-
-
 
 }

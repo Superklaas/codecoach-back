@@ -114,7 +114,7 @@ public class Session {
         return coachee;
     }
 
-    public void setSubject(String subject) {
+    public Session setSubject(String subject) {
         if (subject == null) {
             throw new IllegalArgumentException("Subject must be specified");
         }
@@ -123,6 +123,7 @@ public class Session {
             throw new IllegalArgumentException("Subject must be betweeN 1 and 255 characters long");
         }
         this.subject = subject;
+        return this;
     }
 
     public void setDateTime(LocalDate date, LocalTime startTime) {
@@ -131,19 +132,22 @@ public class Session {
         this.startTime = startTime;
     }
 
-    public void setDate(LocalDate date) {
+    public Session setDate(LocalDate date) {
         this.date = date;
+        return this;
     }
 
-    public void setStartTime(LocalTime startTime) {
+    public Session setStartTime(LocalTime startTime) {
         this.startTime = startTime;
+        return this;
     }
 
-    public void setLocation(String location) {
+    public Session setLocation(String location) {
         if (location == null || location.length() > MAX_LOCATION_LENGTH) {
             throw new IllegalArgumentException("Location is required and can only be up to 255 characters");
         }
         this.location = location;
+        return this;
     }
 
     public void setRemarks(String remarks) {
@@ -158,18 +162,20 @@ public class Session {
         this.status = status;
     }
 
-    public void setCoach(User coach) {
+    public Session setCoach(User coach) {
         if (coach == null ||!coach.getRole().equals(Role.COACH)) {
             throw new IllegalArgumentException("Must set an actual coach for a session");
         }
         this.coach = coach;
+        return this;
     }
 
-    public void setCoachee(User coachee) {
+    public Session setCoachee(User coachee) {
         if (coachee == null) {
             throw new IllegalArgumentException("Must set an actual user for the coachee");
         }
         this.coachee = coachee;
+        return this;
     }
 
     public FeedbackForCoach getFeedbackForCoach() {
