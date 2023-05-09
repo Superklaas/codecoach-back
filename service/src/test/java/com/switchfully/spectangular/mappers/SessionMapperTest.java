@@ -4,16 +4,13 @@ import com.switchfully.spectangular.domain.Role;
 import com.switchfully.spectangular.domain.User;
 import com.switchfully.spectangular.domain.session.Session;
 import com.switchfully.spectangular.dtos.CreateSessionDto;
-import com.switchfully.spectangular.dtos.SessionDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 class SessionMapperTest {
     private final SessionMapper sessionMapper = new SessionMapper(new FeedbackMapper());
@@ -22,10 +19,9 @@ class SessionMapperTest {
     private User coach;
     private Session session;
     private CreateSessionDto createSessionDto;
-    private SessionDto sessionDto;
 
     @BeforeEach
-    private void setUp() {
+    public void setUp() {
         coachee = new User(
                 "Test",
                 "McTestFace",
@@ -44,7 +40,7 @@ class SessionMapperTest {
         );
         session = new Session(
                 "Spring",
-                LocalDate.of(2021,7,14),
+                LocalDate.of(2023,7,14),
                 LocalTime.of(15,45),
                 "These are remarks.",
                 "Zoom",
@@ -53,24 +49,13 @@ class SessionMapperTest {
 
         createSessionDto = new CreateSessionDto()
                 .setSubject("Spring")
-                .setDate(LocalDate.of(2021,7,14).toString())
+                .setDate(LocalDate.of(2023,7,14).toString())
                 .setStartTime(LocalTime.of(15,45).toString())
                 .setLocation("Zoom")
                 .setRemarks("These are remarks.")
                 .setCoacheeId(2)
                 .setCoachId(1);
 
-        sessionDto = new SessionDto()
-                .setSubject("Spring")
-                .setDate(LocalDate.of(2021,7,14).toString())
-                .setStartTime(LocalTime.of(15,45).toString())
-                .setLocation("Zoom")
-                .setRemarks("These are remarks.")
-                .setCoacheeId(2)
-                .setCoachId(1)
-                .setCoachProfileName("CoachFace")
-                .setCoacheeProfileName("TestFace")
-                .setStatus("REQUESTED");
     }
 
     @Test
