@@ -40,7 +40,7 @@ class SessionMapperTest {
         );
         session = new Session(
                 "Spring",
-                LocalDate.of(2023,7,14),
+                LocalDate.of(2045,7,14),
                 LocalTime.of(15,45),
                 "These are remarks.",
                 "Zoom",
@@ -49,7 +49,7 @@ class SessionMapperTest {
 
         createSessionDto = new CreateSessionDto()
                 .setSubject("Spring")
-                .setDate(LocalDate.of(2023,7,14).toString())
+                .setDate(LocalDate.of(2045,7,14).toString())
                 .setStartTime(LocalTime.of(15,45).toString())
                 .setLocation("Zoom")
                 .setRemarks("These are remarks.")
